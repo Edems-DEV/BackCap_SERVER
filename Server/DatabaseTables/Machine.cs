@@ -1,18 +1,20 @@
-﻿namespace Server.DatabaseTables;
+﻿using System.ComponentModel.DataAnnotations;
+
+namespace Server.DatabaseTables;
 
 public class Machine
 {
-    public int id { get; set; }
+    public int Id { get; set; }
 
-    public string name { get; set; }
+    public string? Name { get; set; }
 
-    public string description { get; set; }
+    public string? Description { get; set; }
 
-    public string os { get; set; }
+    public string? Os { get; set; }
 
-    public string ip_address { get; set; }
+    public string? Ip_address { get; set; }
 
-    public string mac_address { get; set; }
+    public string? Mac_address { get; set; }
 
-    public bool is_active { get; set; }
+    public bool Is_active { get; set; }
 }

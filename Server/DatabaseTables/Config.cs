@@ -1,4 +1,7 @@
-﻿namespace Server.DatabaseTables;
+﻿using Microsoft.EntityFrameworkCore;
+using System.ComponentModel.DataAnnotations;
+
+namespace Server.DatabaseTables;
 
 public class Config
 {
@@ -6,13 +9,13 @@ public class Config
 
     public Int16 type { get; set; }
 
-    public int retencion { get; set; }
+    public int retention { get; set; }
 
     public int packageSize { get; set; }
 
     public bool isCompressed { get; set; }
 
-    public string backup_interval { get; set; }
+    public string? Backup_interval { get; set; }
 
-    public DateTime interval_end { get; set; }
+    public DateTime? interval_end { get; set; }
 }

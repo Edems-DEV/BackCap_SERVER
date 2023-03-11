@@ -1,4 +1,7 @@
 
+using Microsoft.EntityFrameworkCore;
+using Server.DatabaseTables;
+
 namespace Server
 {
     public class Program
@@ -13,6 +16,9 @@ namespace Server
             // Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
             builder.Services.AddEndpointsApiExplorer();
             builder.Services.AddSwaggerGen();
+
+            builder.Services.AddSingleton<DbContext, MyContext>();
+
 
             var app = builder.Build();
 

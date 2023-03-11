@@ -8,13 +8,13 @@ namespace Server.Controllers;
 [ApiController]
 public class Test : ControllerBase
 {
-    public MyContext context = new MyContext();
+    private readonly MyContext context = new MyContext();
     // GET: api/<Test>
     [HttpGet]
-    public List<Users> Get()
+    public List<User> Get()
     {
-        List<Users> users = new List<Users>();
-        users = context.Users.ToList();
+        List<User> users = new List<User>();
+        users = context.User.ToList();
         return users;
     }
 

@@ -1,10 +1,11 @@
-﻿using System.ComponentModel.DataAnnotations.Schema;
+﻿using System.ComponentModel.DataAnnotations;
+using System.ComponentModel.DataAnnotations.Schema;
 
 namespace Server.DatabaseTables;
 
-[Table("Users")]
-public class Users
+public class User
 {
+    [Key]
     public int id { get; set; }
 
     public string name { get; set; }
@@ -13,6 +14,5 @@ public class Users
 
     public string email { get; set; }
 
-    //[Column("interval_report")]
-    //public string interval_report { get; set; }
+    public string interval_report { get; set; }
 }
