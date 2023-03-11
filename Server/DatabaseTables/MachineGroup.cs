@@ -9,10 +9,8 @@ public class MachineGroup
 {
     public int id_Machine { get; set; }
 
-    [Key]
     public int id_Group { get; set; }
 
-    [Key]
     public int id_Log { get; set; }
 
     [ForeignKey("id_Machine")]

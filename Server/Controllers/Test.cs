@@ -27,8 +27,10 @@ public class Test : ControllerBase
 
     // POST api/<Test>
     [HttpPost]
-    public void Post([FromBody] string value)
+    public void Post([FromBody] User user)
     {
+        context.User.Add(user);
+        context.SaveChanges();
     }
 
     // PUT api/<Test>/5
