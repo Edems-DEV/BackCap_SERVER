@@ -1,4 +1,3 @@
-
 using Microsoft.EntityFrameworkCore;
 using Server.DatabaseTables;
 
@@ -9,7 +8,7 @@ namespace Server
         public static void Main(string[] args)
         {
             var builder = WebApplication.CreateBuilder(args);
-
+            //Byl jsem tu -A
             // Add services to the container.
 
             builder.Services.AddControllers();
