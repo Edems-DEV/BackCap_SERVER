@@ -3,7 +3,7 @@ using System.ComponentModel.DataAnnotations.Schema;
 
 namespace Server.DatabaseTables;
 
-public class Destinations
+public class Destination
 {
     [Key]
     public int id { get; set; }

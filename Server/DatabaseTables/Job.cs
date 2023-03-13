@@ -10,13 +10,13 @@ public class Job
 
     public int id_Machine { get; set; }
 
-    public int id_Group { get; set; }
+    public int? id_Group { get; set; }
 
     public int id_Config { get; set; }
 
     public Int16 status { get; set; }
 
-    public DateTime? time_schedule { get; set; }
+    public DateTime time_schedule { get; set; }
 
     public DateTime? time_start { get; set; }
 

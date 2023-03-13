@@ -21,7 +21,7 @@ public class MyContext : DbContext
 
     public DbSet<Sources> Sources { get; set; }
 
-    public DbSet<Destinations> Destinations { get; set; }
+    public DbSet<Destination> Destination { get; set; }
 
     public DbSet<Groups> Groups { get; set; }
 
