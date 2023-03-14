@@ -12,7 +12,7 @@ public class MachineController : ControllerBase
 {
     private readonly MyContext context = new MyContext();
 
-    [HttpPost("Machine/post/new/")]
+    [HttpPost]
     public void MachinePostNew([FromBody] MachineDto machine)
     {
         Machine NewMachine = new Machine()
@@ -29,7 +29,7 @@ public class MachineController : ControllerBase
         context.SaveChanges();
     }
 
-    [HttpPut("Machine/put/edit/")]
+    [HttpPut("{id}")]
     public void MachinePutEdit(int id, [FromBody] Machine machine)
     {
         Machine result = context.Machine.Find(id);
@@ -49,7 +49,7 @@ public class MachineController : ControllerBase
         context.SaveChanges();
     }
 
-    [HttpGet("Machine/get/id/")]
+    [HttpGet("{id}")]
     public Machine MachineGetId(int machineId)
     {
         return context.Machine.Find(machineId);

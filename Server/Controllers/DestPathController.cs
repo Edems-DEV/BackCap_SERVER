@@ -13,7 +13,7 @@ public class DestPathController : ControllerBase
     private readonly MyContext context = new MyContext();
 
 
-    [HttpPost("DestPath/Post/Paths/")]
+    [HttpPost]
     public void DestPathPostNew([FromBody] List<PathsDto> paths)
     {
         List<Sources> sources = new List<Sources>();
@@ -32,7 +32,7 @@ public class DestPathController : ControllerBase
         context.SaveChanges();
     }
 
-    [HttpPut("DestPath/Put/Path/")]
+    [HttpPut("{id}")]
     public void DestPathPutEdit(int id, [FromBody] PathsDto path)
     {
         Destination destinations = context.Destination.Find(id);
@@ -43,10 +43,12 @@ public class DestPathController : ControllerBase
         context.Add(destinations);
         context.SaveChanges();
     }
-
-    [HttpGet("DestPath/Get/IdConfig/")]
-    public List<Sources> DestPathGetIdConfig(int id_config)
+    
+    [HttpGet("{id}")]
+    public List<Sources> DestPathGetIdConfig(int id)
     {
-        return context.Sources.Where(x => x.id_Config == id_config).ToList();
+        return context.Sources.Where(x => x.id == id).ToList();
     }
 }
+
+// why both sources & destination in one controller?

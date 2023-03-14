@@ -11,7 +11,7 @@ public class ConfigController : ControllerBase
 {
     private readonly MyContext context = new MyContext();
 
-    [HttpPost("Config/post/new/")]
+    [HttpPost]
     public void ConfigPostNew([FromBody] Config config)
     {
         Config NewConfig = new Config()
@@ -28,7 +28,7 @@ public class ConfigController : ControllerBase
         context.SaveChanges();
     }
 
-    [HttpPut("Config/put/id/")]
+    [HttpPut("{id}")]
     public void ConfigPutEdit(int id, [FromBody] Config config)
     {
         Config result = context.Config.Find(id);
@@ -43,9 +43,9 @@ public class ConfigController : ControllerBase
         context.SaveChanges();
     }
 
-    [HttpGet("Config/get/id/")]
-    public Config ConfigGetId(int configId)
+    [HttpGet("{id}")]
+    public Config ConfigGetId(int id)
     {
-        return context.Config.Find(configId);
+        return context.Config.Find(id);
     }
 }

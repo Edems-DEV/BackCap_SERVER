@@ -14,7 +14,7 @@ public class GroupController : ControllerBase
     private readonly MyContext context = new MyContext();
 
     //group
-    [HttpPost("Group/post/new/")]
+    [HttpPost]
     public void GroupPostNew([FromBody] string name)
     {
         Groups NewGroup = new Groups();
@@ -24,7 +24,7 @@ public class GroupController : ControllerBase
         context.SaveChanges();
     }
 
-    [HttpPut("Group/put/edit/")]
+    [HttpPut("{id}")]
     public void GroupPutEdit(int id, [FromBody] string name)
     {
         Groups result = context.Groups.Find(id);
@@ -32,9 +32,9 @@ public class GroupController : ControllerBase
         context.SaveChanges();
     }
 
-    [HttpGet("Group/get/id/")]
-    public Groups GroupGetId(int groupId)
+    [HttpGet("{id}")]
+    public Groups GroupGetId(int id)
     {
-        return context.Groups.Find(groupId);
+        return context.Groups.Find(id);
     }
 }

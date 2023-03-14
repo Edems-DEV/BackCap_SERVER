@@ -12,7 +12,7 @@ public class JobController : ControllerBase
 {
     private readonly MyContext context = new MyContext();
 
-    [HttpPost("Job/post/new/")]
+    [HttpPost]
     public void JobPostNew([FromBody] JobAdminDto job)
     {
         Job NewJob = new Job()
@@ -29,7 +29,7 @@ public class JobController : ControllerBase
         context.SaveChanges();
     }
 
-    [HttpPut("Job/put/edit/")]
+    [HttpPut("{id}")]
     public void JobPostNew(int id, [FromBody] Job job)
     {
         Job existingJob = context.Job.Find(id);
@@ -44,46 +44,46 @@ public class JobController : ControllerBase
         context.SaveChanges();
     }
 
-    [HttpGet("Job/get/id/")]
-    public Job JobGetId(int Job)
+    [HttpGet("{id}")]
+    public Job JobGetId(int id)
     {
-        return context.Job.Find(Job);
+        return context.Job.Find(id);
     }
 
-    [HttpGet("Job/get/machineid/")]
-    public List<Job> MachineGetIdMachine(int idMachine)
+    [HttpGet("machines/{id}")]
+    public List<Job> MachineGetIdMachine(int id)
     {
-        return context.Job.Where(x => x.id_Machine == idMachine).ToList();
+        return context.Job.Where(x => x.id_Machine == id).ToList();
     }
 
-    [HttpGet("Job/get/groupid/")]
-    public List<Job> MachineGetIdGroup(int idGroup)
+    [HttpGet("groups/{id}")]
+    public List<Job> MachineGetIdGroup(int id)
     {
-        return context.Job.Where(x => x.id_Group == idGroup).ToList();
+        return context.Job.Where(x => x.id_Group == id).ToList();
     }
 
-    [HttpGet("Job/get/configid/")]
-    public List<Job> MachineGetIdConfig(int idConfig)
+    [HttpGet("configs/{id}")]
+    public List<Job> MachineGetIdConfig(int id)
     {
-        return context.Job.Where(x => x.id_Config == idConfig).ToList();
+        return context.Job.Where(x => x.id == id).ToList();
     }
 
     //
 
-    [HttpGet("Job/get/ipAddress/")]
-    public Job JobGetId(string ipAddress)
+    [HttpGet("ipAddress/{id}")]
+    public Job JobGetId(string id)
     {
-        return context.Job.Include(x => x.Machine).Include(x => x.Config).Where(x => x.Machine.Ip_address == ipAddress && x.status == 0).FirstOrDefault();
+        return context.Job.Include(x => x.Machine).Include(x => x.Config).Where(x => x.Machine.Ip_address == id && x.status == 0).FirstOrDefault();
     }
 
-    [HttpGet("SourcePath/get/id_config")]
+    [HttpGet("SourcePath/id_config")]
     public List<Sources> SourcePathGetIdConfig(int idConfig)
     {
         List<Sources> sources = context.Sources.Where(x => x.id_Config == idConfig).ToList();
         return sources;
     }
 
-    [HttpGet("DestPath/get/id_config")]
+    [HttpGet("DestPath/id_config")]
     public List<Destination> DestPathGetIdConfig(int idConfig)
     {
         List<Destination> destinations = context.Destination.Where(x => x.id_Config == idConfig).ToList();
@@ -91,10 +91,10 @@ public class JobController : ControllerBase
     }
 
 
-    [HttpPut("Job/put/time_end/")]
-    public void JobPutEnd_time(int jobId, Job job)
+    [HttpPut("time_end/{id}")]
+    public void JobPutEnd_time(int id, Job job)
     {
-        Job result = context.Job.Find(jobId);
+        Job result = context.Job.Find(id);
 
         result.time_end = job.time_end;
         result.status = job.status;
@@ -102,7 +102,7 @@ public class JobController : ControllerBase
         context.SaveChanges();
     }
 
-    [HttpPost("Log/post/New/")]
+    [HttpPost("Log/New/")]
     public void LogPostNew(LogDto log)
     {
         Log newLog = new Log()
@@ -116,3 +116,5 @@ public class JobController : ControllerBase
         context.SaveChanges();
     }
 }
+
+// include only Jobs, for other data create own controller

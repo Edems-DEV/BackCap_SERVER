@@ -8,7 +8,7 @@ public class SourcePathController : Controller
 {
     private readonly MyContext context = new MyContext();
 
-    [HttpPost("SourcePath/Post/Paths/")]
+    [HttpPost]
     public void SourcePathPostNew([FromBody] List<PathsDto> paths)
     {
         List<Sources> sources = new List<Sources>();
@@ -27,7 +27,7 @@ public class SourcePathController : Controller
         context.SaveChanges();
     }
 
-    [HttpPut("SourcePath/Put/Path/")]
+    [HttpPut("{id}")]
     public void SourcePathPutEdit(int id, [FromBody] PathsDto path)
     {
         Sources source = context.Sources.Find(id);
@@ -39,10 +39,10 @@ public class SourcePathController : Controller
         context.SaveChanges();
     }
 
-    [HttpGet("SourcePath/Get/IdConfig/")]
-    public List<Sources> SourcePathGetIdConfig(int id_config)
+    [HttpGet("IdConfig/{id}")]
+    public List<Sources> SourcePathGetIdConfig(int id)
     {
-        return context.Sources.Where(x => x.id_Config == id_config).ToList();
+        return context.Sources.Where(x => x.id_Config == id).ToList();
     }
 }
 
