@@ -1,7 +1,4 @@
-﻿using System.ComponentModel.DataAnnotations;
-using System.Text.Json.Serialization;
-
-namespace Server.ParamClasses;
+﻿namespace Server.ParamClasses;
 
 public class MachineDto
 {

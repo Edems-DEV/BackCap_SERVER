@@ -7,7 +7,7 @@ public class JobAdminDto
     public int? Id_Group { get; set; }
 
     public int Id_Config { get; set; }
-    
+
     public Int16 Status { get; set; }
 
     public DateTime Time_Schedule { get; set; }

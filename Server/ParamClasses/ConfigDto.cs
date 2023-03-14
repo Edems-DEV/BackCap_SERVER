@@ -13,5 +13,5 @@ public class ConfigDto
 
     public string? Backup_Interval { get; set; }
 
-    public DateTime? Interval_end { get; set;}
+    public DateTime? Interval_end { get; set; }
 }

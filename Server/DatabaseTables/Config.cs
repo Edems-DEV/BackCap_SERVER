@@ -1,7 +1,4 @@
-﻿using Microsoft.EntityFrameworkCore;
-using System.ComponentModel.DataAnnotations;
-
-namespace Server.DatabaseTables;
+﻿namespace Server.DatabaseTables;
 
 public class Config
 {

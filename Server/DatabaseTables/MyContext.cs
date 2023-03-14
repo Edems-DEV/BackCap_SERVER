@@ -1,7 +1,6 @@
 ﻿using Microsoft.EntityFrameworkCore;
-using System.Text.RegularExpressions;
-using System;
-using System.Configuration;
+using System.ComponentModel.DataAnnotations;
+using System.ComponentModel.DataAnnotations.Schema;
 
 namespace Server.DatabaseTables;
 
@@ -26,9 +25,9 @@ public class MyContext : DbContext
     public DbSet<Groups> Groups { get; set; }
 
     protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
-    { 
+    {
         optionsBuilder.UseMySQL("server=mysqlstudenti.litv.sssvt.cz;database=3b2_oveckacyril_db2;user=oveckacyril;password=123456;SslMode=none;convert zero datetime=True");
-        
+
     }
 
 }

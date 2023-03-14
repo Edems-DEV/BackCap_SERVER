@@ -1,5 +1,5 @@
-﻿using System.ComponentModel.DataAnnotations;
-using System.ComponentModel.DataAnnotations.Schema;
+﻿using System.ComponentModel.DataAnnotations.Schema;
+using System.ComponentModel.DataAnnotations;
 
 namespace Server.DatabaseTables;
 
@@ -17,3 +17,4 @@ public class Log
     [ForeignKey("id_Job")]
     public virtual Job Job { get; set; }
 }
+

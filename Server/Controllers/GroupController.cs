@@ -2,6 +2,7 @@
 using Microsoft.EntityFrameworkCore;
 using Server.DatabaseTables;
 using Server.ParamClasses;
+using System.Text.RegularExpressions;
 
 // For more information on enabling Web API for empty projects, visit https://go.microsoft.com/fwlink/?LinkID=397860
 
