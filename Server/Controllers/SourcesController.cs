@@ -4,7 +4,7 @@ using Server.DatabaseTables;
 using Server.ParamClasses;
 
 namespace Server.Controllers;
-public class SourcePathController : Controller
+public class SourcesController : Controller
 {
     private readonly MyContext context = new MyContext();
 

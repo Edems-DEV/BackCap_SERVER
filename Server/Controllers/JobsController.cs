@@ -8,7 +8,7 @@ using Server.ParamClasses;
 namespace Server.Controllers;
 [Route("api/[controller]")]
 [ApiController]
-public class JobController : ControllerBase
+public class JobsController : ControllerBase
 {
     private readonly MyContext context = new MyContext();
 

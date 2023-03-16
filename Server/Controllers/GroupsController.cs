@@ -9,7 +9,7 @@ using System.Text.RegularExpressions;
 namespace Server.Controllers;
 [Route("api/[controller]")]
 [ApiController]
-public class GroupController : ControllerBase
+public class GroupsController : ControllerBase
 {
     private readonly MyContext context = new MyContext();
 

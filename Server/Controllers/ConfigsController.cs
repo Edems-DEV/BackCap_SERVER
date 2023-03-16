@@ -7,7 +7,7 @@ using Server.ParamClasses;
 namespace Server.Controllers;
 [Route("api/[controller]")]
 [ApiController]
-public class ConfigController : ControllerBase
+public class ConfigsController : ControllerBase
 {
     private readonly MyContext context = new MyContext();
 
