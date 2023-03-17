@@ -13,7 +13,7 @@ public class JobsController : ControllerBase
     private readonly MyContext context = new MyContext();
 
     [HttpPost]
-    public void JobPostNew([FromBody] JobAdminDto job)
+    public void PostJob([FromBody] JobAdminDto job)
     {
         Job NewJob = new Job()
         {
@@ -30,7 +30,7 @@ public class JobsController : ControllerBase
     }
 
     [HttpPut("{id}")]
-    public void JobPostNew(int id, [FromBody] Job job)
+    public void PostJob(int id, [FromBody] Job job)
     {
         Job existingJob = context.Job.Find(id);
 
@@ -45,7 +45,7 @@ public class JobsController : ControllerBase
     }
 
     [HttpGet("{id}")]
-    public Job JobGetId(int id)
+    public Job GetJob(int id)
     {
         return context.Job.Find(id);
     }
@@ -68,10 +68,8 @@ public class JobsController : ControllerBase
         return context.Job.Where(x => x.id == id).ToList();
     }
 
-    //
-
     [HttpGet("ipAddress/{id}")]
-    public Job JobGetId(string id)
+    public Job GetJob(string id)
     {
         return context.Job.Include(x => x.Machine).Include(x => x.Config).Where(x => x.Machine.Ip_address == id && x.status == 0).FirstOrDefault();
     }
