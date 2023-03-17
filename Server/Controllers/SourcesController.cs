@@ -1,15 +1,18 @@
-﻿using Microsoft.AspNetCore.Http;
-using Microsoft.AspNetCore.Mvc;
+﻿using Microsoft.AspNetCore.Mvc;
+using Microsoft.EntityFrameworkCore;
 using Server.DatabaseTables;
 using Server.ParamClasses;
 
 namespace Server.Controllers;
+
+[Route("api/[controller]")]
+[ApiController]
 public class SourcesController : Controller
 {
     private readonly MyContext context = new MyContext();
 
     [HttpPost]
-    public void SourcePathPostNew([FromBody] List<PathsDto> paths)
+    public void Post([FromBody] List<PathsDto> paths)
     {
         List<Sources> sources = new List<Sources>();
         foreach (PathsDto item in paths)
@@ -28,7 +31,7 @@ public class SourcesController : Controller
     }
 
     [HttpPut("{id}")]
-    public void SourcePathPutEdit(int id, [FromBody] PathsDto path)
+    public void Put(int id, [FromBody] PathsDto path)
     {
         Sources source = context.Sources.Find(id);
 
@@ -38,11 +41,4 @@ public class SourcesController : Controller
         context.Add(source);
         context.SaveChanges();
     }
-
-    [HttpGet("IdConfig/{id}")]
-    public List<Sources> SourcePathGetIdConfig(int id)
-    {
-        return context.Sources.Where(x => x.id_Config == id).ToList();
-    }
 }
-

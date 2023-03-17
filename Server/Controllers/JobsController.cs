@@ -3,34 +3,51 @@ using Microsoft.EntityFrameworkCore;
 using Server.DatabaseTables;
 using Server.ParamClasses;
 
-// For more information on enabling Web API for empty projects, visit https://go.microsoft.com/fwlink/?LinkID=397860
-
 namespace Server.Controllers;
+
 [Route("api/[controller]")]
 [ApiController]
-public class JobsController : ControllerBase
+public class JobsController : Controller
 {
     private readonly MyContext context = new MyContext();
 
-    [HttpPost]
-    public void PostJob([FromBody] JobAdminDto job)
+    // GET: api/jobs?limit=25&offset=50   => UI datagrid
+    //                       &orderBy=id&orderDirection=desc
+    [HttpGet]
+    public IActionResult Get(int limit = 10, int offset = 0)
     {
-        Job NewJob = new Job()
-        {
-            id_Config = job.Id_Config,
-            id_Group = job.Id_Group,
-            id_Machine = job.Id_Machine,
-            status = job.Status,
-            time_schedule = job.Time_Schedule,
-            Bytes = job.Bytes
-        };
+        var jobs = context.Job
+        //.Include(x => x.Group)
+        //.OrderBy(p => p.Id)
+        .Skip(offset)
+        .Take(limit)
+        .ToList();
 
-        context.Job.Add(NewJob);
-        context.SaveChanges();
+        if (jobs == null || jobs.Count == 0)
+        {
+            return NoContent(); //204
+        }
+
+        return Ok(jobs); //200
     }
 
+    // GET: api/jobs/5   => specific job info
+    [HttpGet("{id}")]
+    public IActionResult Get(int id)
+    {
+        try
+        {
+            return Ok(context.Job.Find(id));
+        }
+        catch (Exception ex)
+        {
+            return StatusCode(StatusCodes.Status500InternalServerError, $"An error occurred while retrieving the jobs: {ex.Message}");
+        }
+    }
+
+    // for deamon for final stats after completing job
     [HttpPut("{id}")]
-    public void PostJob(int id, [FromBody] Job job)
+    public void Put(int id, [FromBody] Job job)
     {
         Job existingJob = context.Job.Find(id);
 
@@ -44,52 +61,19 @@ public class JobsController : ControllerBase
         context.SaveChanges();
     }
 
-    [HttpGet("{id}")]
-    public Job GetJob(int id)
+    // For deamon to update job status
+    [HttpPut("{id}/status")]
+    public void PutStatus(int id, [FromBody] Job job)
     {
-        return context.Job.Find(id);
+        Job existingJob = context.Job.Find(id);
+
+        existingJob.status = job.status;
+
+        context.SaveChanges();
     }
 
-    [HttpGet("machines/{id}")]
-    public List<Job> MachineGetIdMachine(int id)
-    {
-        return context.Job.Where(x => x.id_Machine == id).ToList();
-    }
-
-    [HttpGet("groups/{id}")]
-    public List<Job> MachineGetIdGroup(int id)
-    {
-        return context.Job.Where(x => x.id_Group == id).ToList();
-    }
-
-    [HttpGet("configs/{id}")]
-    public List<Job> MachineGetIdConfig(int id)
-    {
-        return context.Job.Where(x => x.id == id).ToList();
-    }
-
-    [HttpGet("ipAddress/{id}")]
-    public Job GetJob(string id)
-    {
-        return context.Job.Include(x => x.Machine).Include(x => x.Config).Where(x => x.Machine.Ip_address == id && x.status == 0).FirstOrDefault();
-    }
-
-    [HttpGet("SourcePath/id_config")]
-    public List<Sources> SourcePathGetIdConfig(int idConfig)
-    {
-        List<Sources> sources = context.Sources.Where(x => x.id_Config == idConfig).ToList();
-        return sources;
-    }
-
-    [HttpGet("DestPath/id_config")]
-    public List<Destination> DestPathGetIdConfig(int idConfig)
-    {
-        List<Destination> destinations = context.Destination.Where(x => x.id_Config == idConfig).ToList();
-        return destinations;
-    }
-
-
-    [HttpPut("time_end/{id}")]
+    #region Why?
+    [HttpPut("{id}/time_end")]
     public void JobPutEnd_time(int id, Job job)
     {
         Job result = context.Job.Find(id);
@@ -100,19 +84,13 @@ public class JobsController : ControllerBase
         context.SaveChanges();
     }
 
-    [HttpPost("Log/New/")]
-    public void LogPostNew(LogDto log)
+    [HttpGet("{id}/ipAddress")]
+    public Job GetJob(string id)
     {
-        Log newLog = new Log()
-        {
-            message = log.Message,
-            time = log.Time,
-            id_Job = log.Id_Job
-        };
-
-        context.Log.Add(newLog);
-        context.SaveChanges();
+        return context.Job.Include(x => x.Machine).Include(x => x.Config).Where(x => x.Machine.Ip_address == id && x.status == 0).FirstOrDefault();
     }
+
+    #endregion
 }
 
-// include only Jobs, for other data create own controller
+// Job object is broken ForeignKey

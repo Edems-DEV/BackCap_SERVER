@@ -7,11 +7,11 @@ namespace Server.Controllers;
 
 [Route("api/[controller]")]
 [ApiController]
-public class GroupsController : Controller
+public class LogsController : Controller
 {
     private readonly MyContext context = new MyContext();
 
-    // GET: api/Groups?limit=25&offset=50&orderBy=id&orderDirection=desc   => UI datagrid                   
+    // GET: api/Logs?limit=25&offset=50&orderBy=id&orderDirection=desc   => UI datagrid                   
     [HttpGet]
     public IActionResult Get(int limit = 10, int offset = 0) //string orderBy = "id", string orderDirection = "asc"
     {
@@ -30,26 +30,22 @@ public class GroupsController : Controller
     }
 
     [HttpGet("{id}")]
-    public Groups Get(int id)
+    public Log Get(int id)
     {
-        return context.Groups.Find(id);
+        return context.Log.Find(id);
     }
-    
+
     [HttpPost]
-    public void Post([FromBody] string name)
+    public void Post(LogDto log)
     {
-        Groups NewGroup = new Groups();
-        NewGroup.Name = name;
+        Log newLog = new Log()
+        {
+            message = log.Message,
+            time = log.Time,
+            id_Job = log.Id_Job
+        };
 
-        context.Groups.Add(NewGroup);
-        context.SaveChanges();
-    }
-
-    [HttpPut("{id}")]
-    public void Put(int id, [FromBody] string name)
-    {
-        Groups result = context.Groups.Find(id);
-        result.Name = name;
+        context.Log.Add(newLog);
         context.SaveChanges();
     }
 }
