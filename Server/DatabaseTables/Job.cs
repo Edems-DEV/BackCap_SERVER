@@ -32,4 +32,7 @@ public class Job
 
     [ForeignKey("id_Config")]
     public virtual Config Config { get; set; }
+
+    [ForeignKey("id_Job")]
+    public virtual List<Log> Logs { get; set; }
 }

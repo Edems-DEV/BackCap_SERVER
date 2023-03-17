@@ -16,5 +16,10 @@ public class Log
 
     [ForeignKey("id_Job")]
     public virtual Job Job { get; set; }
+
+    [ForeignKey("id_Log")]
+    public virtual List<Log> Logs { get; set; }
+
+    public virtual List<MachineGroup> MachineGroups { get; set; }
 }
 

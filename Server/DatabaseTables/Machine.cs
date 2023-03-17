@@ -1,4 +1,5 @@
 ﻿using System.ComponentModel.DataAnnotations;
+using System.ComponentModel.DataAnnotations.Schema;
 
 namespace Server.DatabaseTables;
 
@@ -17,4 +18,10 @@ public class Machine
     public string? Mac_address { get; set; }
 
     public bool Is_active { get; set; }
+
+    [ForeignKey("id_Machine")]
+    public virtual List<MachineGroup> MachineGroups { get; set; }
+
+    [ForeignKey("id_Machine")]
+    public virtual List<Job> Jobs { get; set; }
 }
