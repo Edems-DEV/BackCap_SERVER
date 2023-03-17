@@ -1,4 +1,6 @@
-﻿namespace Server.DatabaseTables;
+﻿using System.ComponentModel.DataAnnotations.Schema;
+
+namespace Server.DatabaseTables;
 
 public class Config
 {
@@ -15,4 +17,10 @@ public class Config
     public string? Backup_interval { get; set; }
 
     public DateTime? interval_end { get; set; }
+
+    [ForeignKey("id_Config")]
+    public virtual List<Sources> Sources { get; set; }
+
+    [ForeignKey("id_Config")]
+    public virtual List<Destination> Destinations { get; set; }
 }
