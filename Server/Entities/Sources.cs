@@ -11,7 +11,4 @@ public class Sources
     public int id_Config { get; set; }
 
     public string path { get; set; }
-
-    [ForeignKey("id_Config")]
-    public virtual Config Config { get; set; }
 }
