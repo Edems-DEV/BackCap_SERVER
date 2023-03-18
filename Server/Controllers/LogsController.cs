@@ -11,22 +11,35 @@ public class LogsController : Controller
 {
     private readonly MyContext context = new MyContext();
 
-    // GET: api/Logs?limit=25&offset=50&orderBy=id&orderDirection=desc   => UI datagrid                   
+    // GET: api/logs?limit=25&offset=50&orderBy=id&isAscending=false   => UI datagrid                   
     [HttpGet]
-    public IActionResult Get(int limit = 10, int offset = 0) //string orderBy = "id", string orderDirection = "asc"
+    public IActionResult Get(int limit = 10, int offset = 0, string orderBy = null, bool isAscending = true)
     {
-        var machine = context.Machine
-        .OrderBy(p => p.Id)
-        .Skip(offset)
-        .Take(limit)
-        .ToList();
+        List<Log> query;
+        if (orderBy != null)
+        {
+            query = isAscending ?
+                   context.Log.OrderBy(s => s.GetType().GetProperty(orderBy).GetValue(s)).ToList() :
+                   context.Log.OrderByDescending(s => s.GetType().GetProperty(orderBy).GetValue(s)).ToList();
+            query = query
+                    .Skip(offset)
+                    .Take(limit)
+                    .ToList();
+        }
+        else
+        {
+            query = context.Log
+                .Skip(offset)
+                .Take(limit)
+                .ToList();
+        }
 
-        if (machine == null || machine.Count == 0)
+        if (query == null || query.Count == 0)
         {
             return NoContent(); //204
         }
 
-        return Ok(machine); //200
+        return Ok(query); //200
     }
 
     [HttpGet("{id}")]
