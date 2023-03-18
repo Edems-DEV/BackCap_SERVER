@@ -1,6 +1,5 @@
 ﻿using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
-using Mysqlx.Crud;
 using Server.DatabaseTables;
 using Server.ParamClasses;
 

@@ -1,10 +1,7 @@
 ﻿using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
-using Microsoft.EntityFrameworkCore.Metadata.Internal;
-using Mysqlx.Crud;
 using Server.DatabaseTables;
 using Server.ParamClasses;
-using System;
 
 namespace Server.Controllers;
 
