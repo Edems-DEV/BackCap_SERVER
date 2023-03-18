@@ -10,9 +10,9 @@ public class Groups
 
     public string Name { get; set; }
 
-    [ForeignKey("id_Group")]
+    [ForeignKey("id")]
     public virtual List<MachineGroup> MachineGroups { get; set; }
 
-    [ForeignKey("id_Group")]
+    [ForeignKey("id")]
     public virtual List<Job> Jobs { get; set; }
 }

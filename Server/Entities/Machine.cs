@@ -19,9 +19,9 @@ public class Machine
 
     public bool Is_active { get; set; }
 
-    [ForeignKey("id_Machine")]
+    [ForeignKey("id")]
     public virtual List<MachineGroup> MachineGroups { get; set; }
 
-    [ForeignKey("id_Machine")]
+    [ForeignKey("id")]
     public virtual List<Job> Jobs { get; set; }
 }

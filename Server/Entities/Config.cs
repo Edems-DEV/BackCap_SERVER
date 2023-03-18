@@ -18,9 +18,9 @@ public class Config
 
     public DateTime? interval_end { get; set; }
 
-    [ForeignKey("id_Config")]
+    [ForeignKey("id")]
     public virtual List<Sources> Sources { get; set; }
 
-    [ForeignKey("id_Config")]
+    [ForeignKey("id")]
     public virtual List<Destination> Destinations { get; set; }
 }
