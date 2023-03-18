@@ -1,5 +1,6 @@
 ﻿using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.EntityFrameworkCore.Query.SqlExpressions;
 using Server.DatabaseTables;
 using Server.ParamClasses;
 
@@ -52,7 +53,11 @@ public class ConfigsController : Controller
     [HttpGet("{id}")]
     public Config Get(int id)
     {
-        return context.Config.Find(id);
+        Config config = context.Config.Find(id);
+        config.Sources = context.Sources.Where(x => x.id_Config == id).ToList();
+        config.Destinations = context.Destination.Where(x => x.id_Config == id).ToList();
+
+        return config;
     }
 
     [HttpGet("{id}/sources")]  //moved from sources

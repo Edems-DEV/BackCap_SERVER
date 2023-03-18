@@ -11,7 +11,4 @@ public class Destination
     public int id_Config { get; set; }
 
     public string DestPath { get; set; }
-
-    [ForeignKey("id_Config")]
-    public virtual Config Config { get; set; }
 }
