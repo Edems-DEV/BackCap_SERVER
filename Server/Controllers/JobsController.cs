@@ -31,6 +31,13 @@ public class JobsController : Controller
         return Ok(jobs); //200
     }
 
+    // GET: for stats
+    [HttpGet("count")]
+    public IActionResult GetCount()
+    {
+        return Ok(context.Job.Count()); //idk if it works
+    }
+
     // GET: api/jobs/5   => specific job info
     [HttpGet("{id}")]
     public IActionResult Get(int id)

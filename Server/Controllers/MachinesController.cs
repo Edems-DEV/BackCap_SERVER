@@ -30,6 +30,13 @@ public class MachinesController : Controller
         return Ok(machine); //200
     }
 
+    // GET: for stats
+    [HttpGet("count")]
+    public IActionResult GetCount(bool active = true)
+    {
+        return Ok(context.Machine.Where(x => x.Is_active == active).Count());
+    }
+
     [HttpGet("{id}")]
     public IActionResult Get(int id)
     {
@@ -56,13 +63,6 @@ public class MachinesController : Controller
         }
     }
     //TODO: add by status
-
-    // GET: for stats
-    [HttpGet("count")]
-    public IActionResult GetCount(bool active = true)
-    {
-        return Ok(context.Machine.Where(x => x.Is_active == active).Count());
-    }
 
     [HttpPost]
     public void Post([FromBody] MachineDto machine)

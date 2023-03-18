@@ -29,12 +29,19 @@ public class GroupsController : Controller
         return Ok(machine); //200
     }
 
+    // GET: for stats
+    [HttpGet("count")]
+    public IActionResult GetCount()
+    {
+        return Ok(context.Groups.Count()); //idk if it works
+    }
+
     [HttpGet("{id}")]
     public Groups Get(int id)
     {
         return context.Groups.Find(id);
     }
-    
+
     [HttpPost]
     public void Post([FromBody] string name)
     {

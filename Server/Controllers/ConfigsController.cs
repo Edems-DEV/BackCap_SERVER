@@ -29,6 +29,13 @@ public class ConfigsController : Controller
         return Ok(config); //200
     }
 
+    // GET: for stats
+    [HttpGet("count")]
+    public IActionResult GetCount()
+    {
+        return Ok(context.Config.Count()); //idk if it works
+    }
+
     [HttpGet("{id}")]
     public Config Get(int id)
     {

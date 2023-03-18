@@ -23,6 +23,13 @@ public class UsersController : ControllerBase
         return people;
     }
 
+    // GET: for stats
+    [HttpGet("count")]
+    public IActionResult GetCount()
+    {
+        return Ok(context.User.Count()); //idk if it works
+    }
+
     // GET api/users/5
     [HttpGet("{id}")]
     public User Get(int id)
