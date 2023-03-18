@@ -2,6 +2,8 @@
 using Microsoft.EntityFrameworkCore;
 using Server.DatabaseTables;
 using Server.ParamClasses;
+using Server.Validator;
+using System.ComponentModel.DataAnnotations;
 
 namespace Server.Controllers;
 
@@ -10,6 +12,7 @@ namespace Server.Controllers;
 public class ConfigsController : Controller
 {
     private readonly MyContext context = new MyContext();
+    private Validators validation = new Validators();
 
     // GET: api/configs?limit=25&offset=50&orderBy=id&isAscending=false   => UI datagrid                   
     [HttpGet]
@@ -64,6 +67,15 @@ public class ConfigsController : Controller
     [HttpPost]
     public void Post([FromBody] Config config)
     {
+        //try
+        //{
+        //    validation.DateTimeValidator(config.interval_end.ToString());
+        //}
+        //catch (Exception)
+        //{
+        //    throw;
+        //}
+
         Config NewConfig = new Config()
         {
             type = config.type,

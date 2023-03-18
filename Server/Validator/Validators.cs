@@ -1,9 +1,10 @@
-﻿using System.Security.Cryptography.X509Certificates;
+﻿using Org.BouncyCastle.Asn1.Mozilla;
+using System.Security.Cryptography.X509Certificates;
 using System.Text.RegularExpressions;
 
 namespace Server.Validator;
 
-public class Validator
+public class Validators
 {
     public void ValidatorConfig(string configJson)
     {
@@ -16,5 +17,15 @@ public class Validator
 
         if (!validInput)
             throw new Exception("Invalid job input");
+    }
+
+    //"2023-03-18T15:53:33.548Z"
+    public void DateTimeValidator(string dateTimeStr)
+    {
+        Regex a = new Regex(@"[0-9]{4}-[0-9]{2}-[A-Z0-9]{5}:[A-Z0-9]{2}:[A-Z0-9]{2}:[A-Z0-9]{4}");
+        bool result  = a.IsMatch(dateTimeStr);
+
+        if (!result)
+            throw new Exception("Wrong datetime format");
     }
 }
