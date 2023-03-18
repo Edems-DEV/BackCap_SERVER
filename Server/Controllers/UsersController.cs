@@ -12,6 +12,7 @@ public class UsersController : ControllerBase
     private readonly MyContext context = new MyContext();
 
     // GET: api/users?limit=25&offset=50&orderBy=id&isAscending=false
+    [HttpGet]
     public IActionResult Get(int limit = 10, int offset = 0, string orderBy = null, bool isAscending = true)
     {
         List<User> query;
