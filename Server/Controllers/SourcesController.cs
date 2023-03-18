@@ -41,17 +41,4 @@ public class SourcesController : Controller
         context.Add(source);
         context.SaveChanges();
     }
-
-    [HttpDelete("{id}")]
-    public IActionResult Delete(int id)
-    {
-        var source = context.Sources.Find(id);
-        if (source == null)
-        {
-            return NotFound();
-        }
-        context.Sources.Remove(source);
-        context.SaveChanges();
-        return Ok($"Delete request received for source id {id}.");
-    }
 }
