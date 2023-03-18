@@ -47,6 +47,19 @@ public class DestinationsController : Controller
         context.Add(destinations);
         context.SaveChanges();
     }
+
+    [HttpDelete("{id}")]
+    public IActionResult Delete(int id)
+    {
+        var destination = context.Destination.Find(id);
+        if (destination == null)
+        {
+            return NotFound();
+        }
+        context.Destination.Remove(destination);
+        context.SaveChanges();
+        return Ok($"Delete request received for destination id {id}.");
+    }
 }
 
 // for what?

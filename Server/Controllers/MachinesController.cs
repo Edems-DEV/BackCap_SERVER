@@ -100,4 +100,17 @@ public class MachinesController : Controller
 
         context.SaveChanges();
     }
+
+    [HttpDelete("{id}")]
+    public IActionResult Delete(int id)
+    {
+        var machine = context.Machine.Find(id);
+        if (machine == null)
+        {
+            return NotFound();
+        }
+        context.Machine.Remove(machine);
+        context.SaveChanges();
+        return Ok($"Delete request received for machine id {id}.");
+    }
 }

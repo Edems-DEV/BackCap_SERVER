@@ -51,8 +51,16 @@ public class UsersController : ControllerBase
 
     // DELETE api/users/5
     [HttpDelete("{id}")]
-    public void Delete(int id)
+    public IActionResult Delete(int id)
     {
+        var user = context.User.Find(id);
+        if (user == null)
+        {
+            return NotFound();
+        }
+        context.User.Remove(user);
+        context.SaveChanges();
+        return Ok($"Delete request received for user id {id}.");
     }
 }
 

@@ -59,4 +59,17 @@ public class GroupsController : Controller
         result.Name = name;
         context.SaveChanges();
     }
+
+    [HttpDelete("{id}")]
+    public IActionResult Delete(int id)
+    {
+        var group = context.Groups.Find(id);
+        if (group == null)
+        {
+            return NotFound();
+        }
+        context.Groups.Remove(group);
+        context.SaveChanges();
+        return Ok($"Delete request received for group id {id}.");
+    }
 }

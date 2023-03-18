@@ -98,6 +98,19 @@ public class JobsController : Controller
     }
 
     #endregion
+
+    [HttpDelete("{id}")]
+    public IActionResult Delete(int id)
+    {
+        var job = context.Job.Find(id);
+        if (job == null)
+        {
+            return NotFound();
+        }
+        context.Job.Remove(job);
+        context.SaveChanges();
+        return Ok($"Delete request received for job id {id}.");
+    }
 }
 
 // Job object is broken ForeignKey

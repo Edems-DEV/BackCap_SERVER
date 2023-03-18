@@ -79,4 +79,17 @@ public class ConfigsController : Controller
 
         context.SaveChanges();
     }
+
+    [HttpDelete("{id}")]
+    public IActionResult Delete(int id)
+    {
+        var config = context.Config.Find(id);
+        if (config == null)
+        {
+            return NotFound();
+        }
+        context.Config.Remove(config);
+        context.SaveChanges();
+        return Ok($"Delete request received for config id {id}.");
+    }
 }

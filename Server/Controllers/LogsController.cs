@@ -48,4 +48,17 @@ public class LogsController : Controller
         context.Log.Add(newLog);
         context.SaveChanges();
     }
+
+    [HttpDelete("{id}")]
+    public IActionResult Delete(int id)
+    {
+        var log = context.Log.Find(id);
+        if (log == null)
+        {
+            return NotFound();
+        }
+        context.Log.Remove(log);
+        context.SaveChanges();
+        return Ok($"Delete request received for log id {id}.");
+    }
 }
