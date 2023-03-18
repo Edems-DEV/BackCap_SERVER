@@ -11,24 +11,35 @@ public class JobsController : Controller
 {
     private readonly MyContext context = new MyContext();
 
-    // GET: api/jobs?limit=25&offset=50   => UI datagrid
-    //                       &orderBy=id&orderDirection=desc
+    // GET: api/jobs?limit=25&offset=50&orderBy=id&isAscending=false   => UI datagrid
     [HttpGet]
-    public IActionResult Get(int limit = 10, int offset = 0)
+    public IActionResult Get(int limit = 10, int offset = 0, string orderBy = null, bool isAscending = true)
     {
-        var jobs = context.Job
-        //.Include(x => x.Group)
-        //.OrderBy(p => p.Id)
-        .Skip(offset)
-        .Take(limit)
-        .ToList();
+        List<Job> query;
+        if (orderBy != null)
+        {
+            query = isAscending ?
+                   context.Job.OrderBy          (s => s.GetType().GetProperty(orderBy).GetValue(s)).ToList():
+                   context.Job.OrderByDescending(s => s.GetType().GetProperty(orderBy).GetValue(s)).ToList();
+            query = query
+                    .Skip(offset)
+                    .Take(limit)
+                    .ToList();
+        }
+        else
+        {
+            query = context.Job
+                .Skip(offset)
+                .Take(limit)
+                .ToList();
+        }
 
-        if (jobs == null || jobs.Count == 0)
+        if (query == null || query.Count == 0)
         {
             return NoContent(); //204
         }
 
-        return Ok(jobs); //200
+        return Ok(query); //200
     }
 
     // GET: for stats

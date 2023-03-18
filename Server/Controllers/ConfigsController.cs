@@ -1,7 +1,10 @@
 ﻿using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.EntityFrameworkCore.Metadata.Internal;
+using Mysqlx.Crud;
 using Server.DatabaseTables;
 using Server.ParamClasses;
+using System;
 
 namespace Server.Controllers;
 
@@ -11,22 +14,35 @@ public class ConfigsController : Controller
 {
     private readonly MyContext context = new MyContext();
 
-    // GET: api/Config?limit=25&offset=50&orderBy=id&orderDirection=desc   => UI datagrid                   
+    // GET: api/configs?limit=25&offset=50&orderBy=id&isAscending=false   => UI datagrid                   
     [HttpGet]
-    public IActionResult Get(int limit = 10, int offset = 0) //string orderBy = "id", string orderDirection = "asc"
+    public IActionResult Get(int limit = 10, int offset = 0, string orderBy = null, bool isAscending = true)
     {
-        var config = context.Config
-        .OrderBy(p => p.id)
-        .Skip(offset)
-        .Take(limit)
-        .ToList();
+        List<Config> query;
+        if (orderBy != null)
+        {
+            query = isAscending ?
+                   context.Config.OrderBy          (s => s.GetType().GetProperty(orderBy).GetValue(s)).ToList():
+                   context.Config.OrderByDescending(s => s.GetType().GetProperty(orderBy).GetValue(s)).ToList();
+            query = query
+                    .Skip(offset)
+                    .Take(limit)
+                    .ToList();
+        }
+        else
+        {
+            query = context.Config
+                .Skip(offset)
+                .Take(limit)
+                .ToList();
+        }
 
-        if (config == null || config.Count == 0)
+        if (query == null || query.Count == 0)
         {
             return NoContent(); //204
         }
-
-        return Ok(config); //200
+        
+        return Ok(query); //200
     }
 
     // GET: for stats
