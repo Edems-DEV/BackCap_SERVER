@@ -63,7 +63,17 @@ public class ConfigsController : Controller
 
     [HttpPost]
     public void Post([FromBody] Config config) // vytvoří config a k němu přidružené sourcy a destinace. Položku id config to ingoruje
-    {
+    {        
+        try
+        {
+            validation.DateTimeValidator(config.Interval_end.ToString());
+        }
+        catch (Exception)
+        {
+
+            throw;
+        }
+
         Config newConfig = config;
 
         context.Config.Add(newConfig);
@@ -75,6 +85,16 @@ public class ConfigsController : Controller
     [HttpPut("{Id}")]
     public ActionResult Put(int Id, [FromBody] ConfigDto config) // upravuje pouze samostatný config bez cest
     {
+        try
+        {
+            validation.DateTimeValidator(config.Interval_end.ToString());
+        }
+        catch (Exception)
+        {
+
+            throw;
+        }
+
         Config result = context.Config.Find(Id);
 
         if (result == null)

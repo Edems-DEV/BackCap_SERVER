@@ -3,6 +3,7 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using Server.DatabaseTables;
 using Server.ParamClasses;
+using Server.Validator;
 
 namespace Server.Controllers;
 
@@ -11,6 +12,7 @@ namespace Server.Controllers;
 public class UsersController : ControllerBase
 {
     private readonly MyContext context = new MyContext();
+    private Validators validation =  new Validators();
 
     // GET: api/users?limit=25&offset=50&orderBy=Id&isAscending=false
     [HttpGet]
@@ -59,6 +61,16 @@ public class UsersController : ControllerBase
     [HttpPost]
     public ActionResult Post([FromBody] UserDto user)
     {
+        try
+        {
+            validation.EmailValidator(user.Email.ToString());
+        }
+        catch (Exception)
+        {
+
+            throw;
+        }
+
         User NewUser = new User()
         {
             Interval_Report = user.Interval_Report,
@@ -77,6 +89,16 @@ public class UsersController : ControllerBase
     [HttpPut("{Id}")]
     public ActionResult Put(int Id, [FromBody] UserDto user)
     {
+        try
+        {
+            validation.EmailValidator(user.Email.ToString());
+        }
+        catch (Exception)
+        {
+
+            throw;
+        }
+
         User ExUser = context.User.Find(Id);
 
         if (ExUser == null)

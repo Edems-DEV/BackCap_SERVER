@@ -1,6 +1,7 @@
 ﻿using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using Server.DatabaseTables;
+using Server.Validator;
 using Server.ParamClasses;
 using static Org.BouncyCastle.Math.EC.ECCurve;
 
@@ -11,6 +12,7 @@ namespace Server.Controllers;
 public class JobsController : Controller
 {
     private readonly MyContext context = new MyContext();
+    private Validators validation = new Validators();
 
     // GET: api/jobs?limit=25&offset=50&orderBy=Id&isAscending=false
     [HttpGet]
@@ -96,6 +98,21 @@ public class JobsController : Controller
     [HttpPut("{Id}")]
     public ActionResult Put(int id, [FromBody] Job job)
     {
+        try
+        {
+            validation.DateTimeValidator(job.Time_schedule.ToString());
+            validation.DateTimeValidator(job.Time_start.ToString());
+            validation.DateTimeValidator(job.Time_end.ToString());
+            validation.IpValidator(job.Machine.Ip_Address.ToString());
+            validation.MacValidator(job.Machine.Mac_Address.ToString());
+            validation.DateTimeValidator(job.Config.Interval_end.ToString());
+        }
+        catch (Exception)
+        {
+
+            throw;
+        }
+        
         Job existingJob = context.Job.Find(id);
 
         if (existingJob == null)
@@ -116,6 +133,21 @@ public class JobsController : Controller
     [HttpPut("{Id}/StatusTime")]
     public ActionResult PutStatus(int id, [FromBody] Job job)
     {
+        try
+        {
+            validation.DateTimeValidator(job.Time_schedule.ToString());
+            validation.DateTimeValidator(job.Time_start.ToString());
+            validation.DateTimeValidator(job.Time_end.ToString());
+            validation.IpValidator(job.Machine.Ip_Address.ToString());
+            validation.MacValidator(job.Machine.Mac_Address.ToString());
+            validation.DateTimeValidator(job.Config.Interval_end.ToString());
+        }
+        catch (Exception)
+        {
+
+            throw;
+        }
+
         Job existingJob = context.Job.Find(id);
 
         if (existingJob == null)

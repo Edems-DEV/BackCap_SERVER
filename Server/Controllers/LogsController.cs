@@ -3,6 +3,7 @@ using Microsoft.EntityFrameworkCore;
 using MySql.Data.MySqlClient;
 using Server.DatabaseTables;
 using Server.ParamClasses;
+using Server.Validator;
 
 namespace Server.Controllers;
 
@@ -11,6 +12,7 @@ namespace Server.Controllers;
 public class LogsController : Controller
 {
     private readonly MyContext context = new MyContext();
+    private Validators validation = new Validators();
 
     // GET: api/groups?limit=25&offset=50&orderBy=Id&isAscending=false
     [HttpGet]
@@ -61,6 +63,16 @@ public class LogsController : Controller
     [HttpPost]
     public ActionResult Post(LogDto log)
     {
+        try
+        {
+            validation.DateTimeValidator(log.Time.ToString());
+        }
+        catch (Exception)
+        {
+
+            throw;
+        }
+
         Log newLog = new Log()
         {
             Message = log.Message,
@@ -76,6 +88,16 @@ public class LogsController : Controller
     [HttpPut("{Id}")]
     public ActionResult Put(int Id, LogDto log)
     {
+        try
+        {
+            validation.DateTimeValidator(log.Time.ToString());
+        }
+        catch (Exception)
+        {
+
+            throw;
+        }
+
         Log Exlog = context.Log.Find(Id);
 
         if (Exlog == null)

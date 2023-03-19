@@ -3,6 +3,7 @@ using Microsoft.EntityFrameworkCore;
 using MySql.Data.MySqlClient;
 using Server.DatabaseTables;
 using Server.ParamClasses;
+using Server.Validator;
 using System.Net.Mail;
 using System.Xml.Linq;
 
@@ -13,6 +14,8 @@ namespace Server.Controllers;
 public class MachinesController : Controller
 {
     private readonly MyContext context = new MyContext();
+    private Validators validation = new Validators();
+
 
     // GET: api/machines?limit=25&offset=50&orderBy=Id&isAscending=false
     [HttpGet]
@@ -59,6 +62,17 @@ public class MachinesController : Controller
     [HttpPost]
     public ActionResult Post([FromBody] MachineDto machine)
     {
+        try
+        {
+            validation.IpValidator(machine.Ip_Address.ToString());
+            validation.MacValidator(machine.Mac_Address.ToString());
+        }
+        catch (Exception)
+        {
+
+            throw;
+        }
+
         Machine NewMachine = new Machine()
         {
             Name = machine.Name,
@@ -78,6 +92,17 @@ public class MachinesController : Controller
     [HttpPut("{Id}")]
     public ActionResult Put(int Id, [FromBody] MachineDto machine)
     {
+        try
+        {
+            validation.IpValidator(machine.Ip_Address.ToString());
+            validation.MacValidator(machine.Mac_Address.ToString());
+        }
+        catch (Exception)
+        {
+
+            throw;
+        }
+
         Machine ExistingMachine = context.Machine.Find(Id);
 
         if (ExistingMachine == null)
