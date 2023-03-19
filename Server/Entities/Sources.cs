@@ -8,9 +8,9 @@ public class Sources
     [Key]
     public int Id { get; set; }
 
-    //[Required]
+    [Required]
     public int Id_Config { get; set; }
 
-    //[Required]
+    [Required]
     public string Path { get; set; }
 }

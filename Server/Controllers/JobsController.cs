@@ -44,28 +44,52 @@ public class JobsController : Controller
     }
 
     // GET: api/jobs/5   => specific job info
-    [HttpGet("Id/IpAddress")]
-    public ActionResult<Job> Get(string IpAddress = "string", int Id = 0)
+    [HttpGet("Id")]
+    public ActionResult<Job> Get(int Id)
     {
-        Job job;
-
-        if (IpAddress != "string" && Id != 0)
-            job = context.Job.Where(x => x.Id == Id && x.Machine.Ip_Address == IpAddress && x.Status == 0).FirstOrDefault();
-        else if (IpAddress != "string")
-            job = context.Job.Where(x => x.Machine.Ip_Address == IpAddress && x.Status == 0).FirstOrDefault();
-        else
-            job = context.Job.Find(Id);
+        Job job = context.Job.Find(Id);
 
         if (job == null)
             return NotFound("Object does not exists");
 
-        job.Machine = context.Machine.Find(job.Id_Machine);
-        job.Groups = context.Groups.Find(job.Id_Group);
+        HelpMethods helpMethods = new HelpMethods(context);
+        job = helpMethods.AddToJob(job);
+
+        return Ok(job);
+    }
+
+    [HttpGet("{IpAddress}/Daemon")]
+    public ActionResult<Job> Get(string IpAddress)
+    {
+        Job job = context.Job.Where(x => x.Machine.Ip_Address == IpAddress && x.Status == 0).FirstOrDefault();
+
+        if (job == null)
+            return NotFound("Object does not exists");
+
         job.Config = context.Config.Find(job.Id_Config);
         job.Config.Sources = context.Sources.Where(x => x.Id_Config == job.Id).ToList();
         job.Config.Destinations = context.Destination.Where(x => x.Id_Config == job.Id).ToList();
 
         return Ok(job);
+    }
+
+    [HttpGet("{IdMachine}/Machine")]
+    public ActionResult<Job> GetJobIdMachine(int IdMachine)
+    {
+        List<Job> jobs = context.Job.Where(x => x.Id_Machine == IdMachine).ToList();
+
+        if (jobs == null)
+            return NotFound("Object does not exists");
+
+        HelpMethods helpMethods = new HelpMethods(context);
+
+        List<Job> fullJob = new();
+        foreach (Job job in jobs)
+        {
+            fullJob.Add(helpMethods.AddToJob(job));
+        }
+
+        return Ok(fullJob);
     }
 
     // for deamon for final stats after completing job
