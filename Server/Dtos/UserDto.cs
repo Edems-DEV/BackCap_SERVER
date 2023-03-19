@@ -8,5 +8,5 @@ public class UserDto
 
     public string Email { get; set; }
 
-    public string IntervalReport { get; set; }
+    public string Interval_Report { get; set; }
 }

@@ -15,5 +15,5 @@ public class User
     [Required]
     public string Email { get; set; }
 
-    public string Interval_report { get; set; }
+    public string Interval_Report { get; set; }
 }

@@ -47,7 +47,7 @@ public class MachinesController : Controller
 
     // GET: for stats
     [HttpGet("count")]
-    public ActionResult GetCount(bool active = true)
+    public ActionResult<int> GetCount(bool active = true)
     {
         return Ok(context.Machine.Where(x => x.Is_Active == active).Count());
     }

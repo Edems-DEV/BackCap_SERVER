@@ -18,7 +18,7 @@ public class ConfigsController : Controller
            
     // GET: for stats
     [HttpGet("count")]
-    public ActionResult GetCount()
+    public ActionResult<int> GetCount()
     {
         return Ok(context.Config.Count());
     }
