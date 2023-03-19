@@ -67,16 +67,16 @@ public class ConfigsController : Controller
         return Ok();
     }
 
-    [HttpDelete("{Id}")]
-    public ActionResult Delete(int Id)
-    {
-        Config config = context.Config.Find(Id);
+    //[HttpDelete("{Id}")] /* potřebuje opravit vadí mu konstrainty aneb kontrola foreing klíčů
+    //public ActionResult Delete(int Id)
+    //{
+    //    Config config = context.Config.Find(Id);
 
-        if (config == null)
-            return NotFound("Object does not exists");
+    //    if (config == null)
+    //        return NotFound("Object does not exists");
 
-        context.Config.Remove(config);
-        context.SaveChanges();
-        return Ok($"Delete request received for config Id {Id}.");
-    }
+    //    context.Config.Remove(config);
+    //    context.SaveChanges();
+    //    return Ok($"Delete request received for config Id {Id}.");
+    //}
 }
