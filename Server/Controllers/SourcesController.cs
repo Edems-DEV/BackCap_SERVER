@@ -23,7 +23,7 @@ public class SourcesController : Controller
         }
         catch (MySqlException ex)
         {
-            return BadRequest("Object does not exists");
+            return NotFound("Object does not exists");
         }
     }
 

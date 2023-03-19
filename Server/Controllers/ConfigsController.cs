@@ -1,6 +1,7 @@
 ﻿using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Query.SqlExpressions;
+using MySql.Data.MySqlClient;
 using Server.DatabaseTables;
 using Server.ParamClasses;
 using Server.Validator;
@@ -17,67 +18,79 @@ public class ConfigsController : Controller
            
     // GET: for stats
     [HttpGet("count")]
-    public IActionResult GetCount()
+    public ActionResult GetCount()
     {
         return Ok(context.Config.Count());
     }
 
     [HttpGet("{Id}")]
-    public Config Get(int Id)
+    public ActionResult<Config> Get(int Id)
     {
-        //Config config = context.Config.Find(Id);
-        //config.Sources = context.Sources.Where(x => x.Id_Config == Id).ToList();
-        //config.Destinations = context.Destination.Where(x => x.Id_Config == Id).ToList();
+        Config config;
+        try
+        {
+            config = context.Config.Find(Id);
+        }
+        catch (MySqlException)
+        {
+            return NotFound("Object does not exists");
+        }
+    
+        config.Sources = context.Sources.Where(x => x.Id_Config == Id).ToList();
+        config.Destinations = context.Destination.Where(x => x.Id_Config == Id).ToList();
 
-        return context.Config.Find(Id);
-
-        //return config;
+        return Ok(config);
     }
 
     [HttpPost]
-    public void Post([FromBody] Config config)
+    public void Post([FromBody] Config config) // vytvoří config a k němu přidružené sourcy a destinace. Položku id config to ingoruje
     {
-        Config NewConfig = new Config()
-        {
-            Type = config.Type,
-            Retention = config.Retention,
-            packageSize = config.packageSize,
-            IsCompressed = config.IsCompressed,
-            Backup_interval = config.Backup_interval,
-            Interval_end = config.Interval_end,
-            Sources = config.Sources,
-            Destinations = config.Destinations
-        };
+        Config newConfig = config;
 
-        context.Config.Add(NewConfig);
-        context.Sources.AddRange(NewConfig.Sources);
-        context.Destination.AddRange(NewConfig.Destinations);
+        context.Config.Add(newConfig);
+        context.Sources.AddRange(newConfig.Sources);
+        context.Destination.AddRange(newConfig.Destinations);
         context.SaveChanges();
     }
 
     [HttpPut("{Id}")]
-    public void Put(int id, [FromBody] Config config)
+    public ActionResult Put(int Id, [FromBody] ConfigDto config) // upravuje pouze samostatný config bez cest
     {
-        Config result = context.Config.Find(id);
+        Config result;
+        try
+        {
+            result = context.Config.Find(Id);
+        }
+        catch (MySqlException)
+        {
+            return NotFound("Object does not exists");
+        }
 
-        result.Type = config.Type;
         result.Retention = config.Retention;
-        result.packageSize = config.packageSize;
-        result.IsCompressed = config.IsCompressed;
-        result.Backup_interval = config.Backup_interval;
         result.Interval_end = config.Interval_end;
+        result.PackageSize = config.PackageSize;
+        result.Backup_interval = config.Backup_Interval;
+        result.IsCompressed = config.IsCompressed;
+        result.Type = config.Type;
 
         context.SaveChanges();
+        return Ok();
     }
 
     [HttpDelete("{Id}")]
-    public IActionResult Delete(int id)
+    public ActionResult Delete(int id)
     {
-        var config = context.Config.Find(id);
-        if (config == null)
+        Config config;
+
+        try
         {
-            return NotFound();
+            config = context.Config.Find(id);
         }
+        catch (MySqlException)
+        {
+            return NotFound("Object does not exists");
+        }
+
         context.Config.Remove(config);
         context.SaveChanges();
         return Ok($"Delete request received for config Id {id}.");

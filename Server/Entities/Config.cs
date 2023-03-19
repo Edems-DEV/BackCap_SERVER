@@ -12,7 +12,7 @@ public class Config
 
     public int Retention { get; set; }
 
-    public int packageSize { get; set; }
+    public int PackageSize { get; set; }
 
     public bool IsCompressed { get; set; }
 
