@@ -109,8 +109,7 @@ public class JobsController : Controller
         }
         catch (Exception)
         {
-
-            throw;
+            return NotFound("Invalid");
         }
         
         Job existingJob = context.Job.Find(id);
@@ -144,8 +143,7 @@ public class JobsController : Controller
         }
         catch (Exception)
         {
-
-            throw;
+            return NotFound("Invalid");
         }
 
         Job existingJob = context.Job.Find(id);

@@ -61,6 +61,7 @@ public class UsersController : ControllerBase
     [HttpPost]
     public ActionResult Post([FromBody] UserDto user)
     {
+
         try
         {
             validation.EmailValidator(user.Email.ToString());
@@ -68,7 +69,7 @@ public class UsersController : ControllerBase
         catch (Exception)
         {
 
-            throw;
+            return NotFound("Invalid");
         }
 
         User NewUser = new User()
@@ -96,7 +97,7 @@ public class UsersController : ControllerBase
         catch (Exception)
         {
 
-            throw;
+            return NotFound("Invalid");
         }
 
         User ExUser = context.User.Find(Id);

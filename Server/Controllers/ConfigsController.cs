@@ -62,15 +62,15 @@ public class ConfigsController : Controller
     }
 
     [HttpPost]
-    public void Post([FromBody] Config config) // vytvoří config a k němu přidružené sourcy a destinace. Položku id config to ingoruje
-    {        
+    public ActionResult Post([FromBody] Config config) // vytvoří config a k němu přidružené sourcy a destinace. Položku id config to ingoruje
+    {   
         try
         {
             validation.DateTimeValidator(config.Interval_end.ToString());
         }
         catch (Exception)
         {
-
+            return NotFound("Invalid");
             throw;
         }
 
@@ -80,6 +80,7 @@ public class ConfigsController : Controller
         context.Sources.AddRange(newConfig.Sources);
         context.Destination.AddRange(newConfig.Destinations);
         context.SaveChanges();
+        return Ok();
     }
 
     [HttpPut("{Id}")]
@@ -91,7 +92,7 @@ public class ConfigsController : Controller
         }
         catch (Exception)
         {
-
+            return NotFound("Invalid");
             throw;
         }
 

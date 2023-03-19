@@ -69,8 +69,7 @@ public class LogsController : Controller
         }
         catch (Exception)
         {
-
-            throw;
+            return NotFound("Invalid");
         }
 
         Log newLog = new Log()
@@ -94,8 +93,7 @@ public class LogsController : Controller
         }
         catch (Exception)
         {
-
-            throw;
+            return NotFound("Invalid");
         }
 
         Log Exlog = context.Log.Find(Id);

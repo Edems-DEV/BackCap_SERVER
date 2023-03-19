@@ -69,8 +69,7 @@ public class MachinesController : Controller
         }
         catch (Exception)
         {
-
-            throw;
+            return NotFound("Invalid");
         }
 
         Machine NewMachine = new Machine()
@@ -99,8 +98,7 @@ public class MachinesController : Controller
         }
         catch (Exception)
         {
-
-            throw;
+            return NotFound("Invalid");
         }
 
         Machine ExistingMachine = context.Machine.Find(Id);
