@@ -11,7 +11,7 @@ public class UsersController : ControllerBase
 {
     private readonly MyContext context = new MyContext();
 
-    // GET: api/users?limit=25&offset=50&orderBy=id&isAscending=false
+    // GET: api/users?limit=25&offset=50&orderBy=Id&isAscending=false
     [HttpGet]
     public IActionResult Get(int limit = 10, int offset = 0, string orderBy = null, bool isAscending = true)
     {
@@ -50,7 +50,7 @@ public class UsersController : ControllerBase
     }
 
     // GET api/users/5
-    [HttpGet("{id}")]
+    [HttpGet("{Id}")]
     public User Get(int id)
     {
         return context.User.Find(id);
@@ -63,13 +63,13 @@ public class UsersController : ControllerBase
     }
 
     // PUT api/users/5
-    [HttpPut("{id}")]
+    [HttpPut("{Id}")]
     public void Put(int id, [FromBody] string value)
     {
     }
 
     // DELETE api/users/5
-    [HttpDelete("{id}")]
+    [HttpDelete("{Id}")]
     public IActionResult Delete(int id)
     {
         var user = context.User.Find(id);
@@ -79,7 +79,7 @@ public class UsersController : ControllerBase
         }
         context.User.Remove(user);
         context.SaveChanges();
-        return Ok($"Delete request received for user id {id}.");
+        return Ok($"Delete request received for user Id {id}.");
     }
 }
 

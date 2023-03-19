@@ -1,5 +1,7 @@
-﻿using Microsoft.AspNetCore.Mvc;
+﻿using Google.Protobuf.WellKnownTypes;
+using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
+using MySql.Data.MySqlClient;
 using Server.DatabaseTables;
 using Server.ParamClasses;
 
@@ -11,34 +13,70 @@ public class SourcesController : Controller
 {
     private readonly MyContext context = new MyContext();
 
-    [HttpPost]
-    public void Post([FromBody] List<PathsDto> paths)
+
+    [HttpGet("{Id}")]
+    public ActionResult<Sources> GetSource(int Id)
     {
-        List<Sources> sources = new List<Sources>();
-        foreach (PathsDto item in paths)
+        try
         {
-            Sources source = new Sources
-            {
-                id_Config = item.Id_Config,
-                path = item.Path
-            };
-
-            sources.Add(source);
+            return Ok(context.Sources.Find(Id));
         }
-
-        context.AddRange(sources);
-        context.SaveChanges();
+        catch (MySqlException ex)
+        {
+            return BadRequest("Object does not exists");
+        }
     }
 
-    [HttpPut("{id}")]
-    public void Put(int id, [FromBody] PathsDto path)
+    [HttpGet("{IdConfig}/Sources")]
+    public ActionResult<List<Sources>> GetSources(int IdConfig)
     {
-        Sources source = context.Sources.Find(id);
+        List<Sources> sources = context.Sources.Where(x => x.Id_Config == IdConfig).ToList();
 
-        source.id_Config = path.Id_Config;
-        source.path = path.Path;
+        if (sources.Count == 0)
+            return NotFound();
+        else
+            return Ok(sources);
+    }
 
-        context.Add(source);
+    [HttpPost] // funguje, ale je potřeba dát do id config již nějaké existující id configu jinak ta kontrola na webovkách se dodrbe
+    public ActionResult Post([FromBody] PathsDto path)
+    {
+        if (!context.Config.Any(x => x.Id == path.Id_Config))
+        {
+            return BadRequest("Object doesn't have existing id in Config");
+        }
+
+        Sources source = new Sources
+        {
+            Id_Config = path.Id_Config,
+            Path = path.Path
+        };
+
+        context.Sources.Add(source);
         context.SaveChanges();
+
+        return Ok();
+    }
+
+    [HttpPut("{Id}")]
+    public ActionResult Put(int Id, [FromBody] PathsDto path)
+    {
+        Sources source;
+
+        try
+        {
+            source = context.Sources.Find(Id);
+        }
+        catch (MySqlException ex)
+        {
+            return BadRequest("Object does not exists");
+        }
+
+        source.Id_Config = path.Id_Config;
+        source.Path = path.Path;
+
+        context.SaveChanges();
+
+        return Ok();
     }
 }

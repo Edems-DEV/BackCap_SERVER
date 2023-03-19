@@ -11,7 +11,7 @@ public class MachinesController : Controller
 {
     private readonly MyContext context = new MyContext();
 
-    // GET: api/jobs?limit=25&offset=50&orderBy=id&isAscending=false   => UI datagrid                   
+    // GET: api/jobs?limit=25&offset=50&orderBy=Id&isAscending=false   => UI datagrid                   
     [HttpGet]
     public IActionResult Get(int limit = 10, int offset = 0, string orderBy = null, bool isAscending = true)
     {
@@ -49,7 +49,7 @@ public class MachinesController : Controller
         return Ok(context.Machine.Where(x => x.Is_active == active).Count());
     }
 
-    [HttpGet("{id}")]
+    [HttpGet("{Id}")]
     public IActionResult Get(int id)
     {
         try
@@ -62,19 +62,19 @@ public class MachinesController : Controller
         }
     }
 
-    [HttpGet("{id}/jobs")]
+    [HttpGet("{Id}/jobs")]
     public IActionResult GetJobs(int id)
     {
         try
         {
-            return Ok(context.Job.Where(x => x.id_Machine == id).ToList());
+            return Ok(context.Job.Where(x => x.Id_Machine == id).ToList());
         }
         catch (Exception ex)
         {
             return StatusCode(StatusCodes.Status500InternalServerError, $"An error occurred while retrieving the jobs: {ex.Message}");
         }
     }
-    //TODO: add by status
+    //TODO: add by Status
 
     [HttpPost]
     public void Post([FromBody] MachineDto machine)
@@ -93,7 +93,7 @@ public class MachinesController : Controller
         context.SaveChanges();
     }
 
-    [HttpPut("{id}")]
+    [HttpPut("{Id}")]
     public void Put(int id, [FromBody] Machine machine)
     {
         Machine result = context.Machine.Find(id);

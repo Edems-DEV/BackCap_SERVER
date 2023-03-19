@@ -11,7 +11,7 @@ public class JobsController : Controller
 {
     private readonly MyContext context = new MyContext();
 
-    // GET: api/jobs?limit=25&offset=50&orderBy=id&isAscending=false   => UI datagrid
+    // GET: api/jobs?limit=25&offset=50&orderBy=Id&isAscending=false   => UI datagrid
     [HttpGet]
     public IActionResult Get(int limit = 10, int offset = 0, string orderBy = null, bool isAscending = true)
     {
@@ -50,7 +50,7 @@ public class JobsController : Controller
     }
 
     // GET: api/jobs/5   => specific job info
-    [HttpGet("{id}")]
+    [HttpGet("{Id}")]
     public IActionResult Get(int id)
     {
         try
@@ -64,48 +64,48 @@ public class JobsController : Controller
     }
 
     // for deamon for final stats after completing job
-    [HttpPut("{id}")]
+    [HttpPut("{Id}")]
     public void Put(int id, [FromBody] Job job)
     {
         Job existingJob = context.Job.Find(id);
 
-        existingJob.id_Config = job.id_Config;
-        existingJob.id_Group = job.id_Group;
-        existingJob.id_Machine = job.id_Machine;
-        existingJob.status = job.status;
-        existingJob.time_schedule = job.time_schedule;
+        existingJob.Id_Config = job.Id_Config;
+        existingJob.Id_Group = job.Id_Group;
+        existingJob.Id_Machine = job.Id_Machine;
+        existingJob.Status = job.Status;
+        existingJob.Time_schedule = job.Time_schedule;
         existingJob.Bytes = job.Bytes;
 
         context.SaveChanges();
     }
 
-    // For deamon to update job status
-    [HttpPut("{id}/status")]
+    // For deamon to update job Status
+    [HttpPut("{Id}/Status")]
     public void PutStatus(int id, [FromBody] Job job)
     {
         Job existingJob = context.Job.Find(id);
 
-        existingJob.status = job.status;
+        existingJob.Status = job.Status;
 
         context.SaveChanges();
     }
 
     #region Why?
-    [HttpPut("{id}/time_end")]
+    [HttpPut("{Id}/Time_end")]
     public void JobPutEnd_time(int id, Job job)
     {
         Job result = context.Job.Find(id);
 
-        result.time_end = job.time_end;
-        result.status = job.status;
+        result.Time_end = job.Time_end;
+        result.Status = job.Status;
 
         context.SaveChanges();
     }
 
-    [HttpGet("{id}/ipAddress")]
+    [HttpGet("{Id}/ipAddress")]
     public Job GetJob(string id)
     {
-        return context.Job.Include(x => x.Machine).Include(x => x.Config).Where(x => x.Machine.Ip_address == id && x.status == 0).FirstOrDefault();
+        return context.Job.Include(x => x.Machine).Include(x => x.Config).Where(x => x.Machine.Ip_address == id && x.Status == 0).FirstOrDefault();
     }
 
     #endregion

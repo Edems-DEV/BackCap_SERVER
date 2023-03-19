@@ -14,103 +14,63 @@ public class ConfigsController : Controller
 {
     private readonly MyContext context = new MyContext();
     private Validators validation = new Validators();
-
-    // GET: api/configs?limit=25&offset=50&orderBy=id&isAscending=false   => UI datagrid                   
-    [HttpGet]
-    public IActionResult Get(int limit = 10, int offset = 0, string orderBy = null, bool isAscending = true)
-    {
-        List<Config> query;
-        if (orderBy != null)
-        {
-            query = isAscending ?
-                   context.Config.OrderBy          (s => s.GetType().GetProperty(orderBy).GetValue(s)).ToList():
-                   context.Config.OrderByDescending(s => s.GetType().GetProperty(orderBy).GetValue(s)).ToList();
-            query = query
-                    .Skip(offset)
-                    .Take(limit)
-                    .ToList();
-        }
-        else
-        {
-            query = context.Config
-                .Skip(offset)
-                .Take(limit)
-                .ToList();
-        }
-
-        if (query == null || query.Count == 0)
-        {
-            return NoContent(); //204
-        }
-        
-        return Ok(query); //200
-    }
-
+           
     // GET: for stats
     [HttpGet("count")]
     public IActionResult GetCount()
     {
-        return Ok(context.Config.Count()); //idk if it works
+        return Ok(context.Config.Count());
     }
 
-    [HttpGet("{id}")]
-    public Config Get(int id)
+    [HttpGet("{Id}")]
+    public Config Get(int Id)
     {
-        Config config = context.Config.Find(id);
-        config.Sources = context.Sources.Where(x => x.id_Config == id).ToList();
-        config.Destinations = context.Destination.Where(x => x.id_Config == id).ToList();
+        //Config config = context.Config.Find(Id);
+        //config.Sources = context.Sources.Where(x => x.Id_Config == Id).ToList();
+        //config.Destinations = context.Destination.Where(x => x.Id_Config == Id).ToList();
 
-        return config;
-    }
+        return context.Config.Find(Id);
 
-    [HttpGet("{id}/sources")]  //moved from sources
-    public List<Sources> GetSources(int id)
-    {
-        return context.Sources.Where(x => x.id_Config == id).ToList();
+        //return config;
     }
 
     [HttpPost]
     public void Post([FromBody] Config config)
     {
-        //try
-        //{
-        //    validation.DateTimeValidator(config.interval_end.ToString());
-        //}
-        //catch (Exception)
-        //{
-        //    throw;
-        //}
-
         Config NewConfig = new Config()
         {
-            type = config.type,
-            retention = config.retention,
+            Type = config.Type,
+            Retention = config.Retention,
             packageSize = config.packageSize,
-            isCompressed = config.isCompressed,
+            IsCompressed = config.IsCompressed,
             Backup_interval = config.Backup_interval,
-            interval_end = config.interval_end
+            Interval_end = config.Interval_end,
+            Sources = config.Sources,
+            Destinations = config.Destinations
         };
 
         context.Config.Add(NewConfig);
+        context.Sources.AddRange(NewConfig.Sources);
+        context.Destination.AddRange(NewConfig.Destinations);
         context.SaveChanges();
     }
 
-    [HttpPut("{id}")]
+    [HttpPut("{Id}")]
     public void Put(int id, [FromBody] Config config)
     {
         Config result = context.Config.Find(id);
 
-        result.type = config.type;
-        result.retention = config.retention;
+        result.Type = config.Type;
+        result.Retention = config.Retention;
         result.packageSize = config.packageSize;
-        result.isCompressed = config.isCompressed;
+        result.IsCompressed = config.IsCompressed;
         result.Backup_interval = config.Backup_interval;
-        result.interval_end = config.interval_end;
+        result.Interval_end = config.Interval_end;
 
         context.SaveChanges();
     }
 
-    [HttpDelete("{id}")]
+    [HttpDelete("{Id}")]
     public IActionResult Delete(int id)
     {
         var config = context.Config.Find(id);
@@ -120,6 +80,6 @@ public class ConfigsController : Controller
         }
         context.Config.Remove(config);
         context.SaveChanges();
-        return Ok($"Delete request received for config id {id}.");
+        return Ok($"Delete request received for config Id {id}.");
     }
 }

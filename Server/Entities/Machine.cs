@@ -5,7 +5,7 @@ namespace Server.DatabaseTables;
 
 public class Machine
 {
-    public int id { get; set; }
+    public int Id { get; set; }
 
     public string? Name { get; set; }
 
@@ -18,10 +18,4 @@ public class Machine
     public string? Mac_address { get; set; }
 
     public bool Is_active { get; set; }
-
-    [ForeignKey("id")]
-    public virtual List<MachineGroup> MachineGroups { get; set; }
-
-    [ForeignKey("id")]
-    public virtual List<Job> Jobs { get; set; }
 }

@@ -1,7 +1,9 @@
 ﻿using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
+using MySql.Data.MySqlClient;
 using Server.DatabaseTables;
 using Server.ParamClasses;
+using static Org.BouncyCastle.Math.EC.ECCurve;
 
 namespace Server.Controllers;
 
@@ -11,42 +13,69 @@ public class DestinationsController : Controller
 {
     private readonly MyContext context = new MyContext();
 
-    [HttpGet("{id}")]
-    public List<Sources> Get(int id)
+    [HttpGet("{Id}")]
+    public ActionResult<Destination> Get(int Id)
     {
-        return context.Sources.Where(x => x.id == id).ToList();
+        try
+        {
+            return Ok(context.Destination.Find(Id));
+        }
+        catch (MySqlException ex)
+        {
+            return BadRequest("Object does not exists");
+        }
+    }
+
+    [HttpGet("{IdConfig}/destinations")]
+    public ActionResult<Destination> GetDestinations(int IdConfig)
+    {
+        List<Destination> sources = context.Destination.Where(x => x.Id_Config == IdConfig).ToList();
+
+        if (sources.Count == 0)
+            return NotFound();
+        else
+            return Ok(sources);
     }
 
     [HttpPost]
-    public void Post([FromBody] List<PathsDto> paths)
+    public ActionResult Post([FromBody] PathsDto path)
     {
-        List<Sources> sources = new List<Sources>();
-        foreach (PathsDto item in paths)
+        if (!context.Config.Any(x => x.Id == path.Id_Config))
         {
-            Sources source = new Sources
-            {
-                id_Config = item.Id_Config,
-                path = item.Path
-            };
-
-            sources.Add(source);
+            return BadRequest("Object doesn't have existing id in Config");
         }
 
-        context.AddRange(sources);
+        Destination destination = new()
+        {
+            Id_Config = path.Id_Config,
+            DestPath = path.Path
+        };
+
+        context.Add(destination);
         context.SaveChanges();
+
+        return Ok();
     }
 
-    [HttpPut("{id}")]
-    public void Put(int id, [FromBody] PathsDto path)
+    [HttpPut("{Id}")]
+    public ActionResult Put(int Id, [FromBody] PathsDto path)
     {
-        Destination destinations = context.Destination.Find(id);
+        Destination destination;
 
-        destinations.id_Config = path.Id_Config;
-        destinations.DestPath = path.Path;
+        try
+        {
+            destination = context.Destination.Find(Id);
+        }
+        catch (MySqlException ex)
+        {
+            return BadRequest("Object does not exists");
+        }
 
-        context.Add(destinations);
+        destination.Id_Config = path.Id_Config;
+        destination.DestPath = path.Path;
+
         context.SaveChanges();
+
+        return Ok();
     }
 }
-
-// for what?

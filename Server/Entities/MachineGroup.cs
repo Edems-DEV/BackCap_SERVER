@@ -4,21 +4,21 @@ using System.ComponentModel.DataAnnotations.Schema;
 
 namespace Server.DatabaseTables;
 
-[PrimaryKey("id_Machine", "id_Group", "id_Log")]
+[PrimaryKey("Id_Machine", "Id_Group", "Id_Log")]
 public class MachineGroup
 {
-    public int id_Machine { get; set; }
+    public int Id_Machine { get; set; }
 
-    public int id_Group { get; set; }
+    public int Id_Group { get; set; }
 
-    public int id_Log { get; set; }
+    public int Id_Log { get; set; }
 
-    [ForeignKey("id_Machine")]
+    [ForeignKey("Id_Machine")]
     public virtual Machine Machine { get; set; }
 
-    [ForeignKey("id_Group")]
+    [ForeignKey("Id_Group")]
     public virtual Groups Groups { get; set; }
 
-    [ForeignKey("id_Log")]
+    [ForeignKey("Id_Log")]
     public virtual Log Log { get; set; }
 }

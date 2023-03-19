@@ -6,33 +6,35 @@ namespace Server.DatabaseTables;
 public class Job
 {
     [Key]
-    public int id { get; set; }
+    public int Id { get; set; }
 
-    public int id_Machine { get; set; }
+    [Required]
+    public int Id_Machine { get; set; }
 
-    public int? id_Group { get; set; }
+    public int? Id_Group { get; set; }
 
-    public int id_Config { get; set; }
+    [Required]
+    public int Id_Config { get; set; }
 
-    public Int16 status { get; set; }
+    [Required]
+    [Range(0, 1, ErrorMessage = "Value must be within 0 and 1")]
+    public Int16 Status { get; set; }
 
-    public DateTime time_schedule { get; set; }
+    [Required]
+    public DateTime Time_schedule { get; set; }
 
-    public DateTime? time_start { get; set; }
+    public DateTime? Time_start { get; set; }
 
-    public DateTime? time_end { get; set; }
+    public DateTime? Time_end { get; set; }
 
     public int? Bytes { get; set; }
 
-    [ForeignKey("id_Machine")]
+    [ForeignKey("Id_Machine")]
     public virtual Machine Machine { get; set; }
 
-    [ForeignKey("id_Group")]
+    [ForeignKey("Id_Group")]
     public virtual Groups Groups { get; set; }
 
-    [ForeignKey("id_Config")]
+    [ForeignKey("Id_Config")]
     public virtual Config Config { get; set; }
-
-    [ForeignKey("id")]
-    public virtual List<Log> Logs { get; set; }
 }

@@ -6,13 +6,8 @@ namespace Server.DatabaseTables;
 public class Groups
 {
     [Key]
-    public int id { get; set; }
+    public int Id { get; set; }
 
+    [Required]
     public string Name { get; set; }
-
-    [ForeignKey("id")]
-    public virtual List<MachineGroup> MachineGroups { get; set; }
-
-    [ForeignKey("id")]
-    public virtual List<Job> Jobs { get; set; }
 }

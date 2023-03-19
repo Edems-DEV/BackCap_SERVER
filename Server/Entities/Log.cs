@@ -6,21 +6,16 @@ namespace Server.DatabaseTables;
 public class Log
 {
     [Key]
-    public int id { get; set; }
+    public int Id { get; set; }
 
-    public int id_Job { get; set; }
+    [Required]
+    public int Id_Job { get; set; }
 
-    public string message { get; set; }
+    public string Message { get; set; }
 
-    public DateTime time { get; set; }
+    public DateTime Time { get; set; }
 
-    [ForeignKey("id_Job")]
+    [ForeignKey("Id_Job")]
     public virtual Job Job { get; set; }
-
-    [ForeignKey("id")]
-    public virtual List<Log> Logs { get; set; }
-
-    [ForeignKey("id")]
-    public virtual List<MachineGroup> MachineGroups { get; set; }
 }
 

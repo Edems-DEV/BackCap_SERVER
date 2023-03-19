@@ -11,7 +11,7 @@ public class GroupsController : Controller
 {
     private readonly MyContext context = new MyContext();
 
-    // GET: api/groups?limit=25&offset=50&orderBy=id&isAscending=false   => UI datagrid                   
+    // GET: api/groups?limit=25&offset=50&orderBy=Id&isAscending=false   => UI datagrid                   
     [HttpGet]
     public IActionResult Get(int limit = 10, int offset = 0, string orderBy = null, bool isAscending = true)
     {
@@ -49,7 +49,7 @@ public class GroupsController : Controller
         return Ok(context.Groups.Count()); //idk if it works
     }
 
-    [HttpGet("{id}")]
+    [HttpGet("{Id}")]
     public Groups Get(int id)
     {
         return context.Groups.Find(id);
@@ -65,7 +65,7 @@ public class GroupsController : Controller
         context.SaveChanges();
     }
 
-    [HttpPut("{id}")]
+    [HttpPut("{Id}")]
     public void Put(int id, [FromBody] string name)
     {
         Groups result = context.Groups.Find(id);
@@ -73,7 +73,7 @@ public class GroupsController : Controller
         context.SaveChanges();
     }
 
-    [HttpDelete("{id}")]
+    [HttpDelete("{Id}")]
     public IActionResult Delete(int id)
     {
         var group = context.Groups.Find(id);
@@ -83,6 +83,6 @@ public class GroupsController : Controller
         }
         context.Groups.Remove(group);
         context.SaveChanges();
-        return Ok($"Delete request received for group id {id}.");
+        return Ok($"Delete request received for group Id {id}.");
     }
 }

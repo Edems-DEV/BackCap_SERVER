@@ -6,9 +6,11 @@ namespace Server.DatabaseTables;
 public class Sources
 {
     [Key]
-    public int id { get; set; }
+    public int Id { get; set; }
 
-    public int id_Config { get; set; }
+    //[Required]
+    public int Id_Config { get; set; }
 
-    public string path { get; set; }
+    //[Required]
+    public string Path { get; set; }
 }

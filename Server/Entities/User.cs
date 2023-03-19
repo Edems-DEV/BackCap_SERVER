@@ -5,13 +5,15 @@ namespace Server.DatabaseTables;
 public class User
 {
     [Key]
-    public int id { get; set; }
+    public int Id { get; set; }
 
-    public string name { get; set; }
+    public string Name { get; set; }
 
-    public string password { get; set; }
+    [Required]
+    public string Password { get; set; }
 
-    public string email { get; set; }
+    [Required]
+    public string Email { get; set; }
 
-    public string interval_report { get; set; }
+    public string Interval_report { get; set; }
 }

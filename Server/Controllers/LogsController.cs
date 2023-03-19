@@ -11,7 +11,7 @@ public class LogsController : Controller
 {
     private readonly MyContext context = new MyContext();
 
-    // GET: api/logs?limit=25&offset=50&orderBy=id&isAscending=false   => UI datagrid                   
+    // GET: api/logs?limit=25&offset=50&orderBy=Id&isAscending=false   => UI datagrid                   
     [HttpGet]
     public IActionResult Get(int limit = 10, int offset = 0, string orderBy = null, bool isAscending = true)
     {
@@ -42,7 +42,7 @@ public class LogsController : Controller
         return Ok(query); //200
     }
 
-    [HttpGet("{id}")]
+    [HttpGet("{Id}")]
     public Log Get(int id)
     {
         return context.Log.Find(id);
@@ -53,9 +53,9 @@ public class LogsController : Controller
     {
         Log newLog = new Log()
         {
-            message = log.Message,
-            time = log.Time,
-            id_Job = log.Id_Job
+            Message = log.Message,
+            Time = log.Time,
+            Id_Job = log.Id_Job
         };
 
         context.Log.Add(newLog);

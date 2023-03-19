@@ -1,26 +1,28 @@
-﻿using System.ComponentModel.DataAnnotations.Schema;
+﻿using System.ComponentModel.DataAnnotations;
+using System.ComponentModel.DataAnnotations.Schema;
 
 namespace Server.DatabaseTables;
 
 public class Config
 {
-    public int id { get; set; }
+    public int Id { get; set; }
 
-    public Int16 type { get; set; }
+    [Range (0, 2, ErrorMessage = "Value must be within 0 and 2")]
+    public Int16 Type { get; set; }
 
-    public int retention { get; set; }
+    public int Retention { get; set; }
 
     public int packageSize { get; set; }
 
-    public bool isCompressed { get; set; }
+    public bool IsCompressed { get; set; }
 
     public string? Backup_interval { get; set; }
 
-    public DateTime? interval_end { get; set; }
+    public DateTime? Interval_end { get; set; }
 
-    [ForeignKey("id")]
+    [ForeignKey("Id_Config")]
     public virtual List<Sources> Sources { get; set; }
 
-    [ForeignKey("id")]
+    [ForeignKey("Id_Config")]
     public virtual List<Destination> Destinations { get; set; }
 }
