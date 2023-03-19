@@ -15,7 +15,31 @@ public class ConfigsController : Controller
 {
     private readonly MyContext context = new MyContext();
     private Validators validation = new Validators();
-           
+
+    // GET: api/configs?limit=25&offset=50&orderBy=Id&isAscending=false
+    [HttpGet]
+    public IActionResult Get(int limit = 10, int offset = 0, string orderBy = "empty", bool isAscending = true)
+    {
+        string sql = "SELECT * FROM `Config`";
+
+        var tables = new List<string> { "id", "type", "retention", "packageSize", "isCompressed", "Backup_interval", "interval_end" };
+        var direction = isAscending ? "ASC" : "DESC";
+
+        if (tables.Contains(orderBy)) //hope this is enough to stop sql injection
+        {
+            sql += $" ORDER BY `{orderBy}` {direction}";
+        }
+
+        List<Config> query = context.Config.FromSqlRaw(sql + " LIMIT {0} OFFSET {1}", limit, offset).ToList();
+
+        if (query == null || query.Count == 0)
+        {
+            return NoContent(); //204
+        }
+
+        return Ok(query); //200
+    } //&orderBy  => is required (idk how to make it optimal)
+
     // GET: for stats
     [HttpGet("count")]
     public ActionResult<int> GetCount()

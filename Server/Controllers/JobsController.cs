@@ -12,36 +12,29 @@ public class JobsController : Controller
 {
     private readonly MyContext context = new MyContext();
 
-    //// GET: api/jobs?limit=25&offset=50&orderBy=Id&isAscending=false   => UI datagrid
-    //[HttpGet]
-    //public IActionResult Get(int limit = 10, int offset = 0, string orderBy = null, bool isAscending = true)
-    //{
-    //    List<Job> query;
-    //    if (orderBy != null)
-    //    {
-    //        query = isAscending ?
-    //               context.Job.OrderBy          (s => s.GetType().GetProperty(orderBy).GetValue(s)).ToList():
-    //               context.Job.OrderByDescending(s => s.GetType().GetProperty(orderBy).GetValue(s)).ToList();
-    //        query = query
-    //                .Skip(offset)
-    //                .Take(limit)
-    //                .ToList();
-    //    }
-    //    else
-    //    {
-    //        query = context.Job
-    //            .Skip(offset)
-    //            .Take(limit)
-    //            .ToList();
-    //    }
+    // GET: api/jobs?limit=25&offset=50&orderBy=Id&isAscending=false
+    [HttpGet]
+    public IActionResult Get(int limit = 10, int offset = 0, string orderBy = "empty", bool isAscending = true)
+    {
+        string sql = "SELECT * FROM `Job`";
 
-    //    if (query == null || query.Count == 0)
-    //    {
-    //        return NoContent(); //204
-    //    }
+        var tables = new List<string> { "id", "status", "time_schedule", "time_start", "time_end", "bytes" };
+        var direction = isAscending ? "ASC" : "DESC";
 
-    //    return Ok(query); //200
-    //}
+        if (tables.Contains(orderBy.ToLower())) //hope this is enough to stop sql injection
+        {
+            sql += $" ORDER BY `{orderBy}` {direction}";
+        }
+
+        List<Job> query = context.Job.FromSqlRaw(sql + " LIMIT {0} OFFSET {1}", limit, offset).ToList();
+
+        if (query == null || query.Count == 0)
+        {
+            return NoContent(); //204
+        }
+
+        return Ok(query); //200
+    } //&orderBy  => is required (idk how to make it optimal)
 
     // GET: for stats
     [HttpGet("count")]

@@ -14,36 +14,29 @@ public class MachinesController : Controller
 {
     private readonly MyContext context = new MyContext();
 
-    //// GET: api/jobs?limit=25&offset=50&orderBy=Id&isAscending=false   => UI datagrid                   
-    //[HttpGet]
-    //public IActionResult Get(int limit = 10, int offset = 0, string orderBy = null, bool isAscending = true)
-    //{
-    //    List<Machine> query;
-    //    if (orderBy != null)
-    //    {
-    //        query = isAscending ?
-    //               context.Machine.OrderBy(s => s.GetType().GetProperty(orderBy).GetValue(s)).ToList() :
-    //               context.Machine.OrderByDescending(s => s.GetType().GetProperty(orderBy).GetValue(s)).ToList();
-    //        query = query
-    //                .Skip(offset)
-    //                .Take(limit)
-    //                .ToList();
-    //    }
-    //    else
-    //    {
-    //        query = context.Machine
-    //            .Skip(offset)
-    //            .Take(limit)
-    //            .ToList();
-    //    }
+    // GET: api/machines?limit=25&offset=50&orderBy=Id&isAscending=false
+    [HttpGet]
+    public IActionResult Get(int limit = 10, int offset = 0, string orderBy = "empty", bool isAscending = true)
+    {
+        string sql = "SELECT * FROM `Machine`";
 
-    //    if (query == null || query.Count == 0)
-    //    {
-    //        return NoContent(); //204
-    //    }
+        var tables = new List<string> { "id", "name", "description", "os", "ip_adress", "mac_adress", "is_active" };
+        var direction = isAscending ? "ASC" : "DESC";
 
-    //    return Ok(query); //200
-    //}
+        if (tables.Contains(orderBy.ToLower())) //hope this is enough to stop sql injection
+        {
+            sql += $" ORDER BY `{orderBy}` {direction}";
+        }
+
+        List<Machine> query = context.Machine.FromSqlRaw(sql + " LIMIT {0} OFFSET {1}", limit, offset).ToList();
+
+        if (query == null || query.Count == 0)
+        {
+            return NoContent(); //204
+        }
+
+        return Ok(query); //200
+    } //&orderBy  => is required (idk how to make it optimal)
 
     // GET: for stats
     [HttpGet("count")]

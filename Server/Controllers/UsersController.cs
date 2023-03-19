@@ -12,36 +12,29 @@ public class UsersController : ControllerBase
 {
     private readonly MyContext context = new MyContext();
 
-    //// GET: api/users?limit=25&offset=50&orderBy=Id&isAscending=false
-    //[HttpGet]
-    //public IActionResult Get(int limit = 10, int offset = 0, string orderBy = null, bool isAscending = true)
-    //{
-    //    List<User> query;
-    //    if (orderBy != null)
-    //    {
-    //        query = isAscending ?
-    //               context.User.OrderBy(s => s.GetType().GetProperty(orderBy).GetValue(s)).ToList() :
-    //               context.User.OrderByDescending(s => s.GetType().GetProperty(orderBy).GetValue(s)).ToList();
-    //        query = query
-    //                .Skip(offset)
-    //                .Take(limit)
-    //                .ToList();
-    //    }
-    //    else
-    //    {
-    //        query = context.User
-    //            .Skip(offset)
-    //            .Take(limit)
-    //            .ToList();
-    //    }
+    // GET: api/users?limit=25&offset=50&orderBy=Id&isAscending=false
+    [HttpGet]
+    public IActionResult Get(int limit = 10, int offset = 0, string orderBy = "empty", bool isAscending = true)
+    {
+        string sql = "SELECT * FROM `User`";
 
-    //    if (query == null || query.Count == 0)
-    //    {
-    //        return NoContent(); //204
-    //    }
+        var tables = new List<string> { "id", "name", "email", "interval_report" };
+        var direction = isAscending ? "ASC" : "DESC";
 
-    //    return Ok(query); //200
-    //}
+        if (tables.Contains(orderBy.ToLower())) //hope this is enough to stop sql injection
+        {
+            sql += $" ORDER BY `{orderBy}` {direction}";
+        }
+
+        List<User> query = context.User.FromSqlRaw(sql + " LIMIT {0} OFFSET {1}", limit, offset).ToList();
+
+        if (query == null || query.Count == 0)
+        {
+            return NoContent(); //204
+        }
+
+        return Ok(query); //200
+    } //&orderBy  => is required (idk how to make it optimal)
 
     // GET: for stats
     [HttpGet("count")]
