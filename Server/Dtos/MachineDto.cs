@@ -8,9 +8,9 @@ public class MachineDto
 
     public string? Os { get; set; } = null;
 
-    public string? Ip_Adress { get; set; } = null;
+    public string? Ip_Address { get; set; } = null;
 
-    public string? Mac_Adress { get; set; } = null;
+    public string? Mac_Address { get; set; } = null;
 
     public bool Is_Active { get; set; } = false;
 }

@@ -105,7 +105,7 @@ public class JobsController : Controller
     [HttpGet("{Id}/ipAddress")]
     public Job GetJob(string id)
     {
-        return context.Job.Include(x => x.Machine).Include(x => x.Config).Where(x => x.Machine.Ip_address == id && x.Status == 0).FirstOrDefault();
+        return context.Job.Include(x => x.Machine).Include(x => x.Config).Where(x => x.Machine.Ip_Address == id && x.Status == 0).FirstOrDefault();
     }
 
     #endregion

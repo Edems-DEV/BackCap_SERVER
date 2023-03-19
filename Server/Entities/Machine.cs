@@ -13,9 +13,9 @@ public class Machine
 
     public string? Os { get; set; }
 
-    public string? Ip_address { get; set; }
+    public string? Ip_Address { get; set; }
 
-    public string? Mac_address { get; set; }
+    public string? Mac_Address { get; set; }
 
-    public bool Is_active { get; set; }
+    public bool Is_Active { get; set; }
 }
