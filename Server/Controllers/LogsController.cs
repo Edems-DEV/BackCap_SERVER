@@ -46,14 +46,12 @@ public class LogsController : Controller
     [HttpGet("{Id}")]
     public ActionResult<Log> Get(int Id)
     {
-        try
-        {
-            return Ok(context.Log.Find(Id));
-        }
-        catch (MySqlException ex)
-        {
+        Log Exlog = context.Log.Find(Id);
+
+        if (Exlog == null)
             return NotFound("Object does not exists");
-        }
+
+        return Ok(Exlog);
     }
 
     [HttpGet("Job/{IdJob}")]
@@ -78,6 +76,22 @@ public class LogsController : Controller
         };
 
         context.Log.Add(newLog);
+        context.SaveChanges();
+        return Ok();
+    }
+
+    [HttpPut("{Id}")]
+    public ActionResult Put(int Id, LogDto log)
+    {
+        Log Exlog = context.Log.Find(Id);
+
+        if (Exlog == null)
+            return NotFound("Object does not exists");
+
+        Exlog.Id_Job = log.Id_Job;
+        Exlog.Time = log.Time;
+        Exlog.Message = log.Message;
+
         context.SaveChanges();
         return Ok();
     }

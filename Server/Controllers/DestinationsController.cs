@@ -16,17 +16,15 @@ public class DestinationsController : Controller
     [HttpGet("{Id}")]
     public ActionResult<Destination> Get(int Id)
     {
-        try
-        {
-            return Ok(context.Destination.Find(Id));
-        }
-        catch (MySqlException ex)
-        {
-            return BadRequest("Object does not exists");
-        }
+        Destination destination = context.Destination.Find(Id);
+
+        if (destination == null)
+            return NotFound("Object does not exists");
+
+        return Ok(destination);
     }
 
-    [HttpGet("{IdConfig}/destinations")]
+    [HttpGet("Configs/{IdConfig}")]
     public ActionResult<Destination> GetDestinations(int IdConfig)
     {
         List<Destination> sources = context.Destination.Where(x => x.Id_Config == IdConfig).ToList();
@@ -60,16 +58,10 @@ public class DestinationsController : Controller
     [HttpPut("{Id}")]
     public ActionResult Put(int Id, [FromBody] PathsDto path)
     {
-        Destination destination;
+        Destination destination = context.Destination.Find(Id);
 
-        try
-        {
-            destination = context.Destination.Find(Id);
-        }
-        catch (MySqlException ex)
-        {
-            return BadRequest("Object does not exists");
-        }
+        if (destination == null)
+            return NotFound("Object does not exists");
 
         destination.Id_Config = path.Id_Config;
         destination.DestPath = path.Path;

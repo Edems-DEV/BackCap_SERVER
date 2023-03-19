@@ -17,25 +17,23 @@ public class SourcesController : Controller
     [HttpGet("{Id}")]
     public ActionResult<Sources> GetSource(int Id)
     {
-        try
-        {
-            return Ok(context.Sources.Find(Id));
-        }
-        catch (MySqlException ex)
-        {
+        Sources source = context.Sources.Find(Id);
+
+        if (source == null)
             return NotFound("Object does not exists");
-        }
+
+        return Ok(source);
     }
 
-    [HttpGet("{IdConfig}/Sources")]
+    [HttpGet("Configs/{IdConfig}")]
     public ActionResult<List<Sources>> GetSources(int IdConfig)
     {
-        List<Sources> sources = context.Sources.Where(x => x.Id_Config == IdConfig).ToList();
+        List<Sources> source = context.Sources.Where(x => x.Id_Config == IdConfig).ToList();
 
-        if (sources.Count == 0)
+        if (source.Count == 0)
             return NotFound();
         else
-            return Ok(sources);
+            return Ok(source);
     }
 
     [HttpPost] // funguje, ale je potřeba dát do id config již nějaké existující id configu jinak ta kontrola na webovkách se dodrbe
@@ -61,16 +59,10 @@ public class SourcesController : Controller
     [HttpPut("{Id}")]
     public ActionResult Put(int Id, [FromBody] PathsDto path)
     {
-        Sources source;
+        Sources source = context.Sources.Find(Id);
 
-        try
-        {
-            source = context.Sources.Find(Id);
-        }
-        catch (MySqlException ex)
-        {
-            return BadRequest("Object does not exists");
-        }
+        if (source == null)
+            return NotFound("Object does not exists");
 
         source.Id_Config = path.Id_Config;
         source.Path = path.Path;

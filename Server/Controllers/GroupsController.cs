@@ -56,14 +56,12 @@ public class GroupsController : Controller
     [HttpGet("{Id}")]
     public ActionResult<Groups> Get(int Id)
     {
-        try
-        {
-            return context.Groups.Find(Id);
-        }
-        catch (MySqlException ex)
-        {
+        Groups group = context.Groups.Find(Id);
+
+        if (group == null)
             return NotFound("Object does not exists");
-        }
+
+        return Ok(group);
     }
 
     [HttpPost]
@@ -81,15 +79,10 @@ public class GroupsController : Controller
     [HttpPut("{Id}")]
     public ActionResult Put(int Id, [FromBody] string name)
     {
-        Groups group;
-        try
-        {
-            group = context.Groups.Find(Id);
-        }
-        catch (MySqlException)
-        {
-            return NotFound("Object does not Exists");
-        }
+        Groups group = context.Groups.Find(Id);
+
+        if (group == null)
+            return NotFound("Object does not exists");
 
         group.Name = name;
         context.SaveChanges();
@@ -100,15 +93,10 @@ public class GroupsController : Controller
     [HttpDelete("{Id}")]
     public IActionResult Delete(int Id)
     {
-        Groups group;
-        try
-        {
-            group = context.Groups.Find(Id);
-        }
-        catch (MySqlException)
-        {
-            return NotFound("Object does not Exists");
-        }
+        Groups group = context.Groups.Find(Id);
+
+        if (group == null)
+            return NotFound("Object does not exists");
 
         context.Groups.Remove(group);
         context.SaveChanges();

@@ -53,30 +53,15 @@ public class MachinesController : Controller
     }
 
     [HttpGet("{Id}")]
-    public ActionResult<Machine> Get(int id)
+    public ActionResult<Machine> Get(int Id)
     {
-        try
-        {
-            return Ok(context.Machine.Find(id));
-        }
-        catch (MySqlException ex)
-        {
+        Machine machine = context.Machine.Find(Id);
+
+        if (machine == null)
             return NotFound("Object does not exists");
-        }
+
+        return Ok(machine);
     }
-
-    [HttpGet("{Id}/jobs")]
-    public ActionResult<List<Job>> GetJobs(int Id)
-    {
-        List<Job> jobs = context.Job.Where(x => x.Id_Machine == Id).ToList();
-
-        if (jobs.Count == 0)
-            return NotFound($"There are no job for machine id {Id}");
-
-        return Ok(jobs);
-
-    }
-    //TODO: add by Status
 
     [HttpPost]
     public ActionResult Post([FromBody] MachineDto machine)
@@ -100,15 +85,10 @@ public class MachinesController : Controller
     [HttpPut("{Id}")]
     public ActionResult Put(int Id, [FromBody] MachineDto machine)
     {
-        Machine ExistingMachine;
-        try
-        {
-            ExistingMachine = context.Machine.Find(Id);
-        }
-        catch (MySqlException ex)
-        {
+        Machine ExistingMachine = context.Machine.Find(Id);
+
+        if (ExistingMachine == null)
             return NotFound("Object does not exists");
-        }
 
         ExistingMachine.Name = machine.Name;
         ExistingMachine.Description = machine.Description;

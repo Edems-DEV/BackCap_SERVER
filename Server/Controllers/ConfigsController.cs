@@ -26,16 +26,11 @@ public class ConfigsController : Controller
     [HttpGet("{Id}")]
     public ActionResult<Config> Get(int Id)
     {
-        Config config;
-        try
-        {
-            config = context.Config.Find(Id);
-        }
-        catch (MySqlException)
-        {
+        Config config = context.Config.Find(Id);
+
+        if (config == null)
             return NotFound("Object does not exists");
-        }
-    
+
         config.Sources = context.Sources.Where(x => x.Id_Config == Id).ToList();
         config.Destinations = context.Destination.Where(x => x.Id_Config == Id).ToList();
 
@@ -56,15 +51,10 @@ public class ConfigsController : Controller
     [HttpPut("{Id}")]
     public ActionResult Put(int Id, [FromBody] ConfigDto config) // upravuje pouze samostatný config bez cest
     {
-        Config result;
-        try
-        {
-            result = context.Config.Find(Id);
-        }
-        catch (MySqlException)
-        {
+        Config result = context.Config.Find(Id);
+
+        if (result == null)
             return NotFound("Object does not exists");
-        }
 
         result.Retention = config.Retention;
         result.Interval_end = config.Interval_end;
@@ -78,21 +68,15 @@ public class ConfigsController : Controller
     }
 
     [HttpDelete("{Id}")]
-    public ActionResult Delete(int id)
+    public ActionResult Delete(int Id)
     {
-        Config config;
+        Config config = context.Config.Find(Id);
 
-        try
-        {
-            config = context.Config.Find(id);
-        }
-        catch (MySqlException)
-        {
+        if (config == null)
             return NotFound("Object does not exists");
-        }
 
         context.Config.Remove(config);
         context.SaveChanges();
-        return Ok($"Delete request received for config Id {id}.");
+        return Ok($"Delete request received for config Id {Id}.");
     }
 }
