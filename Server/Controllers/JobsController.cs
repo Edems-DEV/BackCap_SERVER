@@ -60,38 +60,19 @@ public class JobsController : Controller
         return Ok(job);
     }
 
-    [HttpGet("{IpAddress}/Daemon")]
-    public ActionResult<Job> Get(string IpAddress)
+    [HttpGet("Machine/{IdMachine}")]
+    public ActionResult<Job> GetJobIdMachine(int IdMachine)
     {
-        Job job = context.Job.Where(x => x.Machine.Ip_Address == IpAddress && x.Status == 0).FirstOrDefault();
+        Job job = context.Job.Where(x => x.Id_Machine == IdMachine).FirstOrDefault();
 
         if (job == null)
             return NotFound("Object does not exists");
 
         job.Config = context.Config.Find(job.Id_Config);
-        job.Config.Sources = context.Sources.Where(x => x.Id_Config == job.Id).ToList();
-        job.Config.Destinations = context.Destination.Where(x => x.Id_Config == job.Id).ToList();
-
+        job.Config.Sources = context.Sources.Where(x => x.Id_Config == job.Config.Id).ToList();
+        job.Config.Destinations = context.Destination.Where(x => x.Id_Config == job.Config.Id).ToList();
+        
         return Ok(job);
-    }
-
-    [HttpGet("{IdMachine}/Machine")]
-    public ActionResult<Job> GetJobIdMachine(int IdMachine)
-    {
-        List<Job> jobs = context.Job.Where(x => x.Id_Machine == IdMachine).ToList();
-
-        if (jobs == null)
-            return NotFound("Object does not exists");
-
-        HelpMethods helpMethods = new HelpMethods(context);
-
-        List<Job> fullJob = new();
-        foreach (Job job in jobs)
-        {
-            fullJob.Add(helpMethods.AddToJob(job));
-        }
-
-        return Ok(fullJob);
     }
 
     // for deamon for final stats after completing job

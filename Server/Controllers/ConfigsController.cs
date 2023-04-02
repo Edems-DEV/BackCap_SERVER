@@ -71,7 +71,6 @@ public class ConfigsController : Controller
         catch (Exception)
         {
             return NotFound("Invalid");
-            throw;
         }
 
         Config newConfig = config;
@@ -93,7 +92,6 @@ public class ConfigsController : Controller
         catch (Exception)
         {
             return NotFound("Invalid");
-            throw;
         }
 
         Config result = context.Config.Find(Id);
