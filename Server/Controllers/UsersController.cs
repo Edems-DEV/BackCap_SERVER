@@ -2,6 +2,7 @@
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using Server.DatabaseTables;
+using Server.Dtos;
 using Server.ParamClasses;
 using Server.Validator;
 
@@ -12,7 +13,7 @@ namespace Server.Controllers;
 public class UsersController : ControllerBase
 {
     private readonly MyContext context = new MyContext();
-    private Validators validation =  new Validators();
+    private Validators validation = new Validators();
 
     // GET: api/users?limit=25&offset=50&orderBy=Id&isAscending=false
     [HttpGet]
@@ -37,6 +38,25 @@ public class UsersController : ControllerBase
 
         return Ok(query); //200
     } //&orderBy  => is required (idk how to make it optimal)
+
+    [HttpGet("All")]
+    public ActionResult<List<User>> GetUsers()
+    {
+        List<User> users = context.User.ToList();
+
+        List<UserDtoNoPass> newUsers = new();
+        foreach (User user in users)
+        {
+            newUsers.Add(new UserDtoNoPass()
+            {
+                Name = user.Name,
+                Email = user.Email,
+                Interval_Report = user.Interval_Report
+            });
+        }
+
+        return Ok(newUsers);
+    }
 
     // GET: for stats
     [HttpGet("count")]
