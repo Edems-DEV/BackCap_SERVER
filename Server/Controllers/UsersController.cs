@@ -17,8 +17,11 @@ public class UsersController : ControllerBase
 
     // GET: api/users?limit=25&offset=50&orderBy=Id&isAscending=false
     [HttpGet]
-    public IActionResult Get(int limit = 10, int offset = 0, string orderBy = "empty", bool isAscending = true)
+    public IActionResult Get(int limit = 10, int offset = 0)
     {
+        // --> oder by is required :/ (make it optimal untik tgab then u keep it commented out)
+        //int limit = 10, int offset = 0, string orderBy = "empty", bool isAscending = true
+        string orderBy = "empty"; bool isAscending = true;
         string sql = "SELECT * FROM `User`";
 
         var tables = new List<string> { "id", "name", "email", "interval_report" };
