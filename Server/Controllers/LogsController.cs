@@ -16,8 +16,10 @@ public class LogsController : Controller
 
     // GET: api/groups?limit=25&offset=50&orderBy=Id&isAscending=false
     [HttpGet]
-    public IActionResult Get(int limit = 10, int offset = 0, string orderBy = "empty", bool isAscending = true)
+    public IActionResult Get(int limit = 10, int offset = 0)
     {
+        //int limit = 10, int offset = 0, string orderBy = "empty", bool isAscending = true
+        string orderBy = "empty"; bool isAscending = true;
         string sql = "SELECT * FROM `Log`";
 
         var tables = new List<string> { "id", "message", "time" };

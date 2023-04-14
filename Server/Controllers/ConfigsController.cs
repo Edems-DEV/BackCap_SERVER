@@ -18,8 +18,10 @@ public class ConfigsController : Controller
 
     // GET: api/configs?limit=25&offset=50&orderBy=Id&isAscending=false
     [HttpGet]
-    public IActionResult Get(int limit = 10, int offset = 0, string orderBy = "empty", bool isAscending = true)
+    public IActionResult Get(int limit = 10, int offset = 0)
     {
+        //int limit = 10, int offset = 0, string orderBy = "empty", bool isAscending = true
+        string orderBy = "empty"; bool isAscending = true;
         string sql = "SELECT * FROM `Config`";
 
         var tables = new List<string> { "id", "type", "retention", "packageSize", "isCompressed", "Backup_interval", "interval_end" };

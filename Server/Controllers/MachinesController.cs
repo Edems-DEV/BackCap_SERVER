@@ -19,8 +19,10 @@ public class MachinesController : Controller
 
     // GET: api/machines?limit=25&offset=50&orderBy=Id&isAscending=false
     [HttpGet]
-    public IActionResult Get(int limit = 10, int offset = 0, string orderBy = "empty", bool isAscending = true)
+    public IActionResult Get(int limit = 10, int offset = 0)
     {
+        //int limit = 10, int offset = 0, string orderBy = "empty", bool isAscending = true
+        string orderBy = "empty"; bool isAscending = true;
         string sql = "SELECT * FROM `Machine`";
 
         var tables = new List<string> { "id", "name", "description", "os", "ip_adress", "mac_adress", "is_active" };
