@@ -4,6 +4,7 @@ using Server.DatabaseTables;
 using Server.Validator;
 using Server.ParamClasses;
 using static Org.BouncyCastle.Math.EC.ECCurve;
+using Server.Dtos;
 
 namespace Server.Controllers;
 
@@ -38,7 +39,13 @@ public class JobsController : Controller
             return NoContent(); //204
         }
 
-        return Ok(query); //200
+        List<WebJobDto> jobDtos = new();
+        foreach (var job in query)
+        {
+            jobDtos.Add(new WebJobDto(job.Id, job.Status, job.Id_Group, job.Id_Machine, context));
+        }
+
+        return Ok(jobDtos); //200
     } //&orderBy  => is required (idk how to make it optimal)
 
     // GET: for stats
@@ -49,7 +56,7 @@ public class JobsController : Controller
     }
 
     // GET: api/jobs/5   => specific job info
-    [HttpGet("Id")]
+    [HttpGet("Id/Daemon")] // pro daemona neměnit
     public ActionResult<Job> Get(int Id)
     {
         Job job = context.Job.Find(Id);
@@ -63,19 +70,15 @@ public class JobsController : Controller
         return Ok(job);
     }
 
-    [HttpGet("Machine/{IdMachine}")]
-    public ActionResult<Job> GetJobIdMachine(int IdMachine)
+    [HttpGet("Id/Admin")] // pro daemona neměnit
+    public ActionResult<WebJobDto> GetJob(int Id)
     {
-        Job job = context.Job.Where(x => x.Id_Machine == IdMachine).FirstOrDefault();
+        Job job = context.Job.Find(Id);
 
         if (job == null)
             return NotFound("Object does not exists");
 
-        job.Config = context.Config.Find(job.Id_Config);
-        job.Config.Sources = context.Sources.Where(x => x.Id_Config == job.Config.Id).ToList();
-        job.Config.Destinations = context.Destination.Where(x => x.Id_Config == job.Config.Id).ToList();
-        
-        return Ok(job);
+        return Ok(new WebJobDto(job.Id, job.Status, job.Id_Group, job.Id_Machine, context));
     }
 
     // for deamon for final stats after completing job
