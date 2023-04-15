@@ -1,6 +1,7 @@
 ﻿using Microsoft.AspNetCore.Http;
 using Server.DatabaseTables;
 using Server.ParamClasses;
+using Server.Services;
 
 namespace Server.Dtos;
 
@@ -32,6 +33,11 @@ public class WebConfigDto
 
     public WebOthersDto? Group { get; set; }
 
+    public WebConfigDto() // overloadnutý konstruktor kvůli put. Jinak spadne protože konstruktor je už occupied
+    {
+        
+    }
+
     public WebConfigDto(Config config, MyContext context, int Id)
     {
         Job job = context.Job.Where(x => x.Id_Config == Id).FirstOrDefault();
@@ -56,12 +62,29 @@ public class WebConfigDto
             Destinations.Add(new WebOthersDto(destination.Id, destination.DestPath));
         }
 
-        // sem je potřeba přidělat opravu, při chybných/ null datech. Zatim netušim co je nejlepší možnost
+        //sem je potřeba přidělat opravu, při chybných/ null datech.Zatim netušim co je nejlepší možnost
         Machine machine = context.Machine.Where(x => x.Id == job.Id_Machine).FirstOrDefault();
         Machine = new WebOthersDto(machine.Id, machine.Name);
 
         Groups group = context.Groups.Where(x => x.Id == job.Id_Group).FirstOrDefault();
         Group = new WebOthersDto(group.Id, group.Name);
+    }
+
+    public Config GetConfig(MyContext context)
+    {
+        this.DatabaseUpdate(context);
+
+        return new Config()
+        {
+            Name = this.Name,
+            Description = this.Description,
+            Type = this.ConvertType(this.Type),
+            Retention = this.Retencion,
+            PackageSize = this.PackageSize,
+            Backup_interval = this.Interval,
+            IsCompressed = this.IsCompressed,
+            Interval_end = this.EndOfInterval
+        };
     }
 
     public string ConvertType(int type)
@@ -97,6 +120,21 @@ public class WebConfigDto
 
             default:
                 return 0;
+        }
+    }
+
+    private void DatabaseUpdate(MyContext context)
+    {
+        DatabaseManager databaseManager = new(context);
+
+        foreach (var source in Sources)
+        {
+            databaseManager.AddNotExistent(source.GetSources(this.Id));
+        }
+
+        foreach (var destination in Destinations)
+        {
+            databaseManager.AddNotExistent(destination.GetDestination(this.Id));
         }
     }
 }

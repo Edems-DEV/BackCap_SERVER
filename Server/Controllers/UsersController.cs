@@ -45,17 +45,10 @@ public class UsersController : ControllerBase
     [HttpGet("All")]
     public ActionResult<List<User>> GetUsers()
     {
-        List<User> users = context.User.ToList();
-
-        List<UserDtoNoPass> newUsers = new();
-        foreach (User user in users)
+        List<WebUserNoPass> newUsers = new();
+        foreach (User user in context.User.ToList())
         {
-            newUsers.Add(new UserDtoNoPass()
-            {
-                Name = user.Name,
-                Email = user.Email,
-                Interval_Report = user.Interval_Report
-            });
+            newUsers.Add(new WebUserNoPass(user.Id, user.Name, user.Email, user.Interval_Report));
         }
 
         return Ok(newUsers);
@@ -70,14 +63,14 @@ public class UsersController : ControllerBase
 
     // GET api/users/5
     [HttpGet("{Id}")]
-    public ActionResult<User> Get(int Id)
+    public ActionResult<WebUserNoPass> Get(int Id)
     {
         User user = context.User.Find(Id);
 
         if (user == null)
             return NotFound("Object does not Exists");
 
-        return Ok(user);
+        return Ok(new WebUserNoPass(user.Id, user.Name, user.Email, user.Interval_Report));
     }
 
     // POST api/users

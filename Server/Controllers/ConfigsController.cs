@@ -5,8 +5,10 @@ using MySql.Data.MySqlClient;
 using Server.DatabaseTables;
 using Server.Dtos;
 using Server.ParamClasses;
+using Server.Services;
 using Server.Validator;
 using System.ComponentModel.DataAnnotations;
+using System.Text.RegularExpressions;
 
 namespace Server.Controllers;
 
@@ -89,15 +91,18 @@ public class ConfigsController : Controller
     }
 
     [HttpPut("{Id}")]
-    public ActionResult Put(int Id, [FromBody] WebConfigDto config) // upravuje pouze samostatný config bez cest
+    public ActionResult Put(int Id, [FromBody] WebConfigDto config)
     {
+        config.Id = Id;
+        DatabaseManager databaseManager = new(context);
+
         try
         {
             validation.DateTimeValidator(config.EndOfInterval.ToString());
         }
         catch (Exception)
         {
-            return BadRequest("Invalid");
+            return BadRequest("Invalid DateTime");
         }
 
         Config result = context.Config.Find(Id);
@@ -105,17 +110,21 @@ public class ConfigsController : Controller
         if (result == null)
             return NotFound("Object does not exists");
 
-        result.Id = config.Id;
-        result.Name = config.Name;
-        result.Description = config.Description;
-        result.Retention = config.Retencion;
-        result.Interval_end = config.EndOfInterval;
-        result.PackageSize = config.PackageSize;
-        result.Backup_interval = config.Interval;
-        result.IsCompressed = config.IsCompressed;
-        result.Type = config.ConvertType(config.Type);
-        //result.Sources = config.Sources;
-        //result.Destinations = config.Destinations;
+        Config UpdatedConfig = config.GetConfig(context);
+
+        // update configu
+        result.Name = UpdatedConfig.Name;
+        result.Description = UpdatedConfig.Description;
+        result.Retention = UpdatedConfig.Retention;
+        result.PackageSize = UpdatedConfig.PackageSize;
+        result.Backup_interval = UpdatedConfig.Backup_interval;
+        result.Interval_end = UpdatedConfig.Interval_end;
+
+        // update group a pc
+        Job job = context.Job.Where(x => x.Id_Config == config.Id).FirstOrDefault();
+        job.Id_Group = config.Group.Id;
+        job.Id_Machine = config.Machine.Id;
+
 
         context.SaveChanges();
         return Ok();

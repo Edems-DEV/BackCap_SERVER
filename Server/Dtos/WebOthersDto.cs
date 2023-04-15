@@ -1,4 +1,6 @@
-﻿namespace Server.Dtos;
+﻿using Server.DatabaseTables;
+
+namespace Server.Dtos;
 
 public class WebOthersDto
 {
@@ -10,5 +12,15 @@ public class WebOthersDto
     {
         this.Id = id;
         this.Name = name;
+    }
+
+    public Sources GetSources(int configId)
+    {
+        return new Sources() { Id = this.Id, Id_Config = configId, Path = this.Name };
+    }
+
+    public Destination GetDestination(int configId)
+    {
+        return new Destination() { Id = this.Id, Id_Config = configId, DestPath = this.Name };
     }
 }
