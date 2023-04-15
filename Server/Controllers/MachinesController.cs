@@ -2,6 +2,7 @@
 using Microsoft.EntityFrameworkCore;
 using MySql.Data.MySqlClient;
 using Server.DatabaseTables;
+using Server.Dtos;
 using Server.ParamClasses;
 using Server.Validator;
 using System.Net.Mail;
@@ -40,7 +41,13 @@ public class MachinesController : Controller
             return NoContent(); //204
         }
 
-        return Ok(query); //200
+        List<WebMachineDto> machineDtos = new();
+        foreach (var machine in query)
+        {
+            machineDtos.Add(new WebMachineDto(machine, context));
+        }
+
+        return Ok(machineDtos); //200
     } //&orderBy  => is required (idk how to make it optimal)
 
     // GET: for stats
@@ -51,14 +58,14 @@ public class MachinesController : Controller
     }
 
     [HttpGet("{Id}")]
-    public ActionResult<Machine> Get(int Id)
+    public ActionResult<WebMachineDto> Get(int Id)
     {
         Machine machine = context.Machine.Find(Id);
 
         if (machine == null)
             return NotFound("Object does not exists");
 
-        return Ok(machine);
+        return Ok(new WebMachineDto(machine, context));
     }
 
     [HttpPost]

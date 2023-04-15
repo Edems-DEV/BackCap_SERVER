@@ -15,32 +15,32 @@ public class UsersController : ControllerBase
     private readonly MyContext context = new MyContext();
     private Validators validation = new Validators();
 
-    // GET: api/users?limit=25&offset=50&orderBy=Id&isAscending=false
-    [HttpGet]
-    public IActionResult Get(int limit = 10, int offset = 0)
-    {
-        // --> oder by is required :/ (make it optimal untik tgab then u keep it commented out)
-        //int limit = 10, int offset = 0, string orderBy = "empty", bool isAscending = true
-        string orderBy = "empty"; bool isAscending = true;
-        string sql = "SELECT * FROM `User`";
+    //// GET: api/users?limit=25&offset=50&orderBy=Id&isAscending=false
+    //[HttpGet]
+    //public IActionResult Get(int limit = 10, int offset = 0)
+    //{
+    //    // --> oder by is required :/ (make it optimal untik tgab then u keep it commented out)
+    //    //int limit = 10, int offset = 0, string orderBy = "empty", bool isAscending = true
+    //    string orderBy = "empty"; bool isAscending = true;
+    //    string sql = "SELECT * FROM `User`";
 
-        var tables = new List<string> { "id", "name", "email", "interval_report" };
-        var direction = isAscending ? "ASC" : "DESC";
+    //    var tables = new List<string> { "id", "name", "email", "interval_report" };
+    //    var direction = isAscending ? "ASC" : "DESC";
 
-        if (tables.Contains(orderBy.ToLower())) //hope this is enough to stop sql injection
-        {
-            sql += $" ORDER BY `{orderBy}` {direction}";
-        }
+    //    if (tables.Contains(orderBy.ToLower())) //hope this is enough to stop sql injection
+    //    {
+    //        sql += $" ORDER BY `{orderBy}` {direction}";
+    //    }
 
-        List<User> query = context.User.FromSqlRaw(sql + " LIMIT {0} OFFSET {1}", limit, offset).ToList();
+    //    List<User> query = context.User.FromSqlRaw(sql + " LIMIT {0} OFFSET {1}", limit, offset).ToList();
 
-        if (query == null || query.Count == 0)
-        {
-            return NoContent(); //204
-        }
+    //    if (query == null || query.Count == 0)
+    //    {
+    //        return NoContent(); //204
+    //    }
 
-        return Ok(query); //200
-    } //&orderBy  => is required (idk how to make it optimal)
+    //    return Ok(query); //200
+    //} //&orderBy  => is required (idk how to make it optimal)
 
     [HttpGet("All")]
     public ActionResult<List<User>> GetUsers()

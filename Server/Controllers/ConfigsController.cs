@@ -45,7 +45,7 @@ public class ConfigsController : Controller
 
         foreach (var config in query)
         {
-            configDtos.Add(new WebConfigDto(config, context, config.Id));
+            configDtos.Add(new WebConfigDto(config, context));
         }
 
         return Ok(configDtos); //200
@@ -66,7 +66,7 @@ public class ConfigsController : Controller
         if (config == null)
             return NotFound("Object does not exists");
 
-        return Ok(new WebConfigDto(config, context, Id));
+        return Ok(new WebConfigDto(config, context));
     }
 
     [HttpPost]
