@@ -34,13 +34,19 @@ public class ConfigsController : Controller
         }
 
         List<Config> query = context.Config.FromSqlRaw(sql + " LIMIT {0} OFFSET {1}", limit, offset).ToList();
+        List<WebConfigDto> configDtos = new List<WebConfigDto>();
 
         if (query == null || query.Count == 0)
         {
             return NoContent(); //204
         }
 
-        return Ok(query); //200
+        foreach (var config in query)
+        {
+            configDtos.Add(new WebConfigDto(config, context, config.Id));
+        }
+
+        return Ok(configDtos); //200
     } //&orderBy  => is required (idk how to make it optimal)
 
     // GET: for stats
@@ -83,15 +89,15 @@ public class ConfigsController : Controller
     }
 
     [HttpPut("{Id}")]
-    public ActionResult Put(int Id, [FromBody] ConfigDto config) // upravuje pouze samostatný config bez cest
+    public ActionResult Put(int Id, [FromBody] WebConfigDto config) // upravuje pouze samostatný config bez cest
     {
         try
         {
-            validation.DateTimeValidator(config.Interval_end.ToString());
+            validation.DateTimeValidator(config.EndOfInterval.ToString());
         }
         catch (Exception)
         {
-            return NotFound("Invalid");
+            return BadRequest("Invalid");
         }
 
         Config result = context.Config.Find(Id);
@@ -99,14 +105,17 @@ public class ConfigsController : Controller
         if (result == null)
             return NotFound("Object does not exists");
 
+        result.Id = config.Id;
         result.Name = config.Name;
         result.Description = config.Description;
-        result.Retention = config.Retention;
-        result.Interval_end = config.Interval_end;
+        result.Retention = config.Retencion;
+        result.Interval_end = config.EndOfInterval;
         result.PackageSize = config.PackageSize;
-        result.Backup_interval = config.Backup_Interval;
+        result.Backup_interval = config.Interval;
         result.IsCompressed = config.IsCompressed;
-        result.Type = config.Type;
+        result.Type = config.ConvertType(config.Type);
+        result.Sources = config.Sources;
+        result.Destinations = config.Destinations;
 
         context.SaveChanges();
         return Ok();

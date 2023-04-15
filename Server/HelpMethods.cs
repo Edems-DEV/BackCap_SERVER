@@ -20,22 +20,4 @@ public class HelpMethods
         job.Config.Destinations = context.Destination.Where(x => x.Id_Config == job.Id).ToList();
         return job;
     }
-
-    public string ConvertType(int type)
-    {
-        switch (type)
-        {
-            case 0:
-                return "Full";
-
-            case 1:
-                return "Diff";
-
-            case 2:
-                return "Incr";
-
-            default:
-                return "Full";
-        }
-    }
 }

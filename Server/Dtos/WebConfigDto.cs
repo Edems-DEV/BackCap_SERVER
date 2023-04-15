@@ -5,6 +5,8 @@ namespace Server.Dtos;
 
 public class WebConfigDto
 {
+    public int Id { get; set; }
+
     public string Name { get; set; }
 
     public string? Description { get; set; }
@@ -33,6 +35,7 @@ public class WebConfigDto
     {
         Job job = context.Job.Where(x => x.Id_Config == Id).FirstOrDefault();
 
+        this.Id = config.Id;
         Name = config.Name;
         Description = config.Description;
         Type = this.ConvertType(config.Type);
@@ -62,6 +65,24 @@ public class WebConfigDto
 
             default:
                 return "Full";
+        }
+    }
+
+    public Int16 ConvertType(string type)
+    {
+        switch (type.ToLower())
+        {
+            case "full":
+                return 0;
+
+            case "diff":
+                return 1;
+
+            case "incr":
+                return 2;
+
+            default:
+                return 0;
         }
     }
 }
