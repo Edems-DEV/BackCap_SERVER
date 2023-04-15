@@ -21,7 +21,7 @@ public class ConfigsController : Controller
 
     // GET: api/configs?limit=25&offset=50&orderBy=Id&isAscending=false
     [HttpGet]
-    public IActionResult Get(int limit = 10, int offset = 0)
+    public ActionResult<List<WebConfigDto>> Get(int limit = 10, int offset = 0)
     {
         //int limit = 10, int offset = 0, string orderBy = "empty", bool isAscending = true
         string orderBy = "empty"; bool isAscending = true;
@@ -45,7 +45,7 @@ public class ConfigsController : Controller
 
         foreach (var config in query)
         {
-            configDtos.Add(new WebConfigDto(config, context));
+            configDtos.Add(new WebConfigDto(config, context, config.Id));
         }
 
         return Ok(configDtos); //200
@@ -66,7 +66,7 @@ public class ConfigsController : Controller
         if (config == null)
             return NotFound("Object does not exists");
 
-        return Ok(new WebConfigDto(config, context));
+        return Ok(new WebConfigDto(config, context, Id));
     }
 
     [HttpPost]

@@ -20,7 +20,7 @@ public class MachinesController : Controller
 
     // GET: api/machines?limit=25&offset=50&orderBy=Id&isAscending=false
     [HttpGet]
-    public IActionResult Get(int limit = 10, int offset = 0)
+    public ActionResult<List<WebMachineDto>> Get(int limit = 10, int offset = 0)
     {
         //int limit = 10, int offset = 0, string orderBy = "empty", bool isAscending = true
         string orderBy = "empty"; bool isAscending = true;

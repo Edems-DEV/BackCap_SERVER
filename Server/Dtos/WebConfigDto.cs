@@ -38,7 +38,7 @@ public class WebConfigDto
         
     }
 
-    public WebConfigDto(Config config, MyContext context)
+    public WebConfigDto(Config config, MyContext context, int Id)
     {
         Job job = context.Job.Where(x => x.Id_Config == Id).FirstOrDefault();
 

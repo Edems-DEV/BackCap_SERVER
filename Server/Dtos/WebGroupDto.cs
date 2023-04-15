@@ -6,7 +6,7 @@ public class WebGroupDto
 
     public string Name { get; set; }
 
-    public string Description { get; set; }
+    public string? Description { get; set; }
 
     public WebGroupDto(int id, string name, string description)
     {
@@ -15,8 +15,9 @@ public class WebGroupDto
         Description = description;
     }
 
-    public WebGroupDto()
+    public WebGroupDto(int id, string name)
     {
-        
+        Id = id;
+        Name = name;
     }
 }

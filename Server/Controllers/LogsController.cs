@@ -1,6 +1,7 @@
 ﻿using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using MySql.Data.MySqlClient;
+using Org.BouncyCastle.Utilities;
 using Server.DatabaseTables;
 using Server.ParamClasses;
 using Server.Validator;
@@ -16,7 +17,7 @@ public class LogsController : Controller
 
     // GET: api/groups?limit=25&offset=50&orderBy=Id&isAscending=false
     [HttpGet]
-    public IActionResult Get(int limit = 10, int offset = 0)
+    public ActionResult<List<WebLogDto>> Get(int limit = 10, int offset = 0)
     {
         //int limit = 10, int offset = 0, string orderBy = "empty", bool isAscending = true
         string orderBy = "empty"; bool isAscending = true;
@@ -37,33 +38,43 @@ public class LogsController : Controller
             return NoContent(); //204
         }
 
-        return Ok(query); //200
+        List<WebLogDto> logDtos = new();
+        foreach (var log in query) 
+        {
+            logDtos.Add(new WebLogDto(log.Id, log.Id_Job, log.Message, log.Time));
+        }  
+
+        return Ok(logDtos); //200
     } //&orderBy  => is required (idk how to make it optimal)
 
     [HttpGet("{Id}")]
-    public ActionResult<Log> Get(int Id)
+    public ActionResult<WebLogDto> Get(int Id)
     {
-        Log Exlog = context.Log.Find(Id);
+        Log log = context.Log.Find(Id);
 
-        if (Exlog == null)
+        if (log == null)
             return NotFound("Object does not exists");
 
-        return Ok(Exlog);
+        return Ok(new WebLogDto(log.Id, log.Id_Job, log.Message, log.Time));
     }
 
     [HttpGet("Job/{IdJob}")]
-    public ActionResult<List<Log>> GetLogs (int IdJob)
+    public ActionResult<List<WebLogDto>> GetLogs (int IdJob)
     {
-        List<Log> logs = context.Log.Where(x => x.Id_Job == IdJob).ToList();
+        List<WebLogDto> logDtos = new();
+        foreach (Log log in context.Log.Where(x => x.Id_Job == IdJob).ToList())
+        {
+            logDtos.Add(new WebLogDto(log.Id, log.Id_Job, log.Message, log.Time));
+        }
 
-        if (logs.Count == 0)
+        if (logDtos.Count == 0)
             return NotFound($"There are no logs for job id {IdJob}");
 
-        return Ok(logs);
+        return Ok(logDtos);
     }
 
     [HttpPost]
-    public ActionResult Post(LogDto log)
+    public ActionResult Post(WebLogDto log)
     {
         try
         {
@@ -87,7 +98,7 @@ public class LogsController : Controller
     }
 
     [HttpPut("{Id}")]
-    public ActionResult Put(int Id, LogDto log)
+    public ActionResult Put(int Id, WebLogDto log)
     {
         try
         {
