@@ -3,6 +3,7 @@ using Microsoft.EntityFrameworkCore;
 using MySql.Data.MySqlClient;
 using MySqlX.XDevAPI.Common;
 using Server.DatabaseTables;
+using Server.Dtos;
 using Server.ParamClasses;
 using Server.Validator;
 
@@ -50,21 +51,22 @@ public class GroupsController : Controller
     }
 
     [HttpGet("{Id}")]
-    public ActionResult<Groups> Get(int Id)
+    public ActionResult<WebGroupDto> Get(int Id)
     {
         Groups group = context.Groups.Find(Id);
 
         if (group == null)
             return NotFound("Object does not exists");
 
-        return Ok(group);
+        return Ok(new WebGroupDto(group.Id, group.Name, group.Description));
     }
 
     [HttpPost]
-    public ActionResult Post([FromBody] string name)
+    public ActionResult Post([FromBody] string name, [FromBody] string description) // předělat
     {
         Groups NewGroup = new Groups();
         NewGroup.Name = name;
+        NewGroup.Description = description;
 
         context.Groups.Add(NewGroup);
         context.SaveChanges();
@@ -73,7 +75,7 @@ public class GroupsController : Controller
     }
 
     [HttpPut("{Id}")]
-    public ActionResult Put(int Id, [FromBody] string name)
+    public ActionResult Put(int Id, [FromBody] string name, [FromBody] string description)
     {
         Groups group = context.Groups.Find(Id);
 
@@ -81,6 +83,7 @@ public class GroupsController : Controller
             return NotFound("Object does not exists");
 
         group.Name = name;
+        group.Description = description;
         context.SaveChanges();
 
         return Ok();
