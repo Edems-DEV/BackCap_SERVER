@@ -1,5 +1,6 @@
 ﻿using Microsoft.AspNetCore.Http;
 using Server.DatabaseTables;
+using Server.ParamClasses;
 
 namespace Server.Dtos;
 
@@ -23,13 +24,13 @@ public class WebConfigDto
 
     public DateTime? EndOfInterval { get; set; }
 
-    public List<Sources> Sources { get; set; }
+    public List<WebOthersDto> Sources { get; set; } = new();
 
-    public List<Destination> Destinations { get; set; }
+    public List<WebOthersDto> Destinations { get; set; } = new();
 
-    public Machine Machine { get; set; }
+    public WebOthersDto Machine { get; set; }
 
-    public Groups Group { get; set; }
+    public WebOthersDto? Group { get; set; }
 
     public WebConfigDto(Config config, MyContext context, int Id)
     {
@@ -44,10 +45,23 @@ public class WebConfigDto
         Retencion = config.Retention;
         Interval = config.Backup_interval;
         EndOfInterval = config.Interval_end;
-        Sources = context.Sources.Where(x => x.Id_Config == Id).ToList();
-        Destinations = context.Destination.Where(x => x.Id_Config == Id).ToList();
-        Machine = context.Machine.Where(x => x.Id == job.Id_Machine).FirstOrDefault();
-        Group = context.Groups.Where(x => x.Id == job.Id_Group).FirstOrDefault();
+
+        foreach (var source in context.Sources.Where(x => x.Id_Config == Id).ToList())
+        {
+            Sources.Add(new WebOthersDto(source.Id, source.Path));
+        }
+
+        foreach (var destination in context.Destination.Where(x => x.Id_Config == Id).ToList())
+        {
+            Destinations.Add(new WebOthersDto(destination.Id, destination.DestPath));
+        }
+
+        // sem je potřeba přidělat opravu, při chybných/ null datech. Zatim netušim co je nejlepší možnost
+        Machine machine = context.Machine.Where(x => x.Id == job.Id_Machine).FirstOrDefault();
+        Machine = new WebOthersDto(machine.Id, machine.Name);
+
+        Groups group = context.Groups.Where(x => x.Id == job.Id_Group).FirstOrDefault();
+        Group = new WebOthersDto(group.Id, group.Name);
     }
 
     public string ConvertType(int type)
@@ -68,7 +82,7 @@ public class WebConfigDto
         }
     }
 
-    public Int16 ConvertType(string type)
+    public short ConvertType(string type)
     {
         switch (type.ToLower())
         {

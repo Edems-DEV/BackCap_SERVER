@@ -114,8 +114,8 @@ public class ConfigsController : Controller
         result.Backup_interval = config.Interval;
         result.IsCompressed = config.IsCompressed;
         result.Type = config.ConvertType(config.Type);
-        result.Sources = config.Sources;
-        result.Destinations = config.Destinations;
+        //result.Sources = config.Sources;
+        //result.Destinations = config.Destinations;
 
         context.SaveChanges();
         return Ok();
