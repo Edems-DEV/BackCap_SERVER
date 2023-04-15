@@ -31,7 +31,7 @@ public class Job
 
     [ForeignKey("Id_Machine")]
     public virtual Machine Machine { get; set; }
-
+    
     [ForeignKey("Id_Group")]
     public virtual Groups Groups { get; set; }
 

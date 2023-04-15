@@ -24,7 +24,7 @@ public class ConfigsController : Controller
         string orderBy = "empty"; bool isAscending = true;
         string sql = "SELECT * FROM `Config`";
 
-        var tables = new List<string> { "id", "type", "retention", "packageSize", "isCompressed", "Backup_interval", "interval_end" };
+        var tables = new List<string> { "id", "type", "name", "description", "retention", "packageSize", "isCompressed", "Backup_interval", "interval_end" };
         var direction = isAscending ? "ASC" : "DESC";
 
         if (tables.Contains(orderBy)) //hope this is enough to stop sql injection
@@ -101,6 +101,8 @@ public class ConfigsController : Controller
         if (result == null)
             return NotFound("Object does not exists");
 
+        result.Name = config.Name;
+        result.Description = config.Description;
         result.Retention = config.Retention;
         result.Interval_end = config.Interval_end;
         result.PackageSize = config.PackageSize;
