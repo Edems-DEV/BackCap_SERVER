@@ -58,27 +58,7 @@ public class ConfigsController : Controller
         if (config == null)
             return NotFound("Object does not exists");
 
-        Job job = context.Job.Where(x => x.Id_Config == Id).FirstOrDefault();
-
-        HelpMethods helpMethods = new(context);
-
-        WebConfigDto configDto = new WebConfigDto()
-        {
-            Name = config.Name,
-            Description = config.Description,
-            Type = helpMethods.ConvertType(config.Type),
-            IsCompressed = config.IsCompressed,
-            PackageSize = config.PackageSize,
-            Retencion = config.Retention,
-            Interval = config.Backup_interval,
-            EndOfInterval = config.Interval_end,
-            Sources = context.Sources.Where(x => x.Id_Config == Id).ToList(),
-            Destinations = context.Destination.Where(x => x.Id_Config == Id).ToList(),
-            Machine = context.Machine.Where(x => x.Id == job.Id_Machine).FirstOrDefault(),
-            Group = context.Groups.Where(x => x.Id == job.Id_Group).FirstOrDefault()
-        };
-
-        return Ok(configDto);
+        return Ok(new WebConfigDto(config, context, Id));
     }
 
     [HttpPost]
