@@ -3,6 +3,7 @@ using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Query.SqlExpressions;
 using MySql.Data.MySqlClient;
 using Server.DatabaseTables;
+using Server.Dtos;
 using Server.ParamClasses;
 using Server.Validator;
 using System.ComponentModel.DataAnnotations;
@@ -50,17 +51,34 @@ public class ConfigsController : Controller
     }
 
     [HttpGet("{Id}")]
-    public ActionResult<Config> Get(int Id)
+    public ActionResult<WebConfigDto> Get(int Id)
     {
         Config config = context.Config.Find(Id);
 
         if (config == null)
             return NotFound("Object does not exists");
 
-        config.Sources = context.Sources.Where(x => x.Id_Config == Id).ToList();
-        config.Destinations = context.Destination.Where(x => x.Id_Config == Id).ToList();
+        Job job = context.Job.Where(x => x.Id_Config == Id).FirstOrDefault();
 
-        return Ok(config);
+        HelpMethods helpMethods = new(context);
+
+        WebConfigDto configDto = new WebConfigDto()
+        {
+            Name = config.Name,
+            Description = config.Description,
+            Type = helpMethods.ConvertType(config.Type),
+            IsCompressed = config.IsCompressed,
+            PackageSize = config.PackageSize,
+            Retencion = config.Retention,
+            Interval = config.Backup_interval,
+            EndOfInterval = config.Interval_end,
+            Sources = context.Sources.Where(x => x.Id_Config == Id).ToList(),
+            Destinations = context.Destination.Where(x => x.Id_Config == Id).ToList(),
+            Machine = context.Machine.Where(x => x.Id == job.Id_Machine).FirstOrDefault(),
+            Group = context.Groups.Where(x => x.Id == job.Id_Group).FirstOrDefault()
+        };
+
+        return Ok(configDto);
     }
 
     [HttpPost]

@@ -5,9 +5,9 @@ public class ConfigDto
 
     public Int16 Type { get; set; }
 
-    public string Name { get; set; }
+    public string? Name { get; set; }
 
-    public string Description { get; set; }
+    public string? Description { get; set; }
 
     public int Retention { get; set; }
 

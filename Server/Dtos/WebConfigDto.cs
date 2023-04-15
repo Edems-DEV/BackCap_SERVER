@@ -8,7 +8,7 @@ public class WebConfigDto
 
     public string? Description { get; set; }
 
-    public int Type { get; set; }
+    public string Type { get; set; }
 
     public bool IsCompressed { get; set; }
 
