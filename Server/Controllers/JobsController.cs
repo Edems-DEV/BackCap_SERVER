@@ -52,7 +52,7 @@ public class JobsController : Controller
     public int GetCount(string command)
     {
         int count = 0;
-        switch (command)
+        switch (command.ToLower())
         {
             case "all":
                 context.Job.ForEachAsync(x => { count++; });
