@@ -144,4 +144,33 @@ public class MachinesController : Controller
 
         return Ok();
     }
+
+    [HttpPost("register")]
+    public ActionResult PostRegister([FromBody] MachineDto machine)
+    {
+        try
+        {
+            validation.IpValidator(machine.Ip_Address.ToString());
+            validation.MacValidator(machine.Mac_Address.ToString());
+        }
+        catch (Exception)
+        {
+            return NotFound("Invalid");
+        }
+
+        Machine NewMachine = new Machine()
+        {
+            Name = machine.Name,
+            Description = machine.Description,
+            Os = machine.Os,
+            Ip_Address = machine.Ip_Address,
+            Mac_Address = machine.Mac_Address,
+            Is_Active = false //není activní -> čeká se na admianovo potvrzení (?)(nemám ponětí jak t má fungovat lol)
+        };
+
+        context.Machine.Add(NewMachine);
+        context.SaveChanges();
+
+        return Ok();
+    }
 }
