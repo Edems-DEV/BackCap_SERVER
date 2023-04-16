@@ -58,18 +58,26 @@ public class JobsController : Controller
                 context.Job.ForEachAsync(x => { count++; });
                     break;
 
-            case "active":
+            case "running":
                 context.Job.Where(x => x.Status == 1).ForEachAsync(x => { count++; });
                 break;
 
-            case "disable":
+            case "waiting":
                 context.Job.Where(x => x.Status == 2).ForEachAsync(x => { count++; });
                 break;
 
-            case "broken":
+            case "succesfull":
                 context.Job.Where(x => x.Status == 3).ForEachAsync(x => { count++; });
                 break;
-                 
+
+            case "Warning":
+                context.Job.Where(x => x.Status == 4).ForEachAsync(x => { count++; });
+                break;
+
+            case "Failed":
+                context.Job.Where(x => x.Status == 5).ForEachAsync(x => { count++; });
+                break;
+
         }
         return count;
     }
