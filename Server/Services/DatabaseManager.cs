@@ -28,4 +28,13 @@ public class DatabaseManager
             context.SaveChanges();
         }
     }
+
+    public void AddNotExistent(Groups group)
+    {
+        if (context.Groups.Where(x => x.Name == group.Name).FirstOrDefault() == null)
+        {
+            context.Groups.Add(group);
+            context.SaveChanges();
+        }
+    }
 }

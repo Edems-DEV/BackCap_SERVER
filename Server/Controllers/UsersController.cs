@@ -106,15 +106,15 @@ public class UsersController : ControllerBase
     [HttpPut("{Id}")]
     public ActionResult Put(int Id, [FromBody] UserDto user)
     {
-        try
-        {
-            validation.EmailValidator(user.Email.ToString());
-        }
-        catch (Exception)
-        {
+        //try // opravit redex
+        //{
+        //    validation.EmailValidator(user.Email.ToString());
+        //}
+        //catch (Exception)
+        //{
 
-            return NotFound("Invalid");
-        }
+        //    return NotFound("Invalid");
+        //}
 
         User ExUser = context.User.Find(Id);
 

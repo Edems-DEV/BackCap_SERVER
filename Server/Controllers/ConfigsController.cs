@@ -128,20 +128,13 @@ public class ConfigsController : Controller
         if (result == null)
             return NotFound("Object does not exists");
 
-        Config UpdatedConfig = config.GetConfig(context);
-
-        // update configu
-        result.Name = UpdatedConfig.Name;
-        result.Description = UpdatedConfig.Description;
-        result.Retention = UpdatedConfig.Retention;
-        result.PackageSize = UpdatedConfig.PackageSize;
-        result.Backup_interval = UpdatedConfig.Backup_interval;
-        result.Interval_end = UpdatedConfig.Interval_end;
+        // update configu // uloží nové cesty
+        result.GetData(config.GetConfig(context));
 
         // update group a pc
         Job job = context.Job.Where(x => x.Id_Config == config.Id).FirstOrDefault();
-        // přidat update group
-        //job.Id_Group = config.Groups.Id;
+
+        job.Id_Group = config.Group.Id;
         job.Id_Machine = config.Machine.Id;
 
 

@@ -1,4 +1,5 @@
-﻿using System.ComponentModel.DataAnnotations;
+﻿using MySqlX.XDevAPI.Common;
+using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
 
 namespace Server.DatabaseTables;
@@ -29,4 +30,15 @@ public class Config
 
     [ForeignKey("Id_Config")]
     public virtual List<Destination> Destinations { get; set; }
+
+    public void GetData(Config config)
+    {
+        this.Name = config.Name;
+        this.Description = config.Description;
+        this.Retention = config.Retention;
+        this.PackageSize = config.PackageSize;
+        this.Backup_interval = config.Backup_interval;
+        this.Interval_end = config.Interval_end;
+    }
+
 }

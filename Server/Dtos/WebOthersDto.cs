@@ -23,4 +23,9 @@ public class WebOthersDto
     {
         return new Destination() { Id = this.Id, Id_Config = configId, DestPath = this.Name };
     }
+
+    public Groups GetGroups(string? desctiption)
+    {
+        return new Groups() { Id = this.Id, Name = this.Name, Description = desctiption };
+    }
 }
