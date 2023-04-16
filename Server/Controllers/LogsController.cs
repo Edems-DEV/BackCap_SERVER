@@ -82,7 +82,7 @@ public class LogsController : Controller
         }
         catch (Exception)
         {
-            return NotFound("Invalid");
+            return BadRequest("Invalid");
         }
 
         Log newLog = new Log()
@@ -102,7 +102,7 @@ public class LogsController : Controller
     {
         try
         {
-            //validation.DateTimeValidator(log.Time.ToString());
+            validation.DateTimeValidator(log.Time.ToString());
         }
         catch (Exception)
         {

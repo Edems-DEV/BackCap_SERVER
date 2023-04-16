@@ -96,7 +96,7 @@ public class JobsController : Controller
         }
         catch (Exception)
         {
-            return NotFound("Invalid");
+            return BadRequest("Invalid");
         }
         
         Job existingJob = context.Job.Find(id);
@@ -117,20 +117,16 @@ public class JobsController : Controller
 
     // For deamon to update job Status
     [HttpPut("{Id}/StatusTime")]
-    public ActionResult PutStatus(int id, [FromBody] Job job)
+    public ActionResult PutStatus(int id, [FromBody] DaemonJobStatusDto job)
     {
         try
         {
-            validation.DateTimeValidator(job.Time_schedule.ToString());
             validation.DateTimeValidator(job.Time_start.ToString());
             validation.DateTimeValidator(job.Time_end.ToString());
-            validation.IpValidator(job.Machine.Ip_Address.ToString());
-            validation.MacValidator(job.Machine.Mac_Address.ToString());
-            validation.DateTimeValidator(job.Config.Interval_end.ToString());
         }
         catch (Exception)
         {
-            return NotFound("Invalid");
+            return BadRequest("Invalid");
         }
 
         Job existingJob = context.Job.Find(id);
@@ -139,8 +135,15 @@ public class JobsController : Controller
             return NotFound("Object does not exists");
 
         existingJob.Status = job.Status;
-        existingJob.Time_start = job.Time_start;
-        existingJob.Time_end = job.Time_end;
+
+        if (job.Time_start != null)
+            existingJob.Time_start = job.Time_start;
+
+        if (job.Time_end != null)
+            existingJob.Time_end = job.Time_end;
+
+        if (job.Bytes != null)
+            existingJob.Bytes = job.Bytes;
 
         context.SaveChanges();
         return Ok();

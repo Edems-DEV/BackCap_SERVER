@@ -99,11 +99,9 @@ public class ConfigsController : Controller
             return NotFound("Invalid");
         }
 
-        Config newConfig = config;
-
-        context.Config.Add(newConfig);
-        context.Sources.AddRange(newConfig.Sources);
-        context.Destination.AddRange(newConfig.Destinations);
+        context.Config.Add(config);
+        context.Sources.AddRange(config.Sources);
+        context.Destination.AddRange(config.Destinations);
         context.SaveChanges();
         return Ok();
     }
