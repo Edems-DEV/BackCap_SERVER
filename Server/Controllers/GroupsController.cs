@@ -43,6 +43,24 @@ public class GroupsController : Controller
         return Ok(query); //200
     } //&orderBy  => is required (idk how to make it optimal)
 
+    [HttpGet("names")]
+    public ActionResult<List<WebOthersDto>> GetNames()
+    {
+        List<WebOthersDto> names = new();
+
+        foreach (var group in context.Groups.ToList())
+        {
+            names.Add(new WebOthersDto(group.Id, group.Name));
+        }
+
+        if (names.Count == 0)
+        {
+            return NoContent();
+        }
+
+        return Ok(names);
+    }
+
     // GET: for stats
     [HttpGet("count")]
     public ActionResult<int> GetCount()
