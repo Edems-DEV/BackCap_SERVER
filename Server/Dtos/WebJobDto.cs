@@ -10,15 +10,15 @@ public class WebJobDto
 
     public string Target { get; set; }
 
-    public DateTime Time_Start { get; set; }
+    public DateTime? Time_Start { get; set; }
 
     public DateTime? Time_End { get; set; }
 
-    public DateTime? Time_Schedule { get; set; }
+    public DateTime Time_Schedule { get; set; }
 
     public WebOthersDto Config { get; set; }
 
-    public WebJobDto(int id, short status, DateTime timeStart, DateTime? timeEnd, DateTime? timeSchedule, int? id_Group, int? id_Machine, MyContext context)
+    public WebJobDto(int id, short status, DateTime? timeStart, DateTime? timeEnd, DateTime timeSchedule, int? id_Group, int? id_Machine, MyContext context)
     {
         this.Id = id;
         this.Status = status;

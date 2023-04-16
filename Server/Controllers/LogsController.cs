@@ -102,11 +102,11 @@ public class LogsController : Controller
     {
         try
         {
-            validation.DateTimeValidator(log.Time.ToString());
+            //validation.DateTimeValidator(log.Time.ToString());
         }
         catch (Exception)
         {
-            return NotFound("Invalid");
+            return BadRequest("Invalid");
         }
 
         Log Exlog = context.Log.Find(Id);
@@ -114,9 +114,7 @@ public class LogsController : Controller
         if (Exlog == null)
             return NotFound("Object does not exists");
 
-        Exlog.Id_Job = log.Id_Job;
-        Exlog.Time = log.Time;
-        Exlog.Message = log.Message;
+        Exlog.UpdateData(log.GetLog());
 
         context.SaveChanges();
         return Ok();

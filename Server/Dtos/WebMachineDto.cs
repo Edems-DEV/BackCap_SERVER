@@ -62,7 +62,7 @@ public class WebMachineDto
 
     public void DatabaseUpdate(MyContext context)
     {
-        foreach (var item in context.Job.Where(x => x.Id_Machine == Id)) ;
+        foreach (var item in context.Job.Where(x => x.Id_Machine == Id))
         {
 
         }

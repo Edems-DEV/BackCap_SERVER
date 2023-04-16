@@ -17,5 +17,12 @@ public class Log
 
     [ForeignKey("Id_Job")]
     public virtual Job Job { get; set; }
+
+    public void UpdateData(Log log)
+    {
+        this.Id_Job = log.Id_Job;
+        this.Message = log.Message;
+        this.Time = log.Time;
+    }
 }
 

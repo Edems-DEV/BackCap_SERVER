@@ -28,4 +28,9 @@ public class WebOthersDto
     {
         return new Groups() { Id = this.Id, Name = this.Name, Description = desctiption };
     }
+
+    public void GetConfigs()
+    {
+
+    }
 }

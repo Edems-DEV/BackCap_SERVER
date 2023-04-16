@@ -108,7 +108,7 @@ public class MachinesController : Controller
         //    Is_Active = machine.Is_Active
         //};
 
-        context.Machine.Add(NewMachine);
+        //context.Machine.Add(NewMachine);
         context.SaveChanges();
 
         return Ok();
@@ -131,8 +131,7 @@ public class MachinesController : Controller
         if (ExistingMachine == null)
             return NotFound("Object does not exists");
 
-        machine.UpdateMachine(ExistingMachine);
-        machine.DatabaseUpdate(context);
+        ExistingMachine = machine.UpdateMachine(ExistingMachine);
 
         context.SaveChanges();
 
