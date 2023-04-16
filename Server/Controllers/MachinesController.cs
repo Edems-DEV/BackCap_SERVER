@@ -87,27 +87,26 @@ public class MachinesController : Controller
     }
 
     [HttpPost]
-    public ActionResult Post([FromBody] MachineDto machine)
+    public ActionResult Post([FromBody] WebMachineDto machine)
     {
         try
         {
             validation.IpValidator(machine.Ip_Address.ToString());
-            validation.MacValidator(machine.Mac_Address.ToString());
         }
         catch (Exception)
         {
-            return NotFound("Invalid");
+            return BadRequest("Invalid");
         }
 
-        Machine NewMachine = new Machine()
-        {
-            Name = machine.Name,
-            Description = machine.Description,
-            Os = machine.Os,
-            Ip_Address = machine.Ip_Address,
-            Mac_Address = machine.Mac_Address,
-            Is_Active = machine.Is_Active
-        };
+        //Machine NewMachine = new Machine()
+        //{
+        //    Name = machine.Name,
+        //    Description = machine.Description,
+        //    Os = machine.Os,
+        //    Ip_Address = machine.Ip_Address,
+        //    Mac_Address = machine.Mac_Address,
+        //    Is_Active = machine.Is_Active
+        //};
 
         context.Machine.Add(NewMachine);
         context.SaveChanges();
@@ -116,12 +115,11 @@ public class MachinesController : Controller
     }
 
     [HttpPut("{Id}")]
-    public ActionResult Put(int Id, [FromBody] MachineDto machine)
+    public ActionResult Put(int Id, [FromBody] WebMachineDto machine)
     {
         try
         {
             validation.IpValidator(machine.Ip_Address.ToString());
-            validation.MacValidator(machine.Mac_Address.ToString());
         }
         catch (Exception)
         {
@@ -133,12 +131,8 @@ public class MachinesController : Controller
         if (ExistingMachine == null)
             return NotFound("Object does not exists");
 
-        ExistingMachine.Name = machine.Name;
-        ExistingMachine.Description = machine.Description;
-        ExistingMachine.Os = machine.Os;
-        ExistingMachine.Ip_Address = machine.Ip_Address;
-        ExistingMachine.Mac_Address = machine.Mac_Address;
-        ExistingMachine.Is_Active = machine.Is_Active;
+        machine.UpdateMachine(ExistingMachine);
+        machine.DatabaseUpdate(context);
 
         context.SaveChanges();
 

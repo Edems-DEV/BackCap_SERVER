@@ -42,7 +42,7 @@ public class JobsController : Controller
         List<WebJobDto> jobDtos = new();
         foreach (var job in query)
         {
-            jobDtos.Add(new WebJobDto(job.Id, job.Status, job.Id_Group, job.Id_Machine, context));
+            jobDtos.Add(new WebJobDto(job.Id, job.Status, job.Time_start, job.Time_end, job.Time_schedule, job.Id_Group, job.Id_Machine, context));
         }
 
         return Ok(jobDtos); //200
@@ -78,7 +78,7 @@ public class JobsController : Controller
         if (job == null)
             return NotFound("Object does not exists");
 
-        return Ok(new WebJobDto(job.Id, job.Status, job.Id_Group, job.Id_Machine, context));
+        return Ok(new WebJobDto(job.Id, job.Status, job.Time_start, job.Time_end, job.Time_schedule, job.Id_Group, job.Id_Machine, context));
     }
 
     // for deamon for final stats after completing job

@@ -75,7 +75,7 @@ public class UsersController : ControllerBase
 
     // POST api/users
     [HttpPost]
-    public ActionResult Post([FromBody] UserDto user)
+    public ActionResult Post([FromBody] WebUserDto user)
     {
 
         try
@@ -104,17 +104,17 @@ public class UsersController : ControllerBase
 
     // PUT api/users/5
     [HttpPut("{Id}")]
-    public ActionResult Put(int Id, [FromBody] UserDto user)
+    public ActionResult Put(int Id, [FromBody] WebUserDto user)
     {
-        //try // opravit redex
-        //{
-        //    validation.EmailValidator(user.Email.ToString());
-        //}
-        //catch (Exception)
-        //{
+        try
+        {
+            validation.EmailValidator(user.Email.ToString());
+        }
+        catch (Exception)
+        {
 
-        //    return NotFound("Invalid");
-        //}
+            return NotFound("Invalid");
+        }
 
         User ExUser = context.User.Find(Id);
 

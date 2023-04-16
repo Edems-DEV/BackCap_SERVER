@@ -1,6 +1,6 @@
 ﻿namespace Server.ParamClasses;
 
-public class UserDto
+public class WebUserDto
 {
     public string Name { get; set; }
 
