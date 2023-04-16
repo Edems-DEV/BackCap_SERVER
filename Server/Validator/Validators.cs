@@ -37,7 +37,7 @@ public class Validators
         bool ReturnBool;
         ReturnBool = a.IsMatch(input);
 
-        if (ReturnBool)
+        if (!ReturnBool)
             throw new Exception("Invalid datetime format");
     }
 
@@ -48,7 +48,7 @@ public class Validators
         bool ReturnBool;
         ReturnBool = a.IsMatch(input);
 
-        if (ReturnBool)
+        if (!ReturnBool)
             throw new Exception("Invalid email format");
     }
 
@@ -59,7 +59,7 @@ public class Validators
         bool ReturnBool;
         ReturnBool = a.IsMatch(input);
 
-        if (ReturnBool)
+        if (!ReturnBool)
             throw new Exception("Invalid ip format");
     }
 
@@ -70,7 +70,7 @@ public class Validators
         bool ReturnBool;
         ReturnBool = a.IsMatch(input);
 
-        if (ReturnBool)
+        if (!ReturnBool)
             throw new Exception("Invalid mac format");
     }
 }
