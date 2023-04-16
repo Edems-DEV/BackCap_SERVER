@@ -19,11 +19,11 @@ public class WebConfigDto
 
     public int PackageSize { get; set; }
 
-    public int Retencion { get; set; }
+    public int Retention { get; set; }
 
     public string Interval { get; set; }
 
-    public DateTime? EndOfInterval { get; set; }
+    public DateTime? Interval_end { get; set; }
 
     public List<WebOthersDto> Sources { get; set; } = new();
 
@@ -48,9 +48,9 @@ public class WebConfigDto
         Type = this.ConvertType(config.Type);
         IsCompressed = config.IsCompressed;
         PackageSize = config.PackageSize;
-        Retencion = config.Retention;
+        Retention = config.Retention;
         Interval = config.Backup_interval;
-        EndOfInterval = config.Interval_end;
+        Interval_end = config.Interval_end;
 
         foreach (var source in context.Sources.Where(x => x.Id_Config == Id).ToList())
         {
@@ -79,11 +79,11 @@ public class WebConfigDto
             Name = this.Name,
             Description = this.Description,
             Type = this.ConvertType(this.Type),
-            Retention = this.Retencion,
+            Retention = this.Retention,
             PackageSize = this.PackageSize,
             Backup_interval = this.Interval,
             IsCompressed = this.IsCompressed,
-            Interval_end = this.EndOfInterval
+            Interval_end = this.Interval_end
         };
     }
 
@@ -98,7 +98,7 @@ public class WebConfigDto
                 return "Diff";
 
             case 2:
-                return "Incr";
+                return "Inc";
 
             default:
                 return "Full";
@@ -115,7 +115,7 @@ public class WebConfigDto
             case "diff":
                 return 1;
 
-            case "incr":
+            case "inc":
                 return 2;
 
             default:

@@ -98,7 +98,7 @@ public class ConfigsController : Controller
 
         try
         {
-            validation.DateTimeValidator(config.EndOfInterval.ToString());
+            validation.DateTimeValidator(config.Interval_end.ToString());
         }
         catch (Exception)
         {
