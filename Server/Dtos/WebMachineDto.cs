@@ -12,9 +12,9 @@ public class WebMachineDto
 
     public bool Is_Active { get; set; }
 
-    public WebOthersDto Config { get; set; }
+    public List<WebOthersDto> Config { get; set; } = new();
 
-    public WebOthersDto Groups { get; set; }
+    public List<WebOthersDto> Groups { get; set; } = new();
 
     public WebMachineDto()
     {
@@ -32,7 +32,17 @@ public class WebMachineDto
         Config config = context.Config.Find(job.Id_Config);
         Groups group = context.Groups.Find(job.Id_Group);
 
-        this.Config = new WebOthersDto(config.Id, config.Name);
-        this.Groups = new WebOthersDto(group.Id, group.Name);
+        //this.Config = new WebOthersDto(config.Id, config.Name);
+        //this.Groups = new WebOthersDto(group.Id, group.Name);
+
+        foreach (var configs in context.Config.Where(x => x.Id == job.Id_Config).ToList())
+        {
+            Config.Add(new WebOthersDto(configs.Id, configs.Name));
+        }
+
+        foreach (var groups in context.Groups.Where(x => x.Id == job.Id_Group).ToList())
+        {
+            Groups.Add(new WebOthersDto(groups.Id, groups.Name));
+        }
     }
 }

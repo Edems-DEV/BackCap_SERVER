@@ -31,7 +31,7 @@ public class WebConfigDto
 
     public WebOthersDto Machine { get; set; }
 
-    public WebOthersDto? Group { get; set; }
+    public List<WebOthersDto> Groups { get; set; } = new();
 
     public WebConfigDto() // overloadnutý konstruktor kvůli put. Jinak spadne protože konstruktor je už occupied
     {
@@ -62,12 +62,14 @@ public class WebConfigDto
             Destinations.Add(new WebOthersDto(destination.Id, destination.DestPath));
         }
 
+        foreach (var groups in context.Groups.Where(x => x.Id == job.Id_Group).ToList())
+        {
+            Groups.Add(new WebOthersDto(groups.Id, groups.Name));
+        }
+
         //sem je potřeba přidělat opravu, při chybných/ null datech.Zatim netušim co je nejlepší možnost
         Machine machine = context.Machine.Where(x => x.Id == job.Id_Machine).FirstOrDefault();
         Machine = new WebOthersDto(machine.Id, machine.Name);
-
-        Groups group = context.Groups.Where(x => x.Id == job.Id_Group).FirstOrDefault();
-        Group = new WebOthersDto(group.Id, group.Name);
     }
 
     public Config GetConfig(MyContext context)

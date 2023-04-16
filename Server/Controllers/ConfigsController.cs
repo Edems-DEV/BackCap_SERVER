@@ -122,7 +122,8 @@ public class ConfigsController : Controller
 
         // update group a pc
         Job job = context.Job.Where(x => x.Id_Config == config.Id).FirstOrDefault();
-        job.Id_Group = config.Group.Id;
+        // přidat update group
+        //job.Id_Group = config.Groups.Id;
         job.Id_Machine = config.Machine.Id;
 
 
