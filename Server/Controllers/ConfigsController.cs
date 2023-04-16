@@ -51,6 +51,24 @@ public class ConfigsController : Controller
         return Ok(configDtos); //200
     } //&orderBy  => is required (idk how to make it optimal)
 
+    [HttpGet("names")]
+    public ActionResult<List<WebOthersDto>> GetNames()
+    {
+        List<WebOthersDto> names = new();
+
+        foreach (var config in context.Config.ToList())
+        {
+            names.Add(new WebOthersDto(config.Id, config.Name));
+        }
+
+        if (names.Count == 0) 
+        {
+            return NoContent();
+        }
+
+        return Ok(names);
+    }
+
     // GET: for stats
     [HttpGet("count")]
     public ActionResult<int> GetCount()
@@ -98,7 +116,7 @@ public class ConfigsController : Controller
 
         try
         {
-            validation.DateTimeValidator(config.EndOfInterval.ToString());
+            validation.DateTimeValidator(config.Interval_end.ToString());
         }
         catch (Exception)
         {
@@ -122,7 +140,8 @@ public class ConfigsController : Controller
 
         // update group a pc
         Job job = context.Job.Where(x => x.Id_Config == config.Id).FirstOrDefault();
-        job.Id_Group = config.Group.Id;
+        // přidat update group
+        //job.Id_Group = config.Groups.Id;
         job.Id_Machine = config.Machine.Id;
 
 

@@ -6,6 +6,7 @@ using Server.DatabaseTables;
 using Server.Dtos;
 using Server.ParamClasses;
 using Server.Validator;
+using static Org.BouncyCastle.Math.EC.ECCurve;
 
 namespace Server.Controllers;
 
@@ -40,8 +41,32 @@ public class GroupsController : Controller
             return NoContent(); //204
         }
 
-        return Ok(query); //200
+        List<WebGroupDto> groupDtos = new();
+        foreach (var group in query)
+        {
+            groupDtos.Add(new WebGroupDto(group.Id, group.Name, group.Description, context));
+        }
+
+        return Ok(groupDtos); //200
     } //&orderBy  => is required (idk how to make it optimal)
+
+    [HttpGet("names")]
+    public ActionResult<List<WebOthersDto>> GetNames()
+    {
+        List<WebOthersDto> names = new();
+
+        foreach (var group in context.Groups.ToList())
+        {
+            names.Add(new WebOthersDto(group.Id, group.Name));
+        }
+
+        if (names.Count == 0)
+        {
+            return NoContent();
+        }
+
+        return Ok(names);
+    }
 
     // GET: for stats
     [HttpGet("count")]
@@ -58,7 +83,7 @@ public class GroupsController : Controller
         if (group == null)
             return NotFound("Object does not exists");
 
-        return Ok(new WebGroupDto(group.Id, group.Name, group.Description));
+        return Ok(new WebGroupDto(group.Id, group.Name, group.Description, context));
     }
 
     [HttpPost]

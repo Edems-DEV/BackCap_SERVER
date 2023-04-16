@@ -42,7 +42,7 @@ public class UsersController : ControllerBase
     //    return Ok(query); //200
     //} //&orderBy  => is required (idk how to make it optimal)
 
-    [HttpGet("All")]
+    [HttpGet]
     public ActionResult<List<User>> GetUsers()
     {
         List<WebUserNoPass> newUsers = new();

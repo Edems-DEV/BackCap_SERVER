@@ -43,7 +43,7 @@ public class Validators
 
     public void EmailValidator(string input)
     {
-        Regex a = new Regex(@"[a-zA-Z0-9]+@([a-zA-Z0-9]+(\.|)+)+\.[a-zA-Z0-9]+");
+        Regex a = new Regex(@"[a-zA-Z0-9]+[@]([a-zA-Z0-9]+(\.|)+)+\.[a-zA-Z0-9]+");
 
         bool ReturnBool;
         ReturnBool = a.IsMatch(input);

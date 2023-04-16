@@ -50,6 +50,24 @@ public class MachinesController : Controller
         return Ok(machineDtos); //200
     } //&orderBy  => is required (idk how to make it optimal)
 
+    [HttpGet("names")]
+    public ActionResult<List<WebOthersDto>> GetNames()
+    {
+        List<WebOthersDto> names = new();
+
+        foreach (var machine in context.Machine.ToList())
+        {
+            names.Add(new WebOthersDto(machine.Id, machine.Name));
+        }
+
+        if (names.Count == 0)
+        {
+            return NoContent();
+        }
+
+        return Ok(names);
+    }
+
     // GET: for stats
     [HttpGet("count")]
     public ActionResult<int> GetCount(bool active = true)

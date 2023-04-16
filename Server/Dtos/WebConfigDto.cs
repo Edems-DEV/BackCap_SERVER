@@ -19,11 +19,11 @@ public class WebConfigDto
 
     public int PackageSize { get; set; }
 
-    public int Retencion { get; set; }
+    public int Retention { get; set; }
 
     public string Interval { get; set; }
 
-    public DateTime? EndOfInterval { get; set; }
+    public DateTime? Interval_end { get; set; }
 
     public List<WebOthersDto> Sources { get; set; } = new();
 
@@ -31,7 +31,7 @@ public class WebConfigDto
 
     public WebOthersDto Machine { get; set; }
 
-    public WebOthersDto? Group { get; set; }
+    public List<WebOthersDto> Groups { get; set; } = new();
 
     public WebConfigDto() // overloadnutý konstruktor kvůli put. Jinak spadne protože konstruktor je už occupied
     {
@@ -48,9 +48,9 @@ public class WebConfigDto
         Type = this.ConvertType(config.Type);
         IsCompressed = config.IsCompressed;
         PackageSize = config.PackageSize;
-        Retencion = config.Retention;
+        Retention = config.Retention;
         Interval = config.Backup_interval;
-        EndOfInterval = config.Interval_end;
+        Interval_end = config.Interval_end;
 
         foreach (var source in context.Sources.Where(x => x.Id_Config == Id).ToList())
         {
@@ -62,12 +62,14 @@ public class WebConfigDto
             Destinations.Add(new WebOthersDto(destination.Id, destination.DestPath));
         }
 
+        foreach (var groups in context.Groups.Where(x => x.Id == job.Id_Group).ToList())
+        {
+            Groups.Add(new WebOthersDto(groups.Id, groups.Name));
+        }
+
         //sem je potřeba přidělat opravu, při chybných/ null datech.Zatim netušim co je nejlepší možnost
         Machine machine = context.Machine.Where(x => x.Id == job.Id_Machine).FirstOrDefault();
         Machine = new WebOthersDto(machine.Id, machine.Name);
-
-        Groups group = context.Groups.Where(x => x.Id == job.Id_Group).FirstOrDefault();
-        Group = new WebOthersDto(group.Id, group.Name);
     }
 
     public Config GetConfig(MyContext context)
@@ -79,11 +81,11 @@ public class WebConfigDto
             Name = this.Name,
             Description = this.Description,
             Type = this.ConvertType(this.Type),
-            Retention = this.Retencion,
+            Retention = this.Retention,
             PackageSize = this.PackageSize,
             Backup_interval = this.Interval,
             IsCompressed = this.IsCompressed,
-            Interval_end = this.EndOfInterval
+            Interval_end = this.Interval_end
         };
     }
 
@@ -98,7 +100,7 @@ public class WebConfigDto
                 return "Diff";
 
             case 2:
-                return "Incr";
+                return "Inc";
 
             default:
                 return "Full";
@@ -115,7 +117,7 @@ public class WebConfigDto
             case "diff":
                 return 1;
 
-            case "incr":
+            case "inc":
                 return 2;
 
             default:
