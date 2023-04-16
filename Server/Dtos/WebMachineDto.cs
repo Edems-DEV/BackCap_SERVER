@@ -42,7 +42,7 @@ public class WebMachineDto
             Config.Add(new WebOthersDto(configs.Id, configs.Name));
         }
 
-        foreach (var item in context.MachineGroup.Where(x => x.Id_Machine == Id))
+        foreach (var item in context.MachineGroup.Where(x => x.Id_Machine == Id).ToList())
         {
             Groups groups = context.Groups.Find(item.Id_Group);
             Groups.Add(new WebOthersDto(groups.Id, groups.Name));
