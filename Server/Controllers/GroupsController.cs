@@ -87,11 +87,11 @@ public class GroupsController : Controller
     }
 
     [HttpPost]
-    public ActionResult Post([FromBody] string name /*[FromBody] string description*/) // předělat
+    public ActionResult Post([FromBody] GroupTemp group) // předělat
     {
         Groups NewGroup = new Groups();
-        NewGroup.Name = name;
-        //NewGroup.Description = description;
+        NewGroup.Name = group.Name;
+        NewGroup.Description = group.Description;
 
         context.Groups.Add(NewGroup);
         context.SaveChanges();
@@ -100,15 +100,15 @@ public class GroupsController : Controller
     }
 
     [HttpPut("{Id}")]
-    public ActionResult Put(int Id, [FromBody] string name /*[FromBody] string description*/)
+    public ActionResult Put(int Id, [FromBody] WebGroupDto groupDto)
     {
         Groups group = context.Groups.Find(Id);
 
         if (group == null)
             return NotFound("Object does not exists");
 
-        group.Name = name;
-        //group.Description = description;
+        group.Name = groupDto.Name;
+        group.Description = groupDto.Description;
         context.SaveChanges();
 
         return Ok();
