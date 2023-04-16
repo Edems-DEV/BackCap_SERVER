@@ -48,11 +48,30 @@ public class JobsController : Controller
         return Ok(jobDtos); //200
     } //&orderBy  => is required (idk how to make it optimal)
 
-    // GET: for stats
-    [HttpGet("count")]
-    public ActionResult<int> GetCount()
+    [HttpGet("count/{command}")]
+    public int GetCount(string command)
     {
-        return Ok(context.Job.Count());
+        int count = 0;
+        switch (command)
+        {
+            case "all":
+                context.Job.ForEachAsync(x => { count++; });
+                    break;
+
+            case "active":
+                context.Job.Where(x => x.Status == 1).ForEachAsync(x => { count++; });
+                break;
+
+            case "disable":
+                context.Job.Where(x => x.Status == 2).ForEachAsync(x => { count++; });
+                break;
+
+            case "broken":
+                context.Job.Where(x => x.Status == 3).ForEachAsync(x => { count++; });
+                break;
+                 
+        }
+        return count;
     }
 
     // GET: api/jobs/5   => specific job info
