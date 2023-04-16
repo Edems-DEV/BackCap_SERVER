@@ -8,7 +8,7 @@ public class WebMachineDto
 
     public string Description { get; set; }
 
-    public string Ip_Adress { get; set; }
+    public string Ip_Address { get; set; }
 
     public bool Is_Active { get; set; }
 
@@ -25,7 +25,7 @@ public class WebMachineDto
     {
         this.Name = machine.Name;
         this.Description = machine.Description;
-        this.Ip_Adress = machine.Ip_Address;
+        this.Ip_Address = machine.Ip_Address;
         this.Is_Active = machine.Is_Active;
 
         Job job = context.Job.Where(x => x.Id_Machine == machine.Id).FirstOrDefault();
