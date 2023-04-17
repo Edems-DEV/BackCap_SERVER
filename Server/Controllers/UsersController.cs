@@ -10,6 +10,7 @@ namespace Server.Controllers;
 
 [Route("api/[controller]")]
 [ApiController]
+[Authorize(Role = "admin")]
 public class UsersController : ControllerBase
 {
     private readonly MyContext context = new MyContext();
@@ -53,6 +54,10 @@ public class UsersController : ControllerBase
 
         return Ok(newUsers);
     }
+    //public JsonResult Get()
+    //{
+    //    return new JsonResult(this.context.Users.ToList());
+    //}
 
     // GET: for stats
     [HttpGet("count")]
