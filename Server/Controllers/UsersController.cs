@@ -10,7 +10,7 @@ namespace Server.Controllers;
 
 [Route("api/[controller]")]
 [ApiController]
-[Authorize(Role = "admin")]
+[Authorize]
 public class UsersController : ControllerBase
 {
     private readonly MyContext context = new MyContext();

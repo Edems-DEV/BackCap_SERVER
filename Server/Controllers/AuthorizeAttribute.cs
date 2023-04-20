@@ -1,23 +1,30 @@
-﻿using Microsoft.AspNetCore.Authentication;
+﻿using JWT.Algorithms;
+using JWT.Builder;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Filters;
-using Server.Services;
 
 namespace Server.Controllers;
+
 public class AuthorizeAttribute : Attribute, IAuthorizationFilter
 {
-    // optional attribute parameter - not used now
-    public string Role { get; set; }
-
-    private Services.AuthenticationService auth = new Services.AuthenticationService(); //fixed? Services.
-
     public void OnAuthorization(AuthorizationFilterContext context)
     {
-        string token = context.HttpContext.Request.Headers["Authorization"].ToString().Split(' ').Last();
-
-        if (!this.auth.VerifyToken(token))
+        try
         {
-            context.Result = new JsonResult("authentication failed") { StatusCode = StatusCodes.Status401Unauthorized };
+            string token = context.HttpContext.Request.Headers["Authorization"].ToString().Split(' ').Last();
+
+            var json = JwtBuilder.Create()
+                     .WithAlgorithm(new HMACSHA256Algorithm())
+                     .WithSecret("super-secret-foobar")
+                     .MustVerifySignature()
+                     .Decode(token);
+        }
+        catch
+        {
+            context.Result = new JsonResult(new { message = "Invalid token" })
+            {
+                StatusCode = StatusCodes.Status401Unauthorized
+            };
         }
     }
 }

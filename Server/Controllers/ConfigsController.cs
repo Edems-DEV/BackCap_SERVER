@@ -14,6 +14,7 @@ namespace Server.Controllers;
 
 [Route("api/[controller]")]
 [ApiController]
+[Authorize]
 public class ConfigsController : Controller
 {
     private readonly MyContext context = new MyContext();

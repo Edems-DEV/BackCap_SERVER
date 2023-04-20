@@ -10,6 +10,7 @@ namespace Server.Controllers;
 
 [Route("api/[controller]")]
 [ApiController]
+[Authorize]
 public class JobsController : Controller
 {
     private readonly MyContext context = new MyContext();
