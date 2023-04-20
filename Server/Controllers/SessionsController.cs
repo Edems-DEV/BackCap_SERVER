@@ -4,6 +4,7 @@ using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Server.DatabaseTables;
 using Server.Dtos;
+using Server.Entities;
 
 namespace Server.Controllers;
 
@@ -15,8 +16,36 @@ public class SessionsController : ControllerBase
     private MyContext context = new MyContext();
 
     // POST api/<SessionsController>
+    //[HttpPost]
+    //public IActionResult Post(WebLoginDto model)
+    //{
+    //    try
+    //    {
+    //        User login = this.context.User.Where(x => x.Email == model.Email).First();
+
+    //        if (login.Password == model.Password)
+    //        {
+    //            string token = JwtBuilder.Create()
+    //              .WithAlgorithm(new HMACSHA256Algorithm())
+    //              .WithSecret(keySecret)
+    //              .AddClaim("exp", DateTimeOffset.UtcNow.AddHours(1).ToUnixTimeSeconds()) //AddSeconds(30) after this token will expire and will not anymore be valid
+    //              .AddClaim("login", login.Email)
+    //              .Encode();
+
+    //            return Ok(token);
+    //            //return Ok(new { token = token });
+    //        }
+
+    //        return Unauthorized(new { message = "Invalid credentials" });
+    //    }
+    //    catch
+    //    {
+    //        return Unauthorized(new { message = "Invalid credentials" });
+    //    }
+    //}
+
     [HttpPost]
-    public IActionResult Post(WebLoginDto model)
+    public JsonResult Post(WebLoginDto model)
     {
         try
         {
@@ -31,14 +60,13 @@ public class SessionsController : ControllerBase
                   .AddClaim("login", login.Email)
                   .Encode();
 
-                return Ok(new { token = token });
+                return new JsonResult(token);
             }
-
-            return Unauthorized(new { message = "Invalid credentials" });
+            return new JsonResult("Invalid username or password") { StatusCode = StatusCodes.Status401Unauthorized };
         }
         catch
         {
-            return Unauthorized(new { message = "Invalid credentials" });
+            return new JsonResult("Invalid username or password") { StatusCode = StatusCodes.Status401Unauthorized };
         }
     }
 
