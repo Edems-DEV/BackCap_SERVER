@@ -108,19 +108,19 @@ public class ConfigsController : Controller
     }
 
     [HttpPut("{Id}")]
-    public ActionResult Put(int Id, [FromBody] WebConfigDto config)
+    public void Put(int Id, [FromBody] WebConfigDto config)
     {
         config.Id = Id;
         DatabaseManager databaseManager = new(context);
 
-        try
-        {
-            validation.DateTimeValidator(config.Interval_end.ToString());
-        }
-        catch (Exception)
-        {
-            return BadRequest("Invalid DateTime");
-        }
+        //try
+        //{
+        //    validation.DateTimeValidator(config.Interval_end.ToString());
+        //}
+        //catch (Exception)
+        //{
+        //    return BadRequest("Invalid DateTime");
+        //}
 
         Config result = context.Config.Find(Id);
 
