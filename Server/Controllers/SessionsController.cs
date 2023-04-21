@@ -52,6 +52,7 @@ public class SessionsController : ControllerBase
             User login = this.context.User.FirstOrDefault(x => x.Email == model.Email)
              ?? this.context.User.FirstOrDefault(x => x.Name == model.Email);
 
+            if (login == null) { return new JsonResult("Invalid username or password") { StatusCode = StatusCodes.Status401Unauthorized }; }
 
             if (login.Password == model.Password)
             {
