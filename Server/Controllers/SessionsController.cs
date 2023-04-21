@@ -49,7 +49,9 @@ public class SessionsController : ControllerBase
     {
         try
         {
-            User login = this.context.User.Where(x => x.Email == model.Email).First();
+            User login = this.context.User.FirstOrDefault(x => x.Email == model.Email)
+             ?? this.context.User.FirstOrDefault(x => x.Name == model.Email);
+
 
             if (login.Password == model.Password)
             {
@@ -57,7 +59,7 @@ public class SessionsController : ControllerBase
                   .WithAlgorithm(new HMACSHA256Algorithm())
                   .WithSecret(keySecret)
                   .AddClaim("exp", DateTimeOffset.UtcNow.AddHours(1).ToUnixTimeSeconds()) //AddSeconds(30) after this token will expire and will not anymore be valid
-                  .AddClaim("login", login.Email)
+                  .AddClaim("userId", login.Id)
                   .Encode();
 
                 return new JsonResult(token);
