@@ -128,7 +128,8 @@ public class UsersController : ControllerBase
         ExUser.Interval_Report = user.Interval_Report;
         ExUser.Email = user.Email;
         ExUser.Name = user.Name;
-        ExUser.Password = user.Password;
+        if (user.Password != "" && user.Password != null)
+            ExUser.Password = user.Password;
 
         context.SaveChanges();
         
