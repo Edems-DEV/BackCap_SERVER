@@ -108,7 +108,7 @@ public class ConfigsController : Controller
     }
 
     [HttpPut("{Id}")]
-    public void Put(int Id, [FromBody] WebConfigDto config)
+    public ActionResult Put(int Id, [FromBody] WebConfigDto config)
     {
         config.Id = Id;
         DatabaseManager databaseManager = new(context);

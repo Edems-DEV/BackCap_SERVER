@@ -20,7 +20,7 @@ public class GroupsController : Controller
 
     // GET: api/groups?limit=25&offset=50&orderBy=Id&isAscending=false
     [HttpGet]
-    public IActionResult Get(int limit = 10, int offset = 0)
+    public ActionResult Get(int limit = 10, int offset = 0)
     {
         //int limit = 10, int offset = 0, string orderBy = "empty", bool isAscending = true
         string orderBy = "empty"; bool isAscending = true;
@@ -116,7 +116,7 @@ public class GroupsController : Controller
     }
 
     [HttpDelete("{Id}")]
-    public IActionResult Delete(int Id)
+    public ActionResult Delete(int Id)
     {
         Groups group = context.Groups.Find(Id);
 
@@ -125,6 +125,6 @@ public class GroupsController : Controller
 
         context.Groups.Remove(group);
         context.SaveChanges();
-        return Ok($"Delete request received for group Id {Id}.");
+        return Ok(); //$"Delete request received for group Id {Id}."
     }
 }

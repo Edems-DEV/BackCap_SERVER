@@ -80,7 +80,7 @@ public class UsersController : ControllerBase
 
     // POST api/users
     [HttpPost]
-    public void Post([FromBody] WebUserDto user)
+    public ActionResult Post([FromBody] WebUserDto user)
     {
 
         try
@@ -90,7 +90,7 @@ public class UsersController : ControllerBase
         catch (Exception)
         {
 
-            return;// NotFound("Invalid");
+            return NotFound("Invalid");
         }
 
         User NewUser = new User()
@@ -104,12 +104,12 @@ public class UsersController : ControllerBase
         context.User.Add(NewUser);
         context.SaveChanges();
 
-        return;// Ok();
+        return Ok();
     }
 
     // PUT api/users/5
     [HttpPut("{Id}")]
-    public void Put(int Id, [FromBody] WebUserDto user)
+    public ActionResult Put(int Id, [FromBody] WebUserDto user)
     {
         try
         {
@@ -117,13 +117,13 @@ public class UsersController : ControllerBase
         }
         catch (Exception)
         {
-            return; //NotFound("Invalid");
+            return NotFound("Invalid");
         }
 
         User ExUser = context.User.Find(Id);
 
         if (ExUser == null)
-            return;// NotFound("Object does not exists");
+            return NotFound("Object does not exists");
 
         ExUser.Interval_Report = user.Interval_Report;
         ExUser.Email = user.Email;
@@ -132,20 +132,20 @@ public class UsersController : ControllerBase
 
         context.SaveChanges();
         
-        return; // Ok();
+        return Ok();
     }
 
     // DELETE api/users/5
     [HttpDelete("{Id}")]
-    public void Delete(int Id) //ActionResult => when is return throws error on frontend (void fixed the problem)
+    public ActionResult Delete(int Id)
     {
         var user = context.User.Find(Id);
         if (user == null)
         {
-            return;// NotFound();
+            return NotFound();
         }
         context.User.Remove(user);
         context.SaveChanges();
-        return;// Ok($"Delete request received for user Id {Id}.");
+        return Ok(); //$"Delete request received for user Id {Id}."
     }
 }
