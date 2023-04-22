@@ -35,7 +35,7 @@ public class GroupsController : Controller
             sql += $" ORDER BY `{orderBy}` {direction}";
         }
 
-        List<Groups> query = context.Groups.FromSqlRaw(sql + " LIMIT {0} OFFSET {1}", limit, offset).ToList();
+        List<Groups> query = context.Groups.FromSqlRaw(sql).ToList();// + " LIMIT {0} OFFSET {1}", limit, offset
 
         if (query == null || query.Count == 0)
         {

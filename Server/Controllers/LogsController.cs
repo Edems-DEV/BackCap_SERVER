@@ -32,7 +32,7 @@ public class LogsController : Controller
             sql += $" ORDER BY `{orderBy}` {direction}";
         }
 
-        List<Log> query = context.Log.FromSqlRaw(sql + " LIMIT {0} OFFSET {1}", limit, offset).ToList();
+        List<Log> query = context.Log.FromSqlRaw(sql).ToList();// + " LIMIT {0} OFFSET {1}", limit, offset
 
         if (query == null || query.Count == 0)
         {

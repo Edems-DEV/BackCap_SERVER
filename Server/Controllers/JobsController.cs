@@ -33,7 +33,7 @@ public class JobsController : Controller
             sql += $" ORDER BY `{orderBy}` {direction}";
         }
 
-        List<Job> query = context.Job.FromSqlRaw(sql + " LIMIT {0} OFFSET {1}", limit, offset).ToList();
+        List<Job> query = context.Job.FromSqlRaw(sql).ToList();// + " LIMIT {0} OFFSET {1}", limit, offset
 
         if (query == null || query.Count == 0)
         {

@@ -35,7 +35,7 @@ public class MachinesController : Controller
             sql += $" ORDER BY `{orderBy}` {direction}";
         }
 
-        List<Machine> query = context.Machine.FromSqlRaw(sql + " LIMIT {0} OFFSET {1}", limit, offset).ToList();
+        List<Machine> query = context.Machine.FromSqlRaw(sql).ToList(); // + " LIMIT {0} OFFSET {1}", limit, offset
 
         if (query == null || query.Count == 0)
         {

@@ -36,7 +36,7 @@ public class ConfigsController : Controller
             sql += $" ORDER BY `{orderBy}` {direction}";
         }
 
-        List<Config> query = context.Config.FromSqlRaw(sql + " LIMIT {0} OFFSET {1}", limit, offset).ToList();
+        List<Config> query = context.Config.FromSqlRaw(sql).ToList();// + " LIMIT {0} OFFSET {1}", limit, offset
         List<WebConfigDto> configDtos = new List<WebConfigDto>();
 
         if (query == null || query.Count == 0)
