@@ -70,11 +70,11 @@ public class JobsController : Controller
                 context.Job.Where(x => x.Status == 3).ForEachAsync(x => { count++; });
                 break;
 
-            case "Warning":
+            case "warning":
                 context.Job.Where(x => x.Status == 4).ForEachAsync(x => { count++; });
                 break;
 
-            case "Failed":
+            case "failed":
                 context.Job.Where(x => x.Status == 5).ForEachAsync(x => { count++; });
                 break;
 
