@@ -33,6 +33,10 @@ public class WebMachineDto
         this.Is_Active = machine.Is_Active;
 
         Job job = context.Job.Where(x => x.Id_Machine == machine.Id).FirstOrDefault();
+
+        if (job == null)
+            return;
+
         Config config = context.Config.Find(job.Id_Config);
         Groups group = context.Groups.Find(job.Id_Group);
 
