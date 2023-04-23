@@ -14,7 +14,6 @@ namespace Server.Controllers;
 
 [Route("api/[controller]")]
 [ApiController]
-[Authorize]
 public class ConfigsController : Controller
 {
     private readonly MyContext context = new MyContext();
@@ -26,7 +25,7 @@ public class ConfigsController : Controller
     {
         //int limit = 10, int offset = 0, string orderBy = "empty", bool isAscending = true
         string orderBy = "empty"; bool isAscending = true;
-        string sql = "SELECT * FROM `Config`";
+        string sql = "SELECT * FROM `Configs`";
 
         var tables = new List<string> { "id", "type", "name", "description", "retention", "packageSize", "isCompressed", "Backup_interval", "interval_end" };
         var direction = isAscending ? "ASC" : "DESC";
@@ -144,12 +143,12 @@ public class ConfigsController : Controller
     //[HttpDelete("{Id}")] /* potřebuje opravit vadí mu konstrainty aneb kontrola foreing klíčů
     //public ActionResult Delete(int Id)
     //{
-    //    Config config = context.Config.Find(Id);
+    //    Configs config = context.Configs.Find(Id);
 
     //    if (config == null)
     //        return NotFound("Object does not exists");
 
-    //    context.Config.Remove(config);
+    //    context.Configs.Remove(config);
     //    context.SaveChanges();
     //    return Ok($"Delete request received for config Id {Id}.");
     //}

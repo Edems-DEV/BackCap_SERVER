@@ -12,7 +12,6 @@ namespace Server.Controllers;
 
 [Route("api/[controller]")]
 [ApiController]
-[Authorize]
 public class GroupsController : Controller
 {
     private readonly MyContext context = new MyContext();
@@ -104,8 +103,8 @@ public class GroupsController : Controller
         if (group == null)
             return NotFound("Object does not exists");
 
-        group.Name = groupDto.Name;
-        group.Description = groupDto.Description;
+        group = groupDto.UpdateGroup(group, context);
+
         context.SaveChanges();
 
         return Ok();

@@ -10,7 +10,6 @@ namespace Server.Controllers;
 
 [Route("api/[controller]")]
 [ApiController]
-[Authorize]
 public class LogsController : Controller
 {
     private readonly MyContext context = new MyContext();

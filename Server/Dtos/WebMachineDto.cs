@@ -15,7 +15,7 @@ public class WebMachineDto
 
     public bool Is_Active { get; set; }
 
-    public List<WebOthersDto> Config { get; set; } = new();
+    public List<WebOthersDto> Configs { get; set; } = new();
 
     public List<WebOthersDto> Groups { get; set; } = new();
 
@@ -39,7 +39,7 @@ public class WebMachineDto
 
         foreach (var configs in context.Config.Where(x => x.Id == job.Id_Config).ToList())
         {
-            Config.Add(new WebOthersDto(configs.Id, configs.Name));
+            Configs.Add(new WebOthersDto(configs.Id, configs.Name));
         }
 
         foreach (var item in context.MachineGroup.Where(x => x.Id_Machine == Id).ToList())
@@ -62,21 +62,13 @@ public class WebMachineDto
         return machine;
     }
 
-    public void DatabaseUpdate(MyContext context)
-    {
-        foreach (var item in context.Job.Where(x => x.Id_Machine == Id))
-        {
-
-        }
-    }
-
     public void AddJobs(int Id, MyContext context)
     {
         List<int> existingConfigs = new();
         context.Job.Where(x => x.Id_Machine == Id).ToList().ForEach(x => existingConfigs.Add(x.Id_Config));
 
         List<int> configsToAdd = new();
-        Config.Where(x => !existingConfigs.Contains(x.Id)).ToList().ForEach(x => configsToAdd.Add(x.Id));
+        Configs.Where(x => !existingConfigs.Contains(x.Id)).ToList().ForEach(x => configsToAdd.Add(x.Id));
 
         List<int> configsToDel = new();
         existingConfigs.ForEach(x => configsToDel.Add(x));
@@ -84,7 +76,7 @@ public class WebMachineDto
         List<int> temp = new();
         foreach (var item in configsToDel)
         {
-            foreach (var item1 in Config)
+            foreach (var item1 in Configs)
             {
                 if (item == item1.Id)
                 {

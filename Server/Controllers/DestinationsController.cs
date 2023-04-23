@@ -9,7 +9,6 @@ namespace Server.Controllers;
 
 [Route("api/[controller]")]
 [ApiController]
-[Authorize]
 public class DestinationsController : Controller
 {
     private readonly MyContext context = new MyContext();
@@ -41,7 +40,7 @@ public class DestinationsController : Controller
     {
         if (!context.Config.Any(x => x.Id == path.Id_Config))
         {
-            return BadRequest("Object doesn't have existing id in Config");
+            return BadRequest("Object doesn't have existing id in Configs");
         }
 
         Destination destination = new()

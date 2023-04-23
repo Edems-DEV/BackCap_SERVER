@@ -9,7 +9,6 @@ namespace Server.Controllers;
 
 [Route("api/[controller]")]
 [ApiController]
-[Authorize]
 public class SourcesController : Controller
 {
     private readonly MyContext context = new MyContext();
@@ -42,7 +41,7 @@ public class SourcesController : Controller
     {
         if (!context.Config.Any(x => x.Id == path.Id_Config))
         {
-            return BadRequest("Object doesn't have existing id in Config");
+            return BadRequest("Object doesn't have existing id in Configs");
         }
 
         Sources source = new Sources
