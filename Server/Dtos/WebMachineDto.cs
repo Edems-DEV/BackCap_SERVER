@@ -32,24 +32,23 @@ public class WebMachineDto
         this.Ip_Address = machine.Ip_Address;
         this.Is_Active = machine.Is_Active;
 
-        Job job = context.Job.Where(x => x.Id_Machine == machine.Id).FirstOrDefault();
+        List<Job> jobs = context.Job.Where(x => x.Id_Machine == machine.Id).ToList();
 
-        if (job == null)
+        if (jobs.Count == 0)
             return;
 
-        Config config = context.Config.Find(job.Id_Config);
-        Groups group = context.Groups.Find(job.Id_Group);
-
-
-        foreach (var configs in context.Config.Where(x => x.Id == job.Id_Config).ToList())
+        foreach (Job job in jobs)
         {
-            Configs.Add(new WebOthersDto(configs.Id, configs.Name));
-        }
+            foreach (var configs in context.Config.Where(x => x.Id == job.Id_Config).ToList())
+            {
+                Configs.Add(new WebOthersDto(configs.Id, configs.Name));
+            }
 
-        foreach (var item in context.MachineGroup.Where(x => x.Id_Machine == Id).ToList())
-        {
-            Groups groups = context.Groups.Find(item.Id_Group);
-            Groups.Add(new WebOthersDto(groups.Id, groups.Name));
+            foreach (var item in context.MachineGroup.Where(x => x.Id_Machine == Id).ToList())
+            {
+                Groups groups = context.Groups.Find(item.Id_Group);
+                Groups.Add(new WebOthersDto(groups.Id, groups.Name));
+            }
         }
     }
 

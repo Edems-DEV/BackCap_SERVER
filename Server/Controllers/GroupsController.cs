@@ -87,7 +87,7 @@ public class GroupsController : Controller
     }
 
     [HttpPost]
-    public ActionResult Post([FromBody] GroupTemp group) // předělat
+    public ActionResult Post([FromBody] WebGroupNew group)
     {
         context.Groups.Add(new Groups() { Name = group.Name, Description = group.Description});
         context.SaveChanges();
