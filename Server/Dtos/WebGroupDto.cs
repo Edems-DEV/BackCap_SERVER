@@ -41,6 +41,7 @@ public class WebGroupDto
     public Groups UpdateGroup(Groups group, MyContext context)
     {
         this.AddJobs(group.Id, context);
+        group = this.AddMachines(group, context);
 
 
         group.Name = this.Name;
@@ -112,5 +113,13 @@ public class WebGroupDto
 
             context.SaveChanges();
         }
+    }
+
+    public Groups AddMachines(Groups group, MyContext context)
+    {
+        List<MachineGroup> machineGroups = context.MachineGroup.Where(x => x.Id_Group == group.Id).ToList();
+        machineGroups.ForEach(x => context.MachineGroup.Remove(x));
+        Machines.ForEach(x => context.MachineGroup.Add(new MachineGroup() { Id_Machine = x.Id, Id_Group = group.Id}));
+        return group;
     }
 }
