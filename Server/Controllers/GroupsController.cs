@@ -90,11 +90,7 @@ public class GroupsController : Controller
     [HttpPost]
     public ActionResult Post([FromBody] GroupTemp group) // předělat
     {
-        Groups NewGroup = new Groups();
-        NewGroup.Name = group.Name;
-        NewGroup.Description = group.Description;
-
-        context.Groups.Add(NewGroup);
+        context.Groups.Add(new Groups() { Name = group.Name, Description = group.Description});
         context.SaveChanges();
 
         return Ok();

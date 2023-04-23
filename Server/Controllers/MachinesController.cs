@@ -12,7 +12,6 @@ namespace Server.Controllers;
 
 [Route("api/[controller]")]
 [ApiController]
-[Authorize]
 public class MachinesController : Controller
 {
     private readonly MyContext context = new MyContext();
@@ -132,7 +131,7 @@ public class MachinesController : Controller
         if (ExistingMachine == null)
             return NotFound("Object does not exists");
 
-        ExistingMachine = machine.UpdateMachine(ExistingMachine);
+        ExistingMachine = machine.UpdateMachine(ExistingMachine, context);
 
         context.SaveChanges();
 
