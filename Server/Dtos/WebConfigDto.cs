@@ -29,7 +29,7 @@ public class WebConfigDto
 
     public List<WebOthersDto> Destinations { get; set; } = new();
 
-    public WebOthersDto Machine { get; set; }
+    public WebOthersDto? Machine { get; set; }
 
     public WebOthersDto? Group { get; set; }
 

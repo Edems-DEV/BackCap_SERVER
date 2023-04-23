@@ -14,7 +14,6 @@ namespace Server.Controllers;
 
 [Route("api/[controller]")]
 [ApiController]
-[Authorize]
 public class ConfigsController : Controller
 {
     private readonly MyContext context = new MyContext();
@@ -144,12 +143,12 @@ public class ConfigsController : Controller
     //[HttpDelete("{Id}")] /* potřebuje opravit vadí mu konstrainty aneb kontrola foreing klíčů
     //public ActionResult Delete(int Id)
     //{
-    //    Config config = context.Config.Find(Id);
+    //    Configs config = context.Configs.Find(Id);
 
     //    if (config == null)
     //        return NotFound("Object does not exists");
 
-    //    context.Config.Remove(config);
+    //    context.Configs.Remove(config);
     //    context.SaveChanges();
     //    return Ok($"Delete request received for config Id {Id}.");
     //}

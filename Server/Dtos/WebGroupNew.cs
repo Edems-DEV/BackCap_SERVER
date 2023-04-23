@@ -1,6 +1,6 @@
 ﻿namespace Server.Dtos;
 
-public class GroupTemp
+public class WebGroupNew
 {
     public int Id { get; set; }
 
