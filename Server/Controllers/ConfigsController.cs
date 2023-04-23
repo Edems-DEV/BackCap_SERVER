@@ -25,7 +25,7 @@ public class ConfigsController : Controller
     {
         //int limit = 10, int offset = 0, string orderBy = "empty", bool isAscending = true
         string orderBy = "empty"; bool isAscending = true;
-        string sql = "SELECT * FROM `Configs`";
+        string sql = "SELECT * FROM `Config`";
 
         var tables = new List<string> { "id", "type", "name", "description", "retention", "packageSize", "isCompressed", "Backup_interval", "interval_end" };
         var direction = isAscending ? "ASC" : "DESC";
