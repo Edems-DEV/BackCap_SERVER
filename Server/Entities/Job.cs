@@ -8,7 +8,6 @@ public class Job
     [Key]
     public int Id { get; set; }
 
-    [Required]
     public int? Id_Machine { get; set; }
 
     public int? Id_Group { get; set; }

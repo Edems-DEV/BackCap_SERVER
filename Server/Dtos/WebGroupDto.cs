@@ -101,7 +101,15 @@ public class WebGroupDto
                 jobsToRemove.AddRange(context.Job.Where(y => y.Id_Group == Id && y.Id_Config == item).ToList());
             }
 
-            jobsToRemove.ForEach(x => context.Remove(x));
+            List<Log> logsToRemove = new();
+            foreach (var item in jobsToRemove)
+            {
+                logsToRemove.AddRange(context.Log.Where(x => x.Id_Job == item.Id).ToList());
+            }
+
+            logsToRemove.ForEach(x => context.Log.Remove(x));
+            jobsToRemove.ForEach(x => context.Job.Remove(x));
+
             context.SaveChanges();
         }
     }
