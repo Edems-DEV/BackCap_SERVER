@@ -14,6 +14,7 @@ public class SessionsController : ControllerBase
 {
     string keySecret = "super-secret-foobar"; //your-256-bit-secret
     private MyContext context = new MyContext();
+    private encryption encryption = new();
 
     // POST api/<SessionsController>
     //[HttpPost]

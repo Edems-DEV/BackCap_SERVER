@@ -4,13 +4,13 @@ using Microsoft.EntityFrameworkCore;
 using Server.DatabaseTables;
 using Server.Dtos;
 using Server.ParamClasses;
+using Server.Services;
 using Server.Validator;
 
 namespace Server.Controllers;
 
 [Route("api/[controller]")]
 [ApiController]
-[Authorize]
 public class UsersController : ControllerBase
 {
     private readonly MyContext context = new MyContext();
@@ -44,6 +44,7 @@ public class UsersController : ControllerBase
     //} //&orderBy  => is required (idk how to make it optimal)
 
     [HttpGet]
+    [Decrypt]
     public ActionResult<List<User>> GetUsers()
     {
         List<WebUserNoPass> newUsers = new();
@@ -61,6 +62,7 @@ public class UsersController : ControllerBase
 
     // GET: for stats
     [HttpGet("count")]
+    [Decrypt]
     public ActionResult<int> GetCount()
     {
         return Ok(context.User.Count());
@@ -68,6 +70,7 @@ public class UsersController : ControllerBase
 
     // GET api/users/5
     [HttpGet("{Id}")]
+    [Decrypt]
     public ActionResult<WebUserNoPass> Get(int Id)
     {
         User user = context.User.Find(Id);
@@ -80,6 +83,7 @@ public class UsersController : ControllerBase
 
     // POST api/users
     [HttpPost]
+    [Encrypt]
     public ActionResult Post([FromBody] WebUserDto user)
     {
 
@@ -109,6 +113,7 @@ public class UsersController : ControllerBase
 
     // PUT api/users/5
     [HttpPut("{Id}")]
+    [Encrypt]
     public ActionResult Put(int Id, [FromBody] WebUserDto user)
     {
         try
