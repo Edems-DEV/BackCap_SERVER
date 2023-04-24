@@ -140,16 +140,18 @@ public class ConfigsController : Controller
         return Ok();
     }
 
-    //[HttpDelete("{Id}")] /* potřebuje opravit vadí mu konstrainty aneb kontrola foreing klíčů
-    //public ActionResult Delete(int Id)
-    //{
-    //    Configs config = context.Configs.Find(Id);
+    [HttpDelete("{Id}")]
+    public ActionResult Delete(int Id)
+    {
+        Config config = context.Config.Find(Id);
 
-    //    if (config == null)
-    //        return NotFound("Object does not exists");
+        if (config == null)
+            return NotFound("Object does not exists");
 
-    //    context.Configs.Remove(config);
-    //    context.SaveChanges();
-    //    return Ok($"Delete request received for config Id {Id}.");
-    //}
+        context.Sources.Where(x => x.Id_Config == config.Id).ToList().ForEach(y => context.Sources.Remove(y));
+        context.Destination.Where(x => x.Id_Config == config.Id).ToList().ForEach(y => context.Destination.Remove(y));
+        context.Config.Remove(config);
+        context.SaveChanges();
+        return Ok();
+    }
 }
