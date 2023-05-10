@@ -80,25 +80,22 @@ public class LogsController : Controller
     }
 
     [HttpPost]
-    public ActionResult Post(WebLogDto log)
+    public ActionResult Post(List<Log> logs)
     {
-        try
+        foreach (Log log in logs)
         {
-            validation.DateTimeValidator(log.Time.ToString());
-        }
-        catch (Exception)
-        {
-            return BadRequest("Invalid");
+            try
+            {
+                validation.DateTimeValidator(log.Time.ToString());
+            }
+            catch (Exception)
+            {
+                return BadRequest("Invalid");
+            }
+
+            context.Log.Add(log);
         }
 
-        Log newLog = new Log()
-        {
-            Message = log.Message,
-            Time = log.Time,
-            Id_Job = log.Id_Job
-        };
-
-        context.Log.Add(newLog);
         context.SaveChanges();
         return Ok();
     }
