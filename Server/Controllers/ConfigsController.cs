@@ -112,14 +112,15 @@ public class ConfigsController : Controller
         config.Id = Id;
         DatabaseManager databaseManager = new(context);
 
-        //try
-        //{
-        //    validation.DateTimeValidator(config.Interval_end.ToString());
-        //}
-        //catch (Exception)
-        //{
-        //    return BadRequest("Invalid DateTime");
-        //}
+        
+        try
+        {
+            validation.DateTimeValidator(config.Interval_end.ToString());
+        }
+        catch (Exception)
+        {
+            return BadRequest("Invalid DateTime");
+        }
 
         Config result = context.Config.Find(Id);
 

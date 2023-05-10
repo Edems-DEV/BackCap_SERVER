@@ -89,14 +89,14 @@ public class MachinesController : Controller
     [HttpPut("{Id}")]
     public ActionResult Put(int Id, [FromBody] WebMachineDto machine)
     {
-        //try
-        //{
-        //    validation.IpValidator(machine.Ip_Address.ToString());
-        //}
-        //catch (Exception)
-        //{
-        //    return NotFound("Invalid");
-        //}
+        try
+        {
+            validation.IpValidator(machine.Ip_Address.ToString());
+        }
+        catch (Exception)
+        {
+            return NotFound("Invalid");
+        }
 
         Machine ExistingMachine = context.Machine.Find(Id);
 

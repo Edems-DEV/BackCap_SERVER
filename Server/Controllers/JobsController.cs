@@ -82,22 +82,7 @@ public class JobsController : Controller
         return count;
     }
 
-    // GET: api/jobs/5   => specific job info
-    [HttpGet("Id/Daemon")] // pro daemona neměnit
-    public ActionResult<Job> Get(int Id)
-    {
-        Job job = context.Job.Find(Id);
-
-        if (job == null)
-            return NotFound("Object does not exists");
-
-        HelpMethods helpMethods = new HelpMethods(context);
-        job = helpMethods.AddToJob(job);
-
-        return Ok(job);
-    }
-
-    [HttpGet("Id/Admin")] // pro daemona neměnit
+    [HttpGet("Id/Admin")]
     public ActionResult<WebJobDto> GetJob(int Id)
     {
         Job job = context.Job.Find(Id);
@@ -108,38 +93,24 @@ public class JobsController : Controller
         return Ok(new WebJobDto(job.Id, job.Status, job.Time_start, job.Time_end, job.Time_schedule, job.Id_Group, job.Id_Machine, context));
     }
 
-    // for deamon for final stats after completing job
-    [HttpPut("{Id}")]
-    public ActionResult Put(int id, [FromBody] Job job)
-    {
-        try
-        {
-            validation.DateTimeValidator(job.Time_schedule.ToString());
-            validation.DateTimeValidator(job.Time_start.ToString());
-            validation.DateTimeValidator(job.Time_end.ToString());
-            validation.IpValidator(job.Machine.Ip_Address.ToString());
-            validation.MacValidator(job.Machine.Mac_Address.ToString());
-            validation.DateTimeValidator(job.Config.Interval_end.ToString());
-        }
-        catch (Exception)
-        {
-            return BadRequest("Invalid");
-        }
-        
-        Job existingJob = context.Job.Find(id);
+    // daemon
 
-        if (existingJob == null)
+    // GET: api/jobs/5   => specific job info
+    [HttpGet("{Id}/Daemon")] // pro daemona neměnit
+    public ActionResult<Job> Get(int Id)
+    {
+        if (context.Machine.Find(Id).Is_Active == false)
+            return BadRequest("UnAuthorized");
+
+        Job job = context.Job.Where(x => x.Id_Machine == Id).FirstOrDefault()!;
+
+        if (job == null)
             return NotFound("Object does not exists");
 
-        existingJob.Id_Config = job.Id_Config;
-        existingJob.Id_Group = job.Id_Group;
-        existingJob.Id_Machine = job.Id_Machine;
-        existingJob.Status = job.Status;
-        existingJob.Time_schedule = job.Time_schedule;
-        existingJob.Bytes = job.Bytes;
+        HelpMethods helpMethods = new HelpMethods(context);
+        job = helpMethods.AddToJob(job);
 
-        context.SaveChanges();
-        return Ok();
+        return Ok(job);
     }
 
     // For deamon to update job Status
