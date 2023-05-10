@@ -1,4 +1,6 @@
-﻿namespace Server.ParamClasses;
+﻿using Server.DatabaseTables;
+
+namespace Server.ParamClasses;
 
 public class MachineDto
 {
@@ -12,5 +14,15 @@ public class MachineDto
 
     public string? Mac_Address { get; set; } = null;
 
-    public bool Is_Active { get; set; } = false;
+    public Machine GetMachine()
+    {
+        return new Machine
+        {
+            Name = Name,
+            Description = Description,
+            Os = Os,
+            Ip_Address = Ip_Address,
+            Mac_Address = Mac_Address
+        };
+    }
 }

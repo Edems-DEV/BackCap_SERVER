@@ -86,34 +86,6 @@ public class MachinesController : Controller
         return Ok(new WebMachineDto(machine, context));
     }
 
-    [HttpPost]
-    public ActionResult Post([FromBody] WebMachineDto machine)
-    {
-        try
-        {
-            validation.IpValidator(machine.Ip_Address.ToString());
-        }
-        catch (Exception)
-        {
-            return BadRequest("Invalid");
-        }
-
-        //Machine NewMachine = new Machine()
-        //{
-        //    Name = machine.Name,
-        //    Description = machine.Description,
-        //    Os = machine.Os,
-        //    Ip_Address = machine.Ip_Address,
-        //    Mac_Address = machine.Mac_Address,
-        //    Is_Active = machine.Is_Active
-        //};
-
-        //context.Machine.Add(NewMachine);
-        context.SaveChanges();
-
-        return Ok();
-    }
-
     [HttpPut("{Id}")]
     public ActionResult Put(int Id, [FromBody] WebMachineDto machine)
     {
@@ -139,31 +111,25 @@ public class MachinesController : Controller
     }
 
     [HttpPost("register")]
-    public ActionResult PostRegister([FromBody] MachineDto machine)
+    public ActionResult<int> PostRegister([FromBody] MachineDto machine)
     {
-        try
-        {
-            validation.IpValidator(machine.Ip_Address.ToString());
-            validation.MacValidator(machine.Mac_Address.ToString());
-        }
-        catch (Exception)
-        {
-            return NotFound("Invalid");
-        }
+        //try
+        //{
+        //    validation.IpValidator(machine.Ip_Address.ToString());
+        //    validation.MacValidator(machine.Mac_Address.ToString());
+        //}
+        //catch (Exception)
+        //{
+        //    return BadRequest("Invalid");
+        //}
 
-        Machine NewMachine = new Machine()
-        {
-            Name = machine.Name,
-            Description = machine.Description,
-            Os = machine.Os,
-            Ip_Address = machine.Ip_Address,
-            Mac_Address = machine.Mac_Address,
-            Is_Active = false //není activní -> čeká se na admianovo potvrzení (?)(nemám ponětí jak t má fungovat lol)
-        };
+        Machine NewMachine = machine.GetMachine();
+
+        NewMachine.Mac_Address = NewMachine.Mac_Address.Replace("-", string.Empty);
 
         context.Machine.Add(NewMachine);
         context.SaveChanges();
 
-        return Ok();
+        return Ok(NewMachine.Id);
     }
 }
