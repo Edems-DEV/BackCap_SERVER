@@ -16,8 +16,14 @@ namespace Server.Controllers;
 [ApiController]
 public class ConfigsController : Controller
 {
-    private readonly MyContext context = new MyContext();
-    private Validators validation = new Validators();
+    private readonly Validators validation;
+    private readonly MyContext context;
+
+    public ConfigsController(MyContext context, Validators validation)
+    {
+        this.context = context;
+        this.validation = validation;
+    }
 
     // GET: api/configs?limit=25&offset=50&orderBy=Id&isAscending=false
     [HttpGet]

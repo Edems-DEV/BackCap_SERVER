@@ -14,8 +14,14 @@ namespace Server.Controllers;
 [ApiController]
 public class GroupsController : Controller
 {
-    private readonly MyContext context = new MyContext();
-    private readonly Validators validators = new Validators();
+    private readonly Validators validators;
+    private readonly MyContext context;
+
+    public GroupsController(MyContext context, Validators validators)
+    {
+        this.context = context;
+        this.validators = validators;
+    }
 
     // GET: api/groups?limit=25&offset=50&orderBy=Id&isAscending=false
     [HttpGet]

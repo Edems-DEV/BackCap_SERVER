@@ -3,6 +3,7 @@ using Microsoft.EntityFrameworkCore;
 using MySql.Data.MySqlClient;
 using Server.DatabaseTables;
 using Server.ParamClasses;
+using Server.Validator;
 using static Org.BouncyCastle.Math.EC.ECCurve;
 
 namespace Server.Controllers;
@@ -11,7 +12,12 @@ namespace Server.Controllers;
 [ApiController]
 public class DestinationsController : Controller
 {
-    private readonly MyContext context = new MyContext();
+    private readonly MyContext context;
+
+    public DestinationsController(MyContext context)
+    {
+        this.context = context;
+    }
 
     [HttpGet("{Id}")]
     public ActionResult<Destination> Get(int Id)

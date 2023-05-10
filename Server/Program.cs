@@ -1,3 +1,6 @@
+using Server.DatabaseTables;
+using Server.Validator;
+
 namespace Server;
 
 public class Program
@@ -24,6 +27,9 @@ public class Program
                 }
             );
         });
+
+        builder.Services.AddSingleton(new MyContext());
+        builder.Services.AddSingleton(new Validators());
 
         var app = builder.Build();
 

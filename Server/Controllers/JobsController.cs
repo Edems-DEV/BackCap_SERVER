@@ -12,8 +12,14 @@ namespace Server.Controllers;
 [ApiController]
 public class JobsController : Controller
 {
-    private readonly MyContext context = new MyContext();
-    private Validators validation = new Validators();
+    private readonly Validators validation;
+    private readonly MyContext context;
+
+    public JobsController(MyContext context, Validators validation)
+    {
+        this.context = context;
+        this.validation = validation;
+    }
 
     // GET: api/jobs?limit=25&offset=50&orderBy=Id&isAscending=false
     [HttpGet]

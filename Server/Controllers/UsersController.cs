@@ -13,35 +13,14 @@ namespace Server.Controllers;
 [ApiController]
 public class UsersController : ControllerBase
 {
-    private readonly MyContext context = new MyContext();
-    private Validators validation = new Validators();
+    private readonly Validators validation;
+    private readonly MyContext context;
 
-    //// GET: api/users?limit=25&offset=50&orderBy=Id&isAscending=false
-    //[HttpGet]
-    //public IActionResult Get(int limit = 10, int offset = 0)
-    //{
-    //    // --> oder by is required :/ (make it optimal untik tgab then u keep it commented out)
-    //    //int limit = 10, int offset = 0, string orderBy = "empty", bool isAscending = true
-    //    string orderBy = "empty"; bool isAscending = true;
-    //    string sql = "SELECT * FROM `User`";
-
-    //    var tables = new List<string> { "id", "name", "email", "interval_report" };
-    //    var direction = isAscending ? "ASC" : "DESC";
-
-    //    if (tables.Contains(orderBy.ToLower())) //hope this is enough to stop sql injection
-    //    {
-    //        sql += $" ORDER BY `{orderBy}` {direction}";
-    //    }
-
-    //    List<User> query = context.User.FromSqlRaw(sql + " LIMIT {0} OFFSET {1}", limit, offset).ToList();
-
-    //    if (query == null || query.Count == 0)
-    //    {
-    //        return NoContent(); //204
-    //    }
-
-    //    return Ok(query); //200
-    //} //&orderBy  => is required (idk how to make it optimal)
+    public UsersController(MyContext context, Validators validation)
+    {
+        this.context = context;
+        this.validation = validation;
+    }
 
     [HttpGet]
     [Decrypt]
@@ -55,10 +34,6 @@ public class UsersController : ControllerBase
 
         return Ok(newUsers);
     }
-    //public JsonResult Get()
-    //{
-    //    return new JsonResult(this.context.Users.ToList());
-    //}
 
     // GET: for stats
     [HttpGet("count")]
