@@ -54,7 +54,7 @@ public class Validators
 
     public void IpValidator(string input)
     {
-        Regex a = new Regex(@"([0-9]{3}\.){2}[0-9]{3}");
+        Regex a = new Regex(@"([0-9]{1,3}\.){3}[0-9]{1,3}");
 
         bool ReturnBool;
         ReturnBool = a.IsMatch(input);
@@ -65,7 +65,7 @@ public class Validators
 
     public void MacValidator(string input)
     {
-        Regex a = new Regex(@"([0-9A-F]{2}\-){5}[0-9A-F]{2}");
+        Regex a = new Regex(@"^([0-9A-F]{2}-){5}[0-9A-F]{2}$");
 
         bool ReturnBool;
         ReturnBool = a.IsMatch(input);

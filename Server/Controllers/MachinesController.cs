@@ -113,15 +113,15 @@ public class MachinesController : Controller
     [HttpPost("register")]
     public ActionResult<int> PostRegister([FromBody] MachineDto machine)
     {
-        //try
-        //{
-        //    validation.IpValidator(machine.Ip_Address.ToString());
-        //    validation.MacValidator(machine.Mac_Address.ToString());
-        //}
-        //catch (Exception)
-        //{
-        //    return BadRequest("Invalid");
-        //}
+        try
+        {
+            validation.IpValidator(machine.Ip_Address.ToString());
+            validation.MacValidator(machine.Mac_Address.ToString());
+        }
+        catch (Exception)
+        {
+            return BadRequest("Invalid");
+        }
 
         Machine NewMachine = machine.GetMachine();
 
