@@ -16,8 +16,8 @@ public class HelpMethods
         job.Machine = context.Machine.Find(job.Id_Machine);
         job.Groups = context.Groups.Find(job.Id_Group);
         job.Config = context.Config.Find(job.Id_Config);
-        job.Config.Sources = context.Sources.Where(x => x.Id_Config == job.Id).ToList();
-        job.Config.Destinations = context.Destination.Where(x => x.Id_Config == job.Id).ToList();
+        job.Config.Sources = context.Sources.Where(x => x.Id_Config == job.Id_Config).ToList();
+        job.Config.Destinations = context.Destination.Where(x => x.Id_Config == job.Id_Config).ToList();
         return job;
     }
 }

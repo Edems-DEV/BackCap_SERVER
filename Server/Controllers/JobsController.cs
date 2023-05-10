@@ -99,7 +99,8 @@ public class JobsController : Controller
     [HttpGet("{Id}/Daemon")] // pro daemona neměnit
     public ActionResult<Job> Get(int Id)
     {
-        if (context.Machine.Find(Id).Is_Active == false)
+        Machine machine = context.Machine.Find(Id);
+        if (machine.Is_Active == false)
             return BadRequest("UnAuthorized");
 
         Job job = context.Job.Where(x => x.Id_Machine == Id).FirstOrDefault()!;
