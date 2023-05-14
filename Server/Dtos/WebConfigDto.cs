@@ -52,6 +52,9 @@ public class WebConfigDto
         Interval = config.Backup_interval;
         Interval_end = config.Interval_end;
 
+        if (job == null)
+            return;
+
         foreach (var source in context.Sources.Where(x => x.Id_Config == Id).ToList())
         {
             Sources.Add(new WebOthersDto(source.Id, source.Path));
@@ -63,8 +66,10 @@ public class WebConfigDto
         }
 
         //sem je potřeba přidělat opravu, při chybných/ null datech.Zatim netušim co je nejlepší možnost
-        Machine machine = context.Machine.Where(x => x.Id == job.Id_Machine).FirstOrDefault();
-        Machine = new WebOthersDto(machine.Id, machine.Name);
+        Machine? machine = context.Machine.Where(x => x.Id == job.Id_Machine).FirstOrDefault();
+
+        if (machine != null)
+            Machine = new WebOthersDto(machine.Id, machine.Name);
 
         Groups? group = context.Groups.Where(x => x.Id == job.Id_Group).FirstOrDefault();
 
