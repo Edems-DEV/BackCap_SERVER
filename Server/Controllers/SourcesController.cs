@@ -11,13 +11,7 @@ namespace Server.Controllers;
 [ApiController]
 public class SourcesController : Controller
 {
-    private readonly MyContext context;
-
-    public SourcesController(MyContext context)
-    {
-        this.context = context;
-    }
-
+    private readonly MyContext context = new MyContext();
 
     [HttpGet("{Id}")]
     public ActionResult<Sources> GetSource(int Id)

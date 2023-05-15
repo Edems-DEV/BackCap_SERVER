@@ -28,7 +28,6 @@ public class Program
             );
         });
 
-        builder.Services.AddSingleton(new MyContext());
         builder.Services.AddSingleton(new Validators());
 
         var app = builder.Build();

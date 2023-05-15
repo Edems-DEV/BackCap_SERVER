@@ -14,11 +14,10 @@ namespace Server.Controllers;
 public class UsersController : ControllerBase
 {
     private readonly Validators validation;
-    private readonly MyContext context;
+    private readonly MyContext context = new MyContext();
 
-    public UsersController(MyContext context, Validators validation)
+    public UsersController(Validators validation)
     {
-        this.context = context;
         this.validation = validation;
     }
 

@@ -13,11 +13,10 @@ namespace Server.Controllers;
 public class LogsController : Controller
 {
     private readonly Validators validation;
-    private readonly MyContext context;
+    private readonly MyContext context = new MyContext();
 
-    public LogsController(MyContext context, Validators validation)
+    public LogsController(Validators validation)
     {
-        this.context = context;
         this.validation = validation;
     }
 

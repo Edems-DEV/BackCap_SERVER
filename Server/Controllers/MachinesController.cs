@@ -15,11 +15,10 @@ namespace Server.Controllers;
 public class MachinesController : Controller
 {
     private readonly Validators validation;
-    private readonly MyContext context;
+    private readonly MyContext context = new MyContext();
 
-    public MachinesController(MyContext context, Validators validation)
+    public MachinesController(Validators validation)
     {
-        this.context = context;
         this.validation = validation;
     }
 

@@ -12,12 +12,7 @@ namespace Server.Controllers;
 [ApiController]
 public class DestinationsController : Controller
 {
-    private readonly MyContext context;
-
-    public DestinationsController(MyContext context)
-    {
-        this.context = context;
-    }
+    private readonly MyContext context = new MyContext();
 
     [HttpGet("{Id}")]
     public ActionResult<Destination> Get(int Id)

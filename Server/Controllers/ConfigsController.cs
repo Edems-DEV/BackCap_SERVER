@@ -17,11 +17,10 @@ namespace Server.Controllers;
 public class ConfigsController : Controller
 {
     private readonly Validators validation;
-    private readonly MyContext context;
+    private readonly MyContext context = new MyContext();
 
-    public ConfigsController(MyContext context, Validators validation)
+    public ConfigsController(Validators validation)
     {
-        this.context = context;
         this.validation = validation;
     }
 

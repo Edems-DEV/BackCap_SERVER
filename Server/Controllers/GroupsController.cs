@@ -15,11 +15,10 @@ namespace Server.Controllers;
 public class GroupsController : Controller
 {
     private readonly Validators validators;
-    private readonly MyContext context;
+    private readonly MyContext context = new MyContext();
 
-    public GroupsController(MyContext context, Validators validators)
+    public GroupsController(Validators validators)
     {
-        this.context = context;
         this.validators = validators;
     }
 

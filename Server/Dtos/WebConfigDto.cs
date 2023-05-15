@@ -52,6 +52,9 @@ public class WebConfigDto
         Interval = config.Backup_interval;
         Interval_end = config.Interval_end;
 
+        if (job == null)
+            return;
+
         foreach (var source in context.Sources.Where(x => x.Id_Config == Id).ToList())
         {
             Sources.Add(new WebOthersDto(source.Id, source.Path));

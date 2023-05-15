@@ -13,11 +13,10 @@ namespace Server.Controllers;
 public class JobsController : Controller
 {
     private readonly Validators validation;
-    private readonly MyContext context;
+    private readonly MyContext context = new MyContext();
 
-    public JobsController(MyContext context, Validators validation)
+    public JobsController(Validators validation)
     {
-        this.context = context;
         this.validation = validation;
     }
 
