@@ -22,26 +22,26 @@ public class WebGroupDto
         Name = name;
         Description = description;
 
-        Job job = context.Job.Where(x => x.Id_Group == id).FirstOrDefault();
+        Configs = GetConfigs(id, context);
+        Machines = GetMachine(id, context);
+    }
 
-        if (job == null)
-            return;
+    private List<WebOthersDto> GetConfigs(int id, MyContext context)
+    {
+        List<int> ids = context.Job.Where(x => x.Id_Group == id).ToList().Select(x => x.Id_Config).ToList();
+        return context.Config.Where(x => ids.Contains(x.Id)).ToList().Select(x => new WebOthersDto(x.Id, x.Name)).ToList();
+    }
 
-        foreach (var configs in context.Config.Where(x => x.Id == job.Id_Config).ToList())
-        {
-            Configs.Add(new WebOthersDto(configs.Id, configs.Name));
-        }
-
-        foreach (var machines in context.Machine.Where(x => x.Id == job.Id_Machine).ToList())
-        {
-            Machines.Add(new WebOthersDto(machines.Id, machines.Name));
-        }
+    private List<WebOthersDto> GetMachine(int id, MyContext context)
+    {
+        List<int> ids = context.MachineGroup.Where(x => x.Id_Group == id).ToList().Select(x => x.Id_Machine).ToList();
+        return context.Machine.Where(x => ids.Contains(x.Id)).ToList().Select(x => new WebOthersDto(x.Id, x.Name)).ToList();
     }
 
     public Groups UpdateGroup(Groups group, MyContext context)
     {
         this.AddJobs(group.Id, context);
-        group = this.AddMachines(group, context);
+        this.AddMachines(group, context);
 
 
         group.Name = this.Name;
@@ -115,11 +115,10 @@ public class WebGroupDto
         }
     }
 
-    public Groups AddMachines(Groups group, MyContext context)
+    public void AddMachines(Groups group, MyContext context)
     {
         List<MachineGroup> machineGroups = context.MachineGroup.Where(x => x.Id_Group == group.Id).ToList();
         machineGroups.ForEach(x => context.MachineGroup.Remove(x));
         Machines.ForEach(x => context.MachineGroup.Add(new MachineGroup() { Id_Machine = x.Id, Id_Group = group.Id}));
-        return group;
     }
 }

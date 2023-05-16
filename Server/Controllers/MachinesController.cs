@@ -100,7 +100,7 @@ public class MachinesController : Controller
         }
         catch (Exception)
         {
-            return NotFound("Invalid");
+            return BadRequest("Invalid");
         }
 
         Machine ExistingMachine = context.Machine.Find(Id);
