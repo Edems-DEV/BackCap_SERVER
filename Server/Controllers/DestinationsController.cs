@@ -32,8 +32,8 @@ public class DestinationsController : Controller
 
         if (sources.Count == 0)
             return NotFound();
-        else
-            return Ok(sources);
+
+        return Ok(sources);
     }
 
     [HttpPost]

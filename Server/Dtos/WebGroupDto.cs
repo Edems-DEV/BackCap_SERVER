@@ -16,14 +16,14 @@ public class WebGroupDto
 
     public WebGroupDto() { }
 
-    public WebGroupDto(int id, string name, string? description, MyContext context)
+    public WebGroupDto(Groups group, MyContext context)
     {
-        Id = id;
-        Name = name;
-        Description = description;
+        Id = group.Id;
+        Name = group.Name;
+        Description = group.Description;
 
-        Configs = GetConfigs(id, context);
-        Machines = GetMachine(id, context);
+        Configs = GetConfigs(Id, context);
+        Machines = GetMachine(Id, context);
     }
 
     private List<WebOthersDto> GetConfigs(int id, MyContext context)
@@ -55,16 +55,13 @@ public class WebGroupDto
         return group;
     }
 
-    ¨private void AddJobs(int Id, MyContext context)
+    private void AddJobs(int Id, MyContext context)
     {
-        List<int> existingConfigs = new();
-        context.Job.Where(x => x.Id_Group == Id).ToList().ForEach(x => existingConfigs.Add(x.Id_Config));
+        List<int> existingConfigs = context.Job.Where(x => x.Id_Group == Id).Select(x => x.Id_Config).ToList();
 
-        List<int> configsToAdd = new();
-        Configs.Where(x => !existingConfigs.Contains(x.Id)).ToList().ForEach(x => configsToAdd.Add(x.Id));
+        List<int> configsToAdd = Configs.Where(x => !existingConfigs.Contains(x.Id)).Select(x => x.Id).ToList();
 
-        List<int> configsToDel = new();
-        existingConfigs.ForEach(x => configsToDel.Add(x));
+        List<int> configsToDel = existingConfigs.Select(x => x).ToList();
 
         List<int> temp = new();
         foreach (var item in configsToDel)

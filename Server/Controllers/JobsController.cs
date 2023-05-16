@@ -92,6 +92,9 @@ public class JobsController : Controller
     {
         Job job = context.Job.Find(Id);
 
+        context.Job.Remove(job);
+        context.SaveChanges();
+
         if (job == null)
             return NotFound("Object does not exists");
 
