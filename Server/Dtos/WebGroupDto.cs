@@ -28,14 +28,20 @@ public class WebGroupDto
 
     private List<WebOthersDto> GetConfigs(int id, MyContext context)
     {
-        List<int> ids = context.Job.Where(x => x.Id_Group == id).ToList().Select(x => x.Id_Config).ToList();
-        return context.Config.Where(x => ids.Contains(x.Id)).ToList().Select(x => new WebOthersDto(x.Id, x.Name)).ToList();
+        return context
+            .Job
+            .Where(x => x.Id_Group == id)
+            .Select(x => new WebOthersDto() { Id = x.Id_Config, Name = x.Config.Name }) 
+            .ToList();
     }
 
     private List<WebOthersDto> GetMachine(int id, MyContext context)
     {
-        List<int> ids = context.MachineGroup.Where(x => x.Id_Group == id).ToList().Select(x => x.Id_Machine).ToList();
-        return context.Machine.Where(x => ids.Contains(x.Id)).ToList().Select(x => new WebOthersDto(x.Id, x.Name)).ToList();
+        return context
+            .MachineGroup
+            .Where(x => x.Id_Group == id)
+            .Select(x => new WebOthersDto { Id = x.Id_Machine, Name = x.Machine.Name })
+            .ToList();
     }
 
     public Groups UpdateGroup(Groups group, MyContext context)
@@ -43,14 +49,13 @@ public class WebGroupDto
         this.AddJobs(group.Id, context);
         this.AddMachines(group, context);
 
-
         group.Name = this.Name;
         group.Description = this.Description;
 
         return group;
     }
 
-    public void AddJobs(int Id, MyContext context)
+    ¨private void AddJobs(int Id, MyContext context)
     {
         List<int> existingConfigs = new();
         context.Job.Where(x => x.Id_Group == Id).ToList().ForEach(x => existingConfigs.Add(x.Id_Config));
@@ -115,7 +120,7 @@ public class WebGroupDto
         }
     }
 
-    public void AddMachines(Groups group, MyContext context)
+    private void AddMachines(Groups group, MyContext context)
     {
         List<MachineGroup> machineGroups = context.MachineGroup.Where(x => x.Id_Group == group.Id).ToList();
         machineGroups.ForEach(x => context.MachineGroup.Remove(x));

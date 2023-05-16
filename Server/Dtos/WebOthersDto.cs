@@ -8,6 +8,11 @@ public class WebOthersDto
 
     public string Name { get; set; }
 
+    public WebOthersDto()
+    {
+        
+    }
+
     public WebOthersDto(int id, string name)
     {
         this.Id = id;
