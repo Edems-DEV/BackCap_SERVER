@@ -65,14 +65,13 @@ public class JobsController : Controller
     {
         Job job = context.Job.Find(Id);
 
-        context.Job.Remove(job);
-        context.SaveChanges();
-
         if (job == null)
             return NotFound("Object does not exists");
 
         return Ok(new WebJobDto(job, context));
     }
+
+
 
     // daemon
 
