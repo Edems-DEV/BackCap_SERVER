@@ -25,16 +25,9 @@ public class UsersController : ControllerBase
     [Decrypt]
     public ActionResult<List<User>> GetUsers()
     {
-        List<WebUserNoPass> newUsers = new();
-        foreach (User user in context.User.ToList())
-        {
-            newUsers.Add(new WebUserNoPass(user.Id, user.Name, user.Email, user.Interval_Report));
-        }
-
-        return Ok(newUsers);
+        return Ok(context.User.Select(x => new WebUserDto(x)).ToListAsync());
     }
 
-    // GET: for stats
     [HttpGet("count")]
     [Decrypt]
     public ActionResult<int> GetCount()
@@ -42,7 +35,6 @@ public class UsersController : ControllerBase
         return Ok(context.User.Count());
     }
 
-    // GET api/users/5
     [HttpGet("{Id}")]
     [Decrypt]
     public ActionResult<WebUserNoPass> Get(int Id)
@@ -60,7 +52,6 @@ public class UsersController : ControllerBase
     [Encrypt]
     public ActionResult Post([FromBody] WebUserDto user)
     {
-
         try
         {
             validation.EmailValidator(user.Email.ToString());
@@ -71,13 +62,7 @@ public class UsersController : ControllerBase
             return NotFound("Invalid");
         }
 
-        User NewUser = new User()
-        {
-            Interval_Report = user.Interval_Report,
-            Email = user.Email,
-            Password = user.Password,
-            Name = user.Name
-        };
+        User NewUser = new User(user);
 
         context.User.Add(NewUser);
         context.SaveChanges();
@@ -88,27 +73,26 @@ public class UsersController : ControllerBase
     // PUT api/users/5
     [HttpPut("{Id}")]
     [Encrypt]
-    public ActionResult Put(int Id, [FromBody] WebUserDto user)
+    public ActionResult Put(int Id, [FromBody] WebUserDto webUser)
     {
+        User user = context.User.Find(Id);
+
         try
         {
-            validation.EmailValidator(user.Email.ToString());
+            validation.EmailValidator(webUser.Email.ToString());
+
+            if (user == null)
+                return NotFound();
+
+            if (webUser.Password == "")
+                return BadRequest();
         }
         catch (Exception)
         {
-            return NotFound("Invalid");
+            return BadRequest();
         }
 
-        User ExUser = context.User.Find(Id);
-
-        if (ExUser == null)
-            return NotFound("Object does not exists");
-
-        ExUser.Interval_Report = user.Interval_Report;
-        ExUser.Email = user.Email;
-        ExUser.Name = user.Name;
-        if (user.Password != "" && user.Password != null)
-            ExUser.Password = user.Password;
+        user.UpdateUser(webUser);
 
         context.SaveChanges();
         
@@ -119,13 +103,15 @@ public class UsersController : ControllerBase
     [HttpDelete("{Id}")]
     public ActionResult Delete(int Id)
     {
-        var user = context.User.Find(Id);
+        User user = context.User.Find(Id);
+
         if (user == null)
         {
             return NotFound();
         }
+
         context.User.Remove(user);
         context.SaveChanges();
-        return Ok(); //$"Delete request received for user Id {Id}."
+        return Ok();
     }
 }

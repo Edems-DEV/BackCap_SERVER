@@ -27,18 +27,13 @@ public class SourcesController : Controller
     [HttpGet("Configs/{IdConfig}")]
     public ActionResult<List<Sources>> GetSources(int IdConfig)
     {
-        List<Sources> source = context.Sources.Where(x => x.Id_Config == IdConfig).ToList();
-
-        if (source.Count == 0)
-            return NotFound();
-        else
-            return Ok(source);
+        return Ok(context.Sources.Where(x => x.Id_Config == IdConfig).ToListAsync());
     }
 
-    [HttpPost] // funguje, ale je potřeba dát do id config již nějaké existující id configu jinak ta kontrola na webovkách se dodrbe
+    [HttpPost]
     public ActionResult Post([FromBody] PathsDto path)
     {
-        if (!context.Config.Any(x => x.Id == path.Id_Config))
+        if (context.Config.Find(path.Id_Config) == null)
         {
             return BadRequest("Object doesn't have existing id in Configs");
         }

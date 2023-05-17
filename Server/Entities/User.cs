@@ -1,4 +1,6 @@
-﻿using System.ComponentModel.DataAnnotations;
+﻿using Server.Dtos;
+using Server.ParamClasses;
+using System.ComponentModel.DataAnnotations;
 
 namespace Server.DatabaseTables;
 
@@ -16,4 +18,22 @@ public class User
     public string Email { get; set; }
 
     public string Interval_Report { get; set; }
+
+    public User() { }
+
+    public User(WebUserDto user)
+    {
+        this.Name = user.Name;
+        this.Password = user.Password;
+        this.Email = user.Email;
+        this.Interval_Report = user.Interval_Report;
+    }
+
+    public void UpdateUser(WebUserDto user)
+    {
+        this.Name = user.Name;
+        this.Password = user.Password;
+        this.Email = user.Email;
+        this.Interval_Report = user.Interval_Report;
+    }
 }

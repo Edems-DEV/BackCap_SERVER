@@ -31,19 +31,7 @@ public class MachinesController : Controller
     [HttpGet("names")]
     public ActionResult<List<WebOthersDto>> GetNames()
     {
-        List<WebOthersDto> names = new();
-
-        foreach (var machine in context.Machine.ToList())
-        {
-            names.Add(new WebOthersDto(machine.Id, machine.Name));
-        }
-
-        if (names.Count == 0)
-        {
-            return NoContent();
-        }
-
-        return Ok(names);
+        return Ok(context.Machine.Select(x => new WebOthersDto(x.Id, x.Name)).ToListAsync());
     }
 
     // GET: for stats
