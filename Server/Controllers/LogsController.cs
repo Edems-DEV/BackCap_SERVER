@@ -20,37 +20,11 @@ public class LogsController : Controller
         this.validation = validation;
     }
 
-    // GET: api/groups?limit=25&offset=50&orderBy=Id&isAscending=false
     [HttpGet]
     public ActionResult<List<WebLogDto>> Get(int limit = 10, int offset = 0)
     {
-        //int limit = 10, int offset = 0, string orderBy = "empty", bool isAscending = true
-        string orderBy = "empty"; bool isAscending = true;
-        string sql = "SELECT * FROM `Log`";
-
-        var tables = new List<string> { "id", "message", "time" };
-        var direction = isAscending ? "ASC" : "DESC";
-
-        if (tables.Contains(orderBy.ToLower())) //hope this is enough to stop sql injection
-        {
-            sql += $" ORDER BY `{orderBy}` {direction}";
-        }
-
-        List<Log> query = context.Log.FromSqlRaw(sql).ToList();// + " LIMIT {0} OFFSET {1}", limit, offset
-
-        if (query == null || query.Count == 0)
-        {
-            return NoContent(); //204
-        }
-
-        List<WebLogDto> logDtos = new();
-        foreach (var log in query) 
-        {
-            logDtos.Add(new WebLogDto(log.Id, log.Id_Job, log.Message, log.Time));
-        }  
-
-        return Ok(logDtos); //200
-    } //&orderBy  => is required (idk how to make it optimal)
+        return Ok(context.Log.Select(x => new WebLogDto(x)).ToListAsync());
+    }
 
     [HttpGet("{Id}")]
     public ActionResult<WebLogDto> Get(int Id)
@@ -58,22 +32,18 @@ public class LogsController : Controller
         Log log = context.Log.Find(Id);
 
         if (log == null)
-            return NotFound("Object does not exists");
+            return NotFound();
 
-        return Ok(new WebLogDto(log.Id, log.Id_Job, log.Message, log.Time));
+        return Ok(new WebLogDto(log));
     }
 
     [HttpGet("Job/{IdJob}")]
     public ActionResult<List<WebLogDto>> GetLogs (int IdJob)
     {
-        List<WebLogDto> logDtos = new();
-        foreach (Log log in context.Log.Where(x => x.Id_Job == IdJob).ToList())
-        {
-            logDtos.Add(new WebLogDto(log.Id, log.Id_Job, log.Message, log.Time));
-        }
+        List<WebLogDto> logDtos = context.Log.Where(x => x.Id_Job == IdJob).Select(x => new WebLogDto(x)).ToList();
 
         if (logDtos.Count == 0)
-            return NotFound($"There are no logs for job id {IdJob}");
+            return NotFound();
 
         return Ok(logDtos);
     }
@@ -89,7 +59,7 @@ public class LogsController : Controller
             }
             catch (Exception)
             {
-                return BadRequest("Invalid");
+                return BadRequest();
             }
 
             context.Log.Add(log);

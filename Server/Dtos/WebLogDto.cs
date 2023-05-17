@@ -14,12 +14,12 @@ public class WebLogDto
 
     public WebLogDto() { }
 
-    public WebLogDto(int id, int id_Job, string message, DateTime time)
+    public WebLogDto(Log log)
     {
-        this.Id = id;
-        this.Id_Job = id_Job;
-        this.Message = message;
-        this.Time = time;
+        this.Id = log.Id;
+        this.Id_Job = log.Id_Job;
+        this.Message = log.Message;
+        this.Time = log.Time;
     }
 
     public Log GetLog()
