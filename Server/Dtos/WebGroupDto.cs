@@ -10,9 +10,9 @@ public class WebGroupDto
 
     public string? Description { get; set; }
 
-    public List<WebOthersDto> Configs { get; set; } = new();
+    public ICollection<WebOthersDto> Configs { get; set; } = new List<WebOthersDto>();
 
-    public List<WebOthersDto> Machines { get; set; } = new();
+    public ICollection<WebOthersDto> Machines { get; set; } = new List<WebOthersDto>();
 
     public WebGroupDto() { }
 
@@ -22,8 +22,11 @@ public class WebGroupDto
         Name = group.Name;
         Description = group.Description;
 
-        Configs = GetConfigs(Id, context);
-        Machines = GetMachine(Id, context);
+        //Configs = group.Jobs.Select(x => new WebOthersDto(x.Config.Id, x.Config.Name)).ToList();
+        //Machines = group.Jobs.Select(x => new WebOthersDto(x.Machine.Id, x.Machine.Name)).ToList();
+
+        Configs = this.GetConfigs(Id, context);
+        Machines = this.GetMachine(Id, context);
     }
 
     private List<WebOthersDto> GetConfigs(int id, MyContext context)
@@ -121,6 +124,6 @@ public class WebGroupDto
     {
         List<MachineGroup> machineGroups = context.MachineGroup.Where(x => x.Id_Group == group.Id).ToList();
         machineGroups.ForEach(x => context.MachineGroup.Remove(x));
-        Machines.ForEach(x => context.MachineGroup.Add(new MachineGroup() { Id_Machine = x.Id, Id_Group = group.Id}));
+        Machines.Select(x => context.MachineGroup.Add(new MachineGroup() { Id_Machine = x.Id, Id_Group = group.Id}));
     }
 }

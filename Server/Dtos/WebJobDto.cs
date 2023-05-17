@@ -18,25 +18,22 @@ public class WebJobDto
 
     public WebOthersDto Config { get; set; }
 
-    public WebJobDto(int id, short status, DateTime? timeStart, DateTime? timeEnd, DateTime timeSchedule, int? id_Group, int? id_Machine, MyContext context)
+    public WebJobDto(Job jobData, MyContext context)
     {
-        this.Id = id;
-        this.Status = status;
-        this.Time_Start = timeStart;
-        this.Time_End = timeEnd;
-        this.Time_Schedule = timeSchedule;
+        this.Id = jobData.Id;
+        this.Status = jobData.Status;
+        this.Time_Start = jobData.Time_start;
+        this.Time_End = jobData.Time_end;
+        this.Time_Schedule = jobData.Time_schedule;
 
-        Job job = context.Job.Find(id);
-
-        if (id_Group != null)
-            Target = context.Groups.Where(x => x.Id == job.Id_Group).FirstOrDefault().Name;
-        else if (id_Machine != null)
-            Target = context.Machine.Where(x => x.Id == job.Id_Machine).FirstOrDefault().Name;
+        if (jobData.Id_Group != null)
+            Target = context.Groups.Find(jobData.Id_Group).Name;
+        else if (jobData.Id_Machine != null)
+            Target = context.Machine.Find(jobData.Id_Machine).Name;
         else
             throw new Exception("Invalid Data");
 
-        string name = context.Config.Where(x => x.Id == job.Id_Config).FirstOrDefault().Name;
-        Config = new WebOthersDto(job.Id_Config, name);
+        Config = new WebOthersDto(jobData.Id_Config, context.Config.Find(jobData.Id_Config).Name);
     }
 
 

@@ -25,7 +25,8 @@ public class GroupsController : Controller
     [HttpGet]
     public ActionResult Get()
     {
-        return Ok(context.Groups.Select(x => new WebGroupDto(x, context)).ToList());
+        //temp
+        return Ok(context.Groups.ToList().Select(x => new WebGroupDto(x, context)).ToList());
     }
 
     [HttpGet("names")]

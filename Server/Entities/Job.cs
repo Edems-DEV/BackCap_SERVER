@@ -17,7 +17,7 @@ public class Job
 
     [Required]
     [Range(0, 1, ErrorMessage = "Value must be within 0 and 1")]
-    public Int16 Status { get; set; }
+    public short Status { get; set; }
 
     [Required]
     public DateTime Time_schedule { get; set; }
@@ -36,4 +36,6 @@ public class Job
 
     [ForeignKey("Id_Config")]
     public virtual Config Config { get; set; }
+
+    public ICollection<Log> Logs { get; set; }
 }

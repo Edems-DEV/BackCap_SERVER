@@ -28,13 +28,13 @@ public class ConfigsController : Controller
     [HttpGet]
     public ActionResult<List<WebConfigDto>> Get()
     {
-        return Ok(context.Config.ToList().Select(x => new WebConfigDto(x, context, x.Id)).ToList());
+        return Ok(context.Config.Select(x => new WebConfigDto(x, context, x.Id)).ToList());
     }
 
     [HttpGet("names")]
     public ActionResult<List<WebOthersDto>> GetNames()
     {
-        return Ok(context.Config.ToList().Select(x => new WebOthersDto(x.Id, x.Name)).ToList());
+        return Ok(context.Config.Select(x => new WebOthersDto(x.Id, x.Name)).ToList());
     }
 
     [HttpGet("count")]

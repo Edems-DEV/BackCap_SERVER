@@ -39,7 +39,7 @@ public class DestinationsController : Controller
     [HttpPost]
     public ActionResult Post([FromBody] PathsDto path)
     {
-        if (!context.Config.Any(x => x.Id == path.Id_Config))
+        if (context.Config.Find(path.Id_Config) == null)
         {
             return BadRequest("Object doesn't have existing id in Configs");
         }

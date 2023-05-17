@@ -20,38 +20,11 @@ public class JobsController : Controller
         this.validation = validation;
     }
 
-    // GET: api/jobs?limit=25&offset=50&orderBy=Id&isAscending=false
     [HttpGet]
-    public IActionResult Get(int limit = 10, int offset = 0)
+    public IActionResult Get()
     {
-        //int limit = 10, int offset = 0, string orderBy = "empty", bool isAscending = true
-        string orderBy = "empty"; bool isAscending = true;
-        
-        string sql = "SELECT * FROM `Job`";
-
-        var tables = new List<string> { "id", "status", "time_schedule", "time_start", "time_end", "bytes" };
-        var direction = isAscending ? "ASC" : "DESC";
-
-        if (tables.Contains(orderBy.ToLower())) //hope this is enough to stop sql injection
-        {
-            sql += $" ORDER BY `{orderBy}` {direction}";
-        }
-
-        List<Job> query = context.Job.FromSqlRaw(sql).ToList();// + " LIMIT {0} OFFSET {1}", limit, offset
-
-        if (query == null || query.Count == 0)
-        {
-            return NoContent(); //204
-        }
-
-        List<WebJobDto> jobDtos = new();
-        foreach (var job in query)
-        {
-            jobDtos.Add(new WebJobDto(job.Id, job.Status, job.Time_start, job.Time_end, job.Time_schedule, job.Id_Group, job.Id_Machine, context));
-        }
-
-        return Ok(jobDtos); //200
-    } //&orderBy  => is required (idk how to make it optimal)
+        return Ok(context.Job.ToList().Select(x => new WebJobDto(x, context)).ToList()); 
+    }
 
     [HttpGet("count/{command}")]
     public int GetCount(string command)
@@ -98,7 +71,7 @@ public class JobsController : Controller
         if (job == null)
             return NotFound("Object does not exists");
 
-        return Ok(new WebJobDto(job.Id, job.Status, job.Time_start, job.Time_end, job.Time_schedule, job.Id_Group, job.Id_Machine, context));
+        return Ok(new WebJobDto(job, context));
     }
 
     // daemon
