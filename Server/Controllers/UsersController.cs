@@ -42,12 +42,11 @@ public class UsersController : ControllerBase
         User user = context.User.Find(Id);
 
         if (user == null)
-            return NotFound("Object does not Exists");
+            return NotFound();
 
         return Ok(new WebUserNoPass(user.Id, user.Name, user.Email, user.Interval_Report));
     }
 
-    // POST api/users
     [HttpPost]
     [Encrypt]
     public ActionResult Post([FromBody] WebUserDto user)
@@ -58,8 +57,7 @@ public class UsersController : ControllerBase
         }
         catch (Exception)
         {
-
-            return NotFound("Invalid");
+            return BadRequest();
         }
 
         User NewUser = new User(user);
@@ -70,7 +68,6 @@ public class UsersController : ControllerBase
         return Ok();
     }
 
-    // PUT api/users/5
     [HttpPut("{Id}")]
     [Encrypt]
     public ActionResult Put(int Id, [FromBody] WebUserDto webUser)
@@ -99,7 +96,6 @@ public class UsersController : ControllerBase
         return Ok();
     }
 
-    // DELETE api/users/5
     [HttpDelete("{Id}")]
     public ActionResult Delete(int Id)
     {
