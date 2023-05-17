@@ -65,4 +65,18 @@ public class SourcesController : Controller
 
         return Ok();
     }
+
+    [HttpDelete("{Id}")]
+    public ActionResult Delete(int Id)
+    {
+        Sources source = context.Sources.Find(Id);
+
+        if (source == null)
+            return NotFound();
+
+        context.Sources.Remove(source);
+        context.SaveChanges();
+
+        return Ok();
+    }
 }

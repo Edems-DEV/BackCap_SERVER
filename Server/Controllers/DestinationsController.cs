@@ -62,11 +62,25 @@ public class DestinationsController : Controller
         Destination destination = context.Destination.Find(Id);
 
         if (destination == null)
-            return NotFound("Object does not exists");
+            return NotFound();
 
         destination.Id_Config = path.Id_Config;
         destination.DestPath = path.Path;
 
+        context.SaveChanges();
+
+        return Ok();
+    }
+
+    [HttpDelete("{Id}")]
+    public ActionResult Delete(int Id)
+    {
+        Destination destination = context.Destination.Find(Id);
+
+        if (destination == null)
+            return NotFound();
+
+        context.Destination.Remove(destination);
         context.SaveChanges();
 
         return Ok();

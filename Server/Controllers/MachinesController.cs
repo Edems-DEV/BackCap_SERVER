@@ -98,4 +98,18 @@ public class MachinesController : Controller
 
         return Ok(NewMachine.Id);
     }
+
+    [HttpDelete("Id")]
+    public ActionResult Delete(int Id)
+    {
+        Machine machine = context.Machine.Find(Id);
+
+        if (machine == null)
+            return NotFound();
+
+        context.Machine.Remove(machine);
+        context.SaveChanges();
+
+        return Ok();
+    }
 }

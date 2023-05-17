@@ -116,8 +116,6 @@ public class ConfigsController : Controller
         if (config == null)
             return NotFound("Object does not exists");
 
-        context.Sources.Where(x => x.Id_Config == config.Id).ToList().ForEach(y => context.Sources.Remove(y));
-        context.Destination.Where(x => x.Id_Config == config.Id).ToList().ForEach(y => context.Destination.Remove(y));
         context.Config.Remove(config);
         context.SaveChanges();
         return Ok();
