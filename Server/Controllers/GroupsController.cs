@@ -53,10 +53,12 @@ public class GroupsController : Controller
     }
 
     [HttpPost]
-    public ActionResult Post([FromBody] WebGroupNew group)
+    public ActionResult Post([FromBody] Groups group)
     {
-        context.Groups.Add(new Groups() { Name = group.Name, Description = group.Description});
-        return Ok(context.SaveChanges());
+        context.Groups.Add(group);
+        context.SaveChanges();
+
+        return Ok();
     }
 
     [HttpPut("{Id}")]
