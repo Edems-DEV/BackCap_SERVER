@@ -4,7 +4,6 @@ using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Server.DatabaseTables;
 using Server.Dtos;
-using Server.Entities;
 
 namespace Server.Controllers;
 
