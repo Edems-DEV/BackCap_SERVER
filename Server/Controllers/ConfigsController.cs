@@ -28,7 +28,7 @@ public class ConfigsController : Controller
     [HttpGet]
     public ActionResult<List<WebConfigDto>> Get()
     {
-        return Ok(context.Config.ToList().Select(x => new WebConfigDto(x, context, x.Id)).ToList());
+        return Ok(context.Config.ToList().Select(x => new WebConfigDto(x, context)).ToList());
     }
 
     [HttpGet("names")]
@@ -51,7 +51,7 @@ public class ConfigsController : Controller
         if (config == null)
             return NotFound();
 
-        return Ok(new WebConfigDto(config, context, Id));
+        return Ok(new WebConfigDto(config, context));
     }
 
     [HttpPost]
@@ -97,11 +97,11 @@ public class ConfigsController : Controller
         // update configu // uloží nové cesty
         result.GetData(config.GetConfig(context));
 
-        // update group a pc
-        Job job = context.Job.Where(x => x.Id_Config == config.Id).FirstOrDefault();
+        // update group a machine
+        //Job job = context.Job.Where(x => x.Id_Config == config.Id).FirstOrDefault();
 
-        job.Id_Group = config.Group.Id;
-        job.Id_Machine = config.Machine.Id;
+        //job.Id_Group = config.Groups.Id;
+        //job.Id_Machine = config.Machines.Id;
 
 
         context.SaveChanges();

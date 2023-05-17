@@ -29,62 +29,69 @@ public class WebConfigDto
 
     public List<WebOthersDto> Destinations { get; set; } = new();
 
-    public WebOthersDto? Machine { get; set; }
+    public List<WebOthersDto> Machines { get; set; } = new();
 
-    public WebOthersDto? Group { get; set; }
+    public List<WebOthersDto> Groups { get; set; } = new();
 
     public WebConfigDto() // overloadnutý konstruktor kvůli put. Jinak spadne protože konstruktor je už occupied
     {
         
     }
 
-    public WebConfigDto(Config config, MyContext context, int Id)
+    public WebConfigDto(Config config, MyContext context)
     {
-        Job job = context.Job.Where(x => x.Id_Config == Id).FirstOrDefault();
-
         this.Id = config.Id;
-        Name = config.Name;
-        Description = config.Description;
-        Type = this.ConvertType(config.Type);
-        IsCompressed = config.IsCompressed;
-        PackageSize = config.PackageSize;
-        Retention = config.Retention;
-        Interval = config.Backup_interval;
-        Interval_end = config.Interval_end;
+        this.Name = config.Name;
+        this.Description = config.Description;
+        this.Type = this.ConvertType(config.Type);
+        this.IsCompressed = config.IsCompressed;
+        this.PackageSize = config.PackageSize;
+        this.Retention = config.Retention;
+        this.Interval = config.Backup_interval;
+        this.Interval_end = config.Interval_end;
+
+        this.Sources = context
+            .Sources
+            .Where(x => x.Id_Config == Id)
+            .Select(x => new WebOthersDto(x.Id, x.Path))
+            .ToList();
+
+        this.Destinations = context
+            .Destination
+            .Where(x => x.Id_Config == Id)
+            .Select(x => new WebOthersDto(x.Id, x.DestPath))
+            .ToList();
+
+
+        Job job = context.Job.Where(x => x.Id_Config == Id).FirstOrDefault();
 
         if (job == null)
             return;
 
-        foreach (var source in context.Sources.Where(x => x.Id_Config == Id).ToList())
-        {
-            Sources.Add(new WebOthersDto(source.Id, source.Path));
-        }
+        List<Job> jobs = context
+            .Job
+            .Where(x => x.Id_Config == this.Id)
+            .Where(x => x.Id_Machine != null)
+            .ToList();
 
-        foreach (var destination in context.Destination.Where(x => x.Id_Config == Id).ToList())
-        {
-            Destinations.Add(new WebOthersDto(destination.Id, destination.DestPath));
-        }
+        Machines = jobs
+            .Select(x => new WebOthersDto(Convert.ToInt32(x.Id_Machine), context.Machine.Find(x.Id_Machine)!.Name!))
+            .ToList();
 
-        //sem je potřeba přidělat opravu, při chybných/ null datech.Zatim netušim co je nejlepší možnost
-        Machine? machine = context.Machine.Where(x => x.Id == job.Id_Machine).FirstOrDefault();
+        jobs = context
+            .Job
+            .Where(x => x.Id_Config == this.Id)
+            .Where(x => x.Id_Group != null)
+            .ToList();
 
-        if (machine != null)
-            Machine = new WebOthersDto(machine.Id, machine.Name);
-
-        Groups? group = context.Groups.Where(x => x.Id == job.Id_Group).FirstOrDefault();
-
-        if (group == null)
-        {
-            Group = null;
-            return;
-        }
-            
-        Group = new WebOthersDto(group.Id, group.Name);
+        Groups = jobs
+            .Select(x => new WebOthersDto(Convert.ToInt32(x.Id_Group), context.Groups.Find(x.Id_Group)!.Name))
+            .ToList();
     }
 
     public Config GetConfig(MyContext context)
     {
-        this.DatabaseUpdate(context);
+        this.DatabaseUpdate(new DatabaseManager(context));
 
         return new Config()
         {
@@ -135,18 +142,9 @@ public class WebConfigDto
         }
     }
 
-    private void DatabaseUpdate(MyContext context)
+    private void DatabaseUpdate(DatabaseManager databaseManager)
     {
-        DatabaseManager databaseManager = new(context);
-
-        foreach (var source in Sources)
-        {
-            databaseManager.AddNotExistent(source.GetSources(this.Id));
-        }
-
-        foreach (var destination in Destinations)
-        {
-            databaseManager.AddNotExistent(destination.GetDestination(this.Id));
-        }
+        this.Sources.ForEach(x => databaseManager.AddNotExistent(x.GetSources(this.Id)));
+        this.Destinations.ForEach(x => databaseManager.AddNotExistent(x.GetDestination(this.Id)));      
     }
 }

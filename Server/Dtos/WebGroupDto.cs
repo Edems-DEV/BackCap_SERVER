@@ -23,7 +23,7 @@ public class WebGroupDto
         Description = group.Description;
 
         //Configs = group.Jobs.Select(x => new WebOthersDto(x.Config.Id, x.Config.Name)).ToList();
-        //Machines = group.Jobs.Select(x => new WebOthersDto(x.Machine.Id, x.Machine.Name)).ToList();
+        //Machines = group.Jobs.Select(x => new WebOthersDto(x.Machines.Id, x.Machines.Name)).ToList();
 
         Configs = this.GetConfigs(Id, context);
         Machines = this.GetMachine(Id, context);
@@ -50,7 +50,7 @@ public class WebGroupDto
     public Groups UpdateGroup(Groups group, MyContext context)
     {
         this.AddJobs(group.Id, context);
-        this.AddMachines(group, context);
+        this.AddMachines(group.Id, context);
 
         group.Name = this.Name;
         group.Description = this.Description;
@@ -120,10 +120,10 @@ public class WebGroupDto
         }
     }
 
-    private void AddMachines(Groups group, MyContext context)
+    private void AddMachines(int Id, MyContext context)
     {
-        List<MachineGroup> machineGroups = context.MachineGroup.Where(x => x.Id_Group == group.Id).ToList();
+        List<MachineGroup> machineGroups = context.MachineGroup.Where(x => x.Id_Group == Id).ToList();
         machineGroups.ForEach(x => context.MachineGroup.Remove(x));
-        Machines.Select(x => context.MachineGroup.Add(new MachineGroup() { Id_Machine = x.Id, Id_Group = group.Id}));
+        Machines.Select(x => context.MachineGroup.Add(new MachineGroup() { Id_Machine = x.Id, Id_Group = Id}));
     }
 }

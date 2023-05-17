@@ -47,7 +47,7 @@ public class GroupsController : Controller
         Groups group = context.Groups.Find(Id);
 
         if (group == null)
-            return NotFound("Object does not exists");
+            return NotFound();
 
         return Ok(new WebGroupDto(group, context));
     }
@@ -65,7 +65,7 @@ public class GroupsController : Controller
         Groups group = context.Groups.Find(Id);
 
         if (group == null)
-            return NotFound("Object does not exists");
+            return NotFound();
 
         group = groupDto.UpdateGroup(group, context);
 
@@ -80,7 +80,7 @@ public class GroupsController : Controller
         Groups group = context.Groups.Find(Id);
 
         if (group == null)
-            return NotFound("Object does not exists");
+            return NotFound();
 
         context.Groups.Remove(group);
         context.SaveChanges();
