@@ -32,9 +32,9 @@ public class ConfigsController : Controller
     }
 
     [HttpGet("names")]
-    public ActionResult<List<WebOthersDto>> GetNames()
+    public ActionResult<List<WebNameDto>> GetNames()
     {
-        return Ok(context.Config.Select(x => new WebOthersDto(x.Id, x.Name)).ToList());
+        return Ok(context.Config.Select(x => new WebNameDto(x.Id, x.Name)).ToList());
     }
 
     [HttpGet("count")]
@@ -77,12 +77,10 @@ public class ConfigsController : Controller
     public ActionResult Put(int Id, [FromBody] WebConfigDto config)
     {
         config.Id = Id;
-        DatabaseManager databaseManager = new(context);
 
-        
         try
         {
-            validation.DateTimeValidator(config.Interval_end.ToString());
+            //validation.DateTimeValidator(config.Interval_end.ToString());
         }
         catch (Exception)
         {
@@ -94,15 +92,8 @@ public class ConfigsController : Controller
         if (result == null)
             return NotFound("Object does not exists");
 
-        // update configu // uloží nové cesty
+        // update configu a jobů k němu
         result.GetData(config.GetConfig(context));
-
-        // update group a machine
-        //Job job = context.Job.Where(x => x.Id_Config == config.Id).FirstOrDefault();
-
-        //job.Id_Group = config.Groups.Id;
-        //job.Id_Machine = config.Machines.Id;
-
 
         context.SaveChanges();
         return Ok();

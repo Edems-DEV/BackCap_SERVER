@@ -3,7 +3,7 @@ using JWT.Builder;
 using Microsoft.AspNetCore.Mvc;
 using Server.DatabaseTables;
 
-namespace Server;
+namespace Server.Services;
 
 public class encryption
 {
@@ -24,7 +24,7 @@ public class encryption
         {
             return ex.Message.ToString();
         }
-        
+
     }
 
     public string HeshToString(string encryptedString, string secretKey)

@@ -15,9 +15,9 @@ public class WebMachineDto
 
     public bool Is_Active { get; set; }
 
-    public List<WebOthersDto> Configs { get; set; } = new();
+    public List<WebNameDto> Configs { get; set; } = new();
 
-    public List<WebOthersDto> Groups { get; set; } = new();
+    public List<WebNameDto> Groups { get; set; } = new();
 
     public WebMachineDto()
     {
@@ -41,13 +41,13 @@ public class WebMachineDto
         {
             foreach (var configs in context.Config.Where(x => x.Id == job.Id_Config).ToList())
             {
-                Configs.Add(new WebOthersDto(configs.Id, configs.Name));
+                Configs.Add(new WebNameDto(configs.Id, configs.Name));
             }
 
             foreach (var item in context.MachineGroup.Where(x => x.Id_Machine == Id).ToList())
             {
                 Groups groups = context.Groups.Find(item.Id_Group);
-                Groups.Add(new WebOthersDto(groups.Id, groups.Name));
+                Groups.Add(new WebNameDto(groups.Id, groups.Name));
             }
         }
     }

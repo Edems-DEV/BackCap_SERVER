@@ -1,6 +1,6 @@
 ﻿using Server.DatabaseTables;
 
-namespace Server;
+namespace Server.Services;
 
 public class HelpMethods
 {

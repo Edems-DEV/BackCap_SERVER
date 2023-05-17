@@ -2,18 +2,18 @@
 
 namespace Server.Dtos;
 
-public class WebOthersDto
+public class WebNameDto
 {
     public int Id { get; set; }
 
     public string Name { get; set; }
 
-    public WebOthersDto()
+    public WebNameDto()
     {
-        
+
     }
 
-    public WebOthersDto(int id, string name)
+    public WebNameDto(int id, string name)
     {
         this.Id = id;
         this.Name = name;
@@ -27,15 +27,5 @@ public class WebOthersDto
     public Destination GetDestination(int configId)
     {
         return new Destination() { Id = this.Id, Id_Config = configId, DestPath = this.Name };
-    }
-
-    public Groups GetGroups(string? desctiption)
-    {
-        return new Groups() { Id = this.Id, Name = this.Name, Description = desctiption };
-    }
-
-    public void GetConfigs()
-    {
-
     }
 }

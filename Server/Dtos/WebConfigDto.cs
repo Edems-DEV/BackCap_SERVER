@@ -25,18 +25,15 @@ public class WebConfigDto
 
     public DateTime? Interval_end { get; set; }
 
-    public List<WebOthersDto> Sources { get; set; } = new();
+    public List<WebNameDto> Sources { get; set; } = new();
 
-    public List<WebOthersDto> Destinations { get; set; } = new();
+    public List<WebNameDto> Destinations { get; set; } = new();
 
-    public List<WebOthersDto> Machines { get; set; } = new();
+    public List<WebNameDto> Machines { get; set; } = new();
 
-    public List<WebOthersDto> Groups { get; set; } = new();
+    public List<WebNameDto> Groups { get; set; } = new();
 
-    public WebConfigDto() // overloadnutý konstruktor kvůli put. Jinak spadne protože konstruktor je už occupied
-    {
-        
-    }
+    public WebConfigDto() { } // overloadnutý konstruktor kvůli put. Jinak spadne protože konstruktor je už occupied
 
     public WebConfigDto(Config config, MyContext context)
     {
@@ -53,45 +50,49 @@ public class WebConfigDto
         this.Sources = context
             .Sources
             .Where(x => x.Id_Config == Id)
-            .Select(x => new WebOthersDto(x.Id, x.Path))
+            .Select(x => new WebNameDto(x.Id, x.Path))
             .ToList();
 
         this.Destinations = context
             .Destination
             .Where(x => x.Id_Config == Id)
-            .Select(x => new WebOthersDto(x.Id, x.DestPath))
+            .Select(x => new WebNameDto(x.Id, x.DestPath))
             .ToList();
 
+        this.Machines = this.GetExistingMachines(context);
+        this.Groups = this.GetExistingGroups(context);
+    }
 
-        Job job = context.Job.Where(x => x.Id_Config == Id).FirstOrDefault();
-
-        if (job == null)
-            return;
-
+    private List<WebNameDto> GetExistingMachines(MyContext context)
+    {
         List<Job> jobs = context
             .Job
             .Where(x => x.Id_Config == this.Id)
             .Where(x => x.Id_Machine != null)
             .ToList();
 
-        Machines = jobs
-            .Select(x => new WebOthersDto(Convert.ToInt32(x.Id_Machine), context.Machine.Find(x.Id_Machine)!.Name!))
+        return jobs
+            .Select(x => new WebNameDto(Convert.ToInt32(x.Id_Machine), context.Machine.Find(x.Id_Machine)!.Name!))
             .ToList();
+    }
 
-        jobs = context
+    private List<WebNameDto> GetExistingGroups(MyContext context)
+    {
+        List<Job> jobs = context
             .Job
             .Where(x => x.Id_Config == this.Id)
             .Where(x => x.Id_Group != null)
             .ToList();
 
-        Groups = jobs
-            .Select(x => new WebOthersDto(Convert.ToInt32(x.Id_Group), context.Groups.Find(x.Id_Group)!.Name))
+        return jobs
+            .Select(x => new WebNameDto(Convert.ToInt32(x.Id_Group), context.Groups.Find(x.Id_Group)!.Name))
             .ToList();
     }
 
     public Config GetConfig(MyContext context)
     {
-        this.DatabaseUpdate(new DatabaseManager(context));
+        //this.DatabaseUpdate(new DatabaseManager(context)); potřebuje upravid to do
+        this.UpdateJobs(context);
 
         return new Config()
         {
@@ -104,6 +105,72 @@ public class WebConfigDto
             IsCompressed = this.IsCompressed,
             Interval_end = this.Interval_end
         };
+    }
+
+    public void UpdateJobs(MyContext context)
+    {
+        List<int> groupIds = Groups.Select(x => x.Id).ToList();
+        List<int> machineIds = Machines.Select(x => x.Id).ToList();
+
+        List<int> existingGroups = GetExistingGroups(context).Select(x => x.Id).ToList();
+        List<int> existingMachines = GetExistingMachines(context).Select(x => x.Id).ToList();
+
+        List<int> groupsToAdd = groupIds.Where(x => !existingGroups.Contains(x)).ToList();
+        List<int> machinesToAdd = machineIds.Where(x => !existingMachines.Contains(x)).ToList();
+
+        List<int> groupsToDelete = existingGroups
+            .Where(x => !groupIds.Contains(x) && !groupsToAdd.Contains(x))
+            .ToList();
+
+        List<int> machinesToDelete = existingMachines
+            .Where(x => !machineIds.Contains(x) && !machinesToAdd.Contains(x))
+            .ToList();
+
+        // odebrat ty co už tam nepatří, a zároveň nechat joby kde alespoň jeden zůstává
+        List<Job> jobs = context.Job.Where(x => x.Id_Config == this.Id).ToList();
+
+        foreach (Job job in jobs)
+        {
+            if (job.Id_Group != null)
+                if (groupsToDelete.Contains((int)job.Id_Group))
+                    job.Id_Group = null;
+
+            if (job.Id_Machine != null)
+                if (machinesToDelete.Contains((int)job.Id_Machine))
+                    job.Id_Machine = null;
+
+            if (job.Id_Machine == null && job.Id_Group == null)
+                context.Job.Remove(job);
+        }
+
+        // add jobů
+
+        for (int i = 0; i < Math.Max(groupsToAdd.Count, machinesToAdd.Count); i++)
+        {
+            int? groupToAdd = 0;
+            int? machineToAdd = 0;
+
+            if (groupsToAdd.Count == i)
+                groupToAdd = null;
+            else
+                groupToAdd = groupsToAdd[i];
+
+            if (machinesToAdd.Count == i)
+                machineToAdd = null;
+            else
+                machineToAdd = machinesToAdd[i];
+
+            context.Job.Add(new Job()
+            {
+                Id_Group = groupToAdd,
+                Id_Machine = machineToAdd,
+                Id_Config = this.Id,
+                Status = 1,
+                Time_schedule = DateTime.Now,
+            });
+        }
+
+        context.SaveChanges();
     }
 
     public string ConvertType(int type)

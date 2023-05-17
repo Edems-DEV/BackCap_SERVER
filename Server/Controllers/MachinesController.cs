@@ -29,9 +29,9 @@ public class MachinesController : Controller
     }
 
     [HttpGet("names")]
-    public ActionResult<List<WebOthersDto>> GetNames()
+    public ActionResult<List<WebNameDto>> GetNames()
     {
-        return Ok(context.Machine.Select(x => new WebOthersDto(x.Id, x.Name)).ToListAsync());
+        return Ok(context.Machine.Select(x => new WebNameDto(x.Id, x.Name)).ToListAsync());
     }
 
     // GET: for stats

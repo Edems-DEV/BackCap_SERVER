@@ -30,9 +30,9 @@ public class GroupsController : Controller
     }
 
     [HttpGet("names")]
-    public ActionResult<List<WebOthersDto>> GetNames()
+    public ActionResult<List<WebNameDto>> GetNames()
     {
-        return Ok(context.Groups.Select(x => new WebOthersDto(x.Id, x.Name)).ToList());
+        return Ok(context.Groups.Select(x => new WebNameDto(x.Id, x.Name)).ToList());
     }
 
     [HttpGet("count")]

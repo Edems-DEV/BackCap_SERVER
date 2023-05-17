@@ -10,9 +10,9 @@ public class WebGroupDto
 
     public string? Description { get; set; }
 
-    public ICollection<WebOthersDto> Configs { get; set; } = new List<WebOthersDto>();
+    public ICollection<WebNameDto> Configs { get; set; } = new List<WebNameDto>();
 
-    public ICollection<WebOthersDto> Machines { get; set; } = new List<WebOthersDto>();
+    public ICollection<WebNameDto> Machines { get; set; } = new List<WebNameDto>();
 
     public WebGroupDto() { }
 
@@ -22,28 +22,28 @@ public class WebGroupDto
         Name = group.Name;
         Description = group.Description;
 
-        //Configs = group.Jobs.Select(x => new WebOthersDto(x.Config.Id, x.Config.Name)).ToList();
-        //Machines = group.Jobs.Select(x => new WebOthersDto(x.Machines.Id, x.Machines.Name)).ToList();
+        //Configs = group.Jobs.Select(x => new WebNameDto(x.Config.Id, x.Config.Name)).ToList();
+        //Machines = group.Jobs.Select(x => new WebNameDto(x.Machines.Id, x.Machines.Name)).ToList();
 
         Configs = this.GetConfigs(Id, context);
         Machines = this.GetMachine(Id, context);
     }
 
-    private List<WebOthersDto> GetConfigs(int id, MyContext context)
+    private List<WebNameDto> GetConfigs(int id, MyContext context)
     {
         return context
             .Job
             .Where(x => x.Id_Group == id)
-            .Select(x => new WebOthersDto() { Id = x.Id_Config, Name = x.Config.Name }) 
+            .Select(x => new WebNameDto() { Id = x.Id_Config, Name = x.Config.Name }) 
             .ToList();
     }
 
-    private List<WebOthersDto> GetMachine(int id, MyContext context)
+    private List<WebNameDto> GetMachine(int id, MyContext context)
     {
         return context
             .MachineGroup
             .Where(x => x.Id_Group == id)
-            .Select(x => new WebOthersDto { Id = x.Id_Machine, Name = x.Machine.Name })
+            .Select(x => new WebNameDto { Id = x.Id_Machine, Name = x.Machine.Name })
             .ToList();
     }
 

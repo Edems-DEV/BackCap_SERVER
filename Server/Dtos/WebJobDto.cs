@@ -16,7 +16,7 @@ public class WebJobDto
 
     public DateTime Time_Schedule { get; set; }
 
-    public WebOthersDto Config { get; set; }
+    public WebNameDto Config { get; set; }
 
     public WebJobDto(Job jobData, MyContext context)
     {
@@ -33,7 +33,7 @@ public class WebJobDto
         else
             throw new Exception("Invalid Data");
 
-        Config = new WebOthersDto(jobData.Id_Config, context.Config.Find(jobData.Id_Config).Name);
+        Config = new WebNameDto(jobData.Id_Config, context.Config.Find(jobData.Id_Config).Name);
     }
 
 

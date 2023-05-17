@@ -13,19 +13,19 @@ public class DatabaseManager
 
     public void AddNotExistent(Destination destination)
     {
-        if (context.Destination.Where(x => x.DestPath == destination.DestPath).FirstOrDefault() == null)
-        {
+        //if (context.Destination.Where(x => x.DestPath == destination.DestPath).FirstOrDefault() == null)
+        //{
             context.Destination.Add(destination);
             context.SaveChanges();
-        }
+        //}
     }
 
     public void AddNotExistent(Sources source)
     {
-        if (context.Sources.Where(x => x.Path == source.Path).FirstOrDefault() == null)
-        {
+        //if (context.Sources.Where(x => x.Path == source.Path).FirstOrDefault() == null)
+        //{
             context.Sources.Add(source);
             context.SaveChanges();
-        }
+        //}
     }
 }
