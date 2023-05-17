@@ -1,4 +1,6 @@
-﻿namespace Server.Dtos;
+﻿using Server.DatabaseTables;
+
+namespace Server.Dtos;
 
 public class WebUserNoPass
 {
@@ -10,11 +12,13 @@ public class WebUserNoPass
 
     public string Interval_Report { get; set; }
 
-    public WebUserNoPass(int id, string name, string email, string interval_Report)
+    public WebUserNoPass() { }
+
+    public WebUserNoPass(User user)
     {
-        this.Id = id;
-        this.Name = name;
-        this.Email = email;
-        this.Interval_Report = interval_Report;
+        this.Id = user.Id;
+        this.Name = user.Name;
+        this.Email = user.Email;
+        this.Interval_Report = user.Interval_Report;
     }
 }

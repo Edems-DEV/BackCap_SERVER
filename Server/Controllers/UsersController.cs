@@ -22,21 +22,21 @@ public class UsersController : ControllerBase
     }
 
     [HttpGet]
-    [Decrypt]
-    public ActionResult<List<User>> GetUsers()
+    //[Decrypt]
+    public ActionResult<List<WebUserNoPass>> GetUsers()
     {
-        return Ok(context.User.Select(x => new WebUserDto(x)).ToListAsync());
+        return Ok(context.User.Select(x => new WebUserNoPass(x)).ToListAsync());
     }
 
     [HttpGet("count")]
-    [Decrypt]
+    //[Decrypt]
     public ActionResult<int> GetCount()
     {
         return Ok(context.User.Count());
     }
 
     [HttpGet("{Id}")]
-    [Decrypt]
+    //[Decrypt]
     public ActionResult<WebUserNoPass> Get(int Id)
     {
         User user = context.User.Find(Id);
@@ -44,11 +44,11 @@ public class UsersController : ControllerBase
         if (user == null)
             return NotFound();
 
-        return Ok(new WebUserNoPass(user.Id, user.Name, user.Email, user.Interval_Report));
+        return Ok(new WebUserNoPass(user));
     }
 
     [HttpPost]
-    [Encrypt]
+    //[Encrypt]
     public ActionResult Post([FromBody] WebUserDto user)
     {
         try
@@ -69,7 +69,7 @@ public class UsersController : ControllerBase
     }
 
     [HttpPut("{Id}")]
-    [Encrypt]
+    //[Encrypt]
     public ActionResult Put(int Id, [FromBody] WebUserDto webUser)
     {
         User user = context.User.Find(Id);
