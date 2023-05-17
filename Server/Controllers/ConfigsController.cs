@@ -28,7 +28,7 @@ public class ConfigsController : Controller
     [HttpGet]
     public ActionResult<List<WebConfigDto>> Get()
     {
-        return Ok(context.Config.Select(x => new WebConfigDto(x, context, x.Id)).ToList());
+        return Ok(context.Config.ToList().Select(x => new WebConfigDto(x, context, x.Id)).ToList());
     }
 
     [HttpGet("names")]
