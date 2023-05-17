@@ -22,38 +22,11 @@ public class MachinesController : Controller
         this.validation = validation;
     }
 
-
-    // GET: api/machines?limit=25&offset=50&orderBy=Id&isAscending=false
     [HttpGet]
-    public ActionResult<List<WebMachineDto>> Get(int limit = 10, int offset = 0)
+    public ActionResult<List<WebMachineDto>> Get()
     {
-        //int limit = 10, int offset = 0, string orderBy = "empty", bool isAscending = true
-        string orderBy = "empty"; bool isAscending = true;
-        string sql = "SELECT * FROM `Machine`";
-
-        var tables = new List<string> { "id", "name", "description", "os", "ip_adress", "mac_adress", "is_active" };
-        var direction = isAscending ? "ASC" : "DESC";
-
-        if (tables.Contains(orderBy.ToLower())) //hope this is enough to stop sql injection
-        {
-            sql += $" ORDER BY `{orderBy}` {direction}";
-        }
-
-        List<Machine> query = context.Machine.FromSqlRaw(sql).ToList(); // + " LIMIT {0} OFFSET {1}", limit, offset
-
-        if (query == null || query.Count == 0)
-        {
-            return NoContent(); //204
-        }
-
-        List<WebMachineDto> machineDtos = new();
-        foreach (var machine in query)
-        {
-            machineDtos.Add(new WebMachineDto(machine, context));
-        }
-
-        return Ok(machineDtos); //200
-    } //&orderBy  => is required (idk how to make it optimal)
+        return Ok(context.Machine.ToList().Select(x => new WebMachineDto(x, context)).ToList());
+    }
 
     [HttpGet("names")]
     public ActionResult<List<WebOthersDto>> GetNames()
