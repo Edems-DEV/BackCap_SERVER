@@ -21,9 +21,9 @@ public class LogsController : Controller
     }
 
     [HttpGet]
-    public ActionResult<List<WebLogDto>> Get(int limit = 10, int offset = 0)
+    public ActionResult<List<WebLogDto>> Get()
     {
-        return Ok(context.Log.Select(x => new WebLogDto(x)).ToListAsync());
+        return Ok(context.Log.Select(x => new WebLogDto(x)).ToList());
     }
 
     [HttpGet("{Id}")]

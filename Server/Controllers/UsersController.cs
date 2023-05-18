@@ -25,7 +25,7 @@ public class UsersController : ControllerBase
     [Decrypt]
     public ActionResult<List<WebUserNoPass>> GetUsers()
     {
-        return Ok(context.User.Select(x => new WebUserNoPass(x)).ToListAsync());
+        return Ok(context.User.Select(x => new WebUserNoPass(x)).ToList());
     }
 
     [HttpGet("count")]

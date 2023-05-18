@@ -95,37 +95,33 @@ public class JobsController : Controller
         return Ok(job);
     }
 
-    // For deamon to update job Status
-    [HttpPut("{Id}/StatusTime")]
-    public ActionResult PutStatus(int id, [FromBody] DaemonJobStatusDto job)
+    [HttpPut("{Id}/StartTimeStatus")]
+    public ActionResult TimeStartUpdate(int id, [FromBody] DaemonTimeStartStatus job)
     {
         try
         {
             validation.DateTimeValidator(job.Time_start.ToString());
-            validation.DateTimeValidator(job.Time_end.ToString());
         }
         catch (Exception)
         {
-            return BadRequest("Invalid");
+            return BadRequest();
         }
 
         Job existingJob = context.Job.Find(id);
 
         if (existingJob == null)
-            return NotFound("Object does not exists");
+            return NotFound();
 
         existingJob.Status = job.Status;
-
-        if (job.Time_start != null)
-            existingJob.Time_start = job.Time_start;
-
-        if (job.Time_end != null)
-            existingJob.Time_end = job.Time_end;
-
-        if (job.Bytes != null)
-            existingJob.Bytes = job.Bytes;
+        existingJob.Time_start = job.Time_start;
 
         context.SaveChanges();
         return Ok();
     }
+
+    //[HttpPut("[Id]/EndTimeStatus")]
+    //public ActionResult TimeEndUpdate(int Id, [FromBody] DaemonTimeEndStatus job)
+    //{
+    //    return Ok();
+    //}
 }
