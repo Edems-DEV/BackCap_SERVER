@@ -67,7 +67,6 @@ public class UsersController : ControllerBase
     }
 
     [HttpPut("{Id}")]
-    [Encrypt]
     public ActionResult Put(int Id, [FromBody] User webUser)
     {
         User user = context.User.Find(Id);

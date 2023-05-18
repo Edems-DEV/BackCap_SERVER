@@ -28,7 +28,7 @@ public class User
         this.Interval_Report = user.Interval_Report;
     }
 
-    public void UpdateUser(User user)
+    public void UpdateUser(WebUserDto user)
     {
         this.Id = user.Id;
         this.Name = user.Name;
