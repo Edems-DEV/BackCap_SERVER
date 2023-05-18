@@ -1,12 +1,9 @@
 ﻿using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
-using MySql.Data.MySqlClient;
 using Server.DatabaseTables;
 using Server.Dtos;
 using Server.ParamClasses;
 using Server.Validator;
-using System.Net.Mail;
-using System.Xml.Linq;
 
 namespace Server.Controllers;
 

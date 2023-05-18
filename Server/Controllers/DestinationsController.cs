@@ -1,10 +1,6 @@
 ﻿using Microsoft.AspNetCore.Mvc;
-using Microsoft.EntityFrameworkCore;
-using MySql.Data.MySqlClient;
 using Server.DatabaseTables;
 using Server.ParamClasses;
-using Server.Validator;
-using static Org.BouncyCastle.Math.EC.ECCurve;
 
 namespace Server.Controllers;
 

@@ -1,5 +1,4 @@
-﻿using Server.Dtos;
-using Server.ParamClasses;
+﻿using Server.ParamClasses;
 using System.ComponentModel.DataAnnotations;
 
 namespace Server.DatabaseTables;

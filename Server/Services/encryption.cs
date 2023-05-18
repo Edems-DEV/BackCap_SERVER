@@ -1,7 +1,5 @@
 ﻿using JWT.Algorithms;
 using JWT.Builder;
-using Microsoft.AspNetCore.Mvc;
-using Server.DatabaseTables;
 
 namespace Server.Services;
 

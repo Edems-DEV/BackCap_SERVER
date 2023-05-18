@@ -1,6 +1,5 @@
 ﻿using JWT.Algorithms;
 using JWT.Builder;
-using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Server.DatabaseTables;
 using Server.Dtos;

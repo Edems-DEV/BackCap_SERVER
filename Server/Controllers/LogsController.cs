@@ -1,7 +1,4 @@
 ﻿using Microsoft.AspNetCore.Mvc;
-using Microsoft.EntityFrameworkCore;
-using MySql.Data.MySqlClient;
-using Org.BouncyCastle.Utilities;
 using Server.DatabaseTables;
 using Server.ParamClasses;
 using Server.Validator;

@@ -1,7 +1,4 @@
-﻿using System.ComponentModel.DataAnnotations;
-using System.ComponentModel.DataAnnotations.Schema;
-
-namespace Server.DatabaseTables;
+﻿namespace Server.DatabaseTables;
 
 public class Machine
 {

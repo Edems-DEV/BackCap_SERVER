@@ -1,15 +1,7 @@
 ﻿using Microsoft.AspNetCore.Mvc;
-using Microsoft.EntityFrameworkCore;
-using Microsoft.EntityFrameworkCore.Query.SqlExpressions;
-using MySql.Data.MySqlClient;
 using Server.DatabaseTables;
 using Server.Dtos;
-using Server.ParamClasses;
-using Server.Services;
 using Server.Validator;
-using System.ComponentModel.DataAnnotations;
-using System.Reflection.Metadata.Ecma335;
-using System.Text.RegularExpressions;
 
 namespace Server.Controllers;
 

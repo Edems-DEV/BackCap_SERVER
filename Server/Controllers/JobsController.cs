@@ -2,8 +2,6 @@
 using Microsoft.EntityFrameworkCore;
 using Server.DatabaseTables;
 using Server.Validator;
-using Server.ParamClasses;
-using static Org.BouncyCastle.Math.EC.ECCurve;
 using Server.Dtos;
 using Server.Services;
 

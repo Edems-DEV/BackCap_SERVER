@@ -1,7 +1,4 @@
-﻿using Microsoft.AspNetCore.Http;
-using Server.DatabaseTables;
-using Server.ParamClasses;
-using Server.Services;
+﻿using Server.DatabaseTables;
 
 namespace Server.Dtos;
 

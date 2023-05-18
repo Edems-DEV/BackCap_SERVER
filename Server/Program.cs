@@ -1,4 +1,3 @@
-using Server.DatabaseTables;
 using Server.Validator;
 
 namespace Server;
