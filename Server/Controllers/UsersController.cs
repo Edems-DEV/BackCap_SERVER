@@ -67,7 +67,7 @@ public class UsersController : ControllerBase
     }
 
     [HttpPut("{Id}")]
-    public ActionResult Put(int Id, [FromBody] User webUser)
+    public ActionResult Put(int Id, [FromBody] WebUserDto webUser)
     {
         User user = context.User.Find(Id);
 
