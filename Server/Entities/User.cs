@@ -33,7 +33,10 @@ public class User
     {
         this.Id = user.Id;
         this.Name = user.Name;
-        this.Password = user.Password;
+
+        if (user.Password != "")
+            this.Password = user.Password;
+
         this.Email = user.Email;
         this.Interval_Report = user.Interval_Report;
     }
