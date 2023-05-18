@@ -6,14 +6,14 @@ public class WebNameDto
 {
     public int Id { get; set; }
 
-    public string Name { get; set; }
+    public string? Name { get; set; }
 
     public WebNameDto()
     {
 
     }
 
-    public WebNameDto(int id, string name)
+    public WebNameDto(int id, string? name)
     {
         this.Id = id;
         this.Name = name;
