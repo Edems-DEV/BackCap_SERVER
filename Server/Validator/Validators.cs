@@ -1,5 +1,6 @@
 ﻿using MySql.Data.MySqlClient;
 using Org.BouncyCastle.Asn1.Mozilla;
+using System.Globalization;
 using System.Security.Cryptography.X509Certificates;
 using System.Text.RegularExpressions;
 
@@ -9,12 +10,9 @@ public class Validators
 {
     public void DateTimeValidator(string input)
     {
-        Regex a = new Regex(@"[0-9]{4}-[0-9]{2}-[0-9A-Z]{5}(:[0-9A-Z]{2}){2}.[0-9A-Z]{4}");
+        bool isValid = DateTime.TryParse(input, out _);
 
-        bool ReturnBool;
-        ReturnBool = a.IsMatch(input);
-
-        if (!ReturnBool)
+        if (!isValid)
             throw new Exception("Invalid datetime format");
     }
 

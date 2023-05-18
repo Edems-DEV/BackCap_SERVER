@@ -15,12 +15,16 @@ public class Config
     [Range (0, 2, ErrorMessage = "Value must be within 0 and 2")]
     public Int16 Type { get; set; }
 
+    [Required]
     public int Retention { get; set; }
 
+    [Required]
     public int PackageSize { get; set; }
 
+    [Required]
     public bool IsCompressed { get; set; }
 
+    [Required]
     public string Backup_interval { get; set; }
 
     public DateTime? Interval_end { get; set; }
