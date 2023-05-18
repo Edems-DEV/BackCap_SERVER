@@ -10,9 +10,9 @@ public class MachineDto
 
     public string? Os { get; set; } = null;
 
-    public string? Ip_Address { get; set; } = null;
+    public string Ip_Address { get; set; }
 
-    public string? Mac_Address { get; set; } = null;
+    public string Mac_Address { get; set; }
 
     public Machine GetMachine()
     {

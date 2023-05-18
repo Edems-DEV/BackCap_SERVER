@@ -51,7 +51,8 @@ public class ConfigsController : Controller
     {   
         try
         {
-            validation.DateTimeValidator(config.Interval_end.ToString());
+            if (config.Interval_end != null)
+                validation.DateTimeValidator(config.Interval_end.ToString());
         }
         catch (Exception)
         {
@@ -72,7 +73,8 @@ public class ConfigsController : Controller
 
         try
         {
-            validation.DateTimeValidator(config.Interval_end.ToString());
+            if (config.Interval_end != null)
+                validation.DateTimeValidator(config.Interval_end.ToString());
         }
         catch (Exception)
         {

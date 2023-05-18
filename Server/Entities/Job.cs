@@ -16,7 +16,7 @@ public class Job
     public int Id_Config { get; set; }
 
     [Required]
-    [Range(0, 1, ErrorMessage = "Value must be within 0 and 1")]
+    [Range(0, 5, ErrorMessage = "Value must be within 0 and 1")]
     public short Status { get; set; }
 
     [Required]
