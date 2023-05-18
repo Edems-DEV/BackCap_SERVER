@@ -78,35 +78,25 @@ public class JobsController : Controller
 
     // GET: api/jobs/5   => specific job info
     [HttpGet("{Id}/Daemon")] // pro daemona neměnit
-    public ActionResult<Job> Get(int Id)
+    public ActionResult<List<Job>> Get(int Id)
     {
         Machine machine = context.Machine.Find(Id);
+
         if (machine.Is_Active == false)
             return BadRequest("UnAuthorized");
 
-        Job job = context.Job.Where(x => x.Id_Machine == Id).FirstOrDefault()!;
+        List<Job> jobs = context.Job.Where(x => x.Id_Machine == Id).ToList()!;
 
-        if (job == null)
-            return NotFound("Object does not exists");
+        if (jobs.Count == 0)
+            return NoContent();
 
         HelpMethods helpMethods = new HelpMethods(context);
-        job = helpMethods.AddToJob(job);
-
-        return Ok(job);
+        return Ok(jobs.Select(x => helpMethods.AddToJob(x)).ToList());
     }
 
     [HttpPut("{Id}/StartTimeStatus")]
     public ActionResult TimeStartUpdate(int id, [FromBody] DaemonTimeStartStatus job)
     {
-        try
-        {
-            validation.DateTimeValidator(job.Time_start.ToString());
-        }
-        catch (Exception)
-        {
-            return BadRequest();
-        }
-
         Job existingJob = context.Job.Find(id);
 
         if (existingJob == null)
@@ -119,9 +109,21 @@ public class JobsController : Controller
         return Ok();
     }
 
-    //[HttpPut("[Id]/EndTimeStatus")]
-    //public ActionResult TimeEndUpdate(int Id, [FromBody] DaemonTimeEndStatus job)
-    //{
-    //    return Ok();
-    //}
+    [HttpPut("{Id}/EndTimeStatus")]
+    public ActionResult TimeEndUpdate(int Id, [FromBody] DaemonTimeEndStatus job)
+    {
+        Job existingJob = context.Job.Find(Id);
+
+        if (existingJob == null)
+            return NotFound();
+
+        existingJob.Status = job.Status;
+        existingJob.Time_end = job.Time_End;
+
+        if (job.Bytes != null)
+            existingJob.Bytes = job.Bytes;
+
+        context.SaveChanges();
+        return Ok();
+    }
 }

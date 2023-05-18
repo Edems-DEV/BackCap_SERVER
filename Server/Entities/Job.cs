@@ -36,6 +36,4 @@ public class Job
 
     [ForeignKey("Id_Config")]
     public virtual Config Config { get; set; }
-
-    public ICollection<Log> Logs { get; set; }
 }
