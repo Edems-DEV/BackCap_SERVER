@@ -31,26 +31,30 @@ public class WebMachineDto
         this.Ip_Address = machine.Ip_Address;
         this.Is_Active = machine.Is_Active;
 
-        List<Job> jobs = context.Job.Where(x => x.Id_Machine == machine.Id).ToList();
 
-        if (jobs.Count == 0)
-            return;
+        List<int> configIds = context
+            .Job
+            .Where(x => x.Id_Machine == machine.Id)
+            .Select(x => x.Id_Config)
+            .ToList();
 
-        //List<Config> configs = jobs.ForEach(x => context.Config.Where(y => y.Id == x.Id_Config).ToList());
+        Configs = context.Config
+            .Where(x => configIds
+            .Contains(x.Id))
+            .Select(x => new WebNameDto(x.Id, x.Name))
+            .ToList();
 
-        //foreach (Job job in jobs) // refaktor - To Do
-        //{
-        //    foreach (var configs in context.Config.Where(x => x.Id == job.Id_Config).ToList())
-        //    {
-        //        Configs.Add(new WebNameDto(configs.Id, configs.Name));
-        //    }
+        List<int> groupIds = context
+            .MachineGroup
+            .Where(x => x.Id_Machine == this.Id)
+            .Select(x => x.Id_Group)
+            .ToList();
 
-        //    foreach (var item in context.MachineGroup.Where(x => x.Id_Machine == Id).ToList())
-        //    {
-        //        Groups groups = context.Groups.Find(item.Id_Group);
-        //        Groups.Add(new WebNameDto(groups.Id, groups.Name));
-        //    }
-        //}
+        Groups = context
+            .Groups
+            .Where(x => groupIds.Contains(x.Id))
+            .Select(x => new WebNameDto(x.Id, x.Name))
+            .ToList();
     }
 
     public Machine UpdateMachine(Machine machine, MyContext context)
