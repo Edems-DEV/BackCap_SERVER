@@ -16,9 +16,11 @@ public class Config
     public Int16 Type { get; set; }
 
     [Required]
+    [Range(1, int.MaxValue, ErrorMessage = "Retencion value must be 1 or greater")]
     public int Retention { get; set; }
 
     [Required]
+    [Range(1, int.MaxValue, ErrorMessage = "Package size must be 1 or greater")]
     public int PackageSize { get; set; }
 
     [Required]
