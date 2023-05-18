@@ -80,7 +80,7 @@ public class ConfigsController : Controller
 
         try
         {
-            //validation.DateTimeValidator(config.Interval_end.ToString());
+            validation.DateTimeValidator(config.Interval_end.ToString());
         }
         catch (Exception)
         {
