@@ -91,7 +91,7 @@ public class WebConfigDto
 
     public Config GetConfig(MyContext context)
     {
-        //this.DatabaseUpdate(new DatabaseManager(context)); potřebuje upravid to do
+        this.UpdatePaths(context);
         this.UpdateJobs(context);
 
         return new Config()
@@ -107,27 +107,68 @@ public class WebConfigDto
         };
     }
 
-    public void UpdateJobs(MyContext context)
+    private void UpdatePaths(MyContext context)
     {
-        List<int> groupIds = Groups.Select(x => x.Id).ToList();
-        List<int> machineIds = Machines.Select(x => x.Id).ToList();
+        // delete sourců a destinací
+        context.Sources
+            .Where(x => x.Id_Config == this.Id)
+            .ToList()
+            .ForEach(x => context.Sources.Remove(x));
 
-        List<int> existingGroups = GetExistingGroups(context).Select(x => x.Id).ToList();
-        List<int> existingMachines = GetExistingMachines(context).Select(x => x.Id).ToList();
+        context.Destination
+            .Where(x => x.Id_Config == this.Id)
+            .ToList()
+            .ForEach(x => context.Destination.Remove(x));
 
-        List<int> groupsToAdd = groupIds.Where(x => !existingGroups.Contains(x)).ToList();
-        List<int> machinesToAdd = machineIds.Where(x => !existingMachines.Contains(x)).ToList();
+        // přidání sourců a destinací
+        Sources
+            .Select(x => x.GetSources(this.Id))
+            .ToList()
+            .ForEach(x => context.Sources.Add(x));
 
-        List<int> groupsToDelete = existingGroups
+        Destinations
+            .Select(x => x.GetDestination(this.Id))
+            .ToList()
+            .ForEach(x => context.Destination.Add(x));
+
+        context.SaveChanges();
+    }
+    private void UpdateJobs(MyContext context)
+    {
+        IEnumerable<int> groupIds = Groups
+            .Select(x => x.Id)
+            .ToList();
+
+        IEnumerable<int> machineIds = Machines
+            .Select(x => x.Id)
+            .ToList();
+
+        IEnumerable<int> existingGroups = GetExistingGroups(context)
+            .Select(x => x.Id)
+            .ToList();
+
+        IEnumerable<int> existingMachines = GetExistingMachines(context)
+            .Select(x => x.Id)
+            .ToList();
+
+        IList<int> groupsToAdd = groupIds
+            .Where(x => !existingGroups.Contains(x))
+            .ToList();
+
+        IList<int> machinesToAdd = machineIds
+            .Where(x => !existingMachines.Contains(x))
+            .ToList();
+
+        IEnumerable<int> groupsToDelete = existingGroups
             .Where(x => !groupIds.Contains(x) && !groupsToAdd.Contains(x))
             .ToList();
 
-        List<int> machinesToDelete = existingMachines
+        IEnumerable<int> machinesToDelete = existingMachines
             .Where(x => !machineIds.Contains(x) && !machinesToAdd.Contains(x))
             .ToList();
 
         // odebrat ty co už tam nepatří, a zároveň nechat joby kde alespoň jeden zůstává
-        List<Job> jobs = context.Job.Where(x => x.Id_Config == this.Id).ToList();
+        IEnumerable<Job> jobs = context.Job.Where(x => x.Id_Config == this.Id).ToList();
 
         foreach (Job job in jobs)
         {
@@ -207,11 +248,5 @@ public class WebConfigDto
             default:
                 return 0;
         }
-    }
-
-    private void DatabaseUpdate(DatabaseManager databaseManager)
-    {
-        this.Sources.ForEach(x => databaseManager.AddNotExistent(x.GetSources(this.Id)));
-        this.Destinations.ForEach(x => databaseManager.AddNotExistent(x.GetDestination(this.Id)));      
     }
 }
