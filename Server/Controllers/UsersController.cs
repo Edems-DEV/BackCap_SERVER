@@ -80,9 +80,6 @@ public class UsersController : ControllerBase
 
             if (user == null)
                 return NotFound();
-
-            if (webUser.Password == "")
-                return BadRequest();
         }
         catch (Exception)
         {
