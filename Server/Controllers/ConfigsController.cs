@@ -6,6 +6,7 @@ using Server.Validator;
 
 namespace Server.Controllers;
 
+[Authorize]
 [Route("api/[controller]")]
 [ApiController]
 public class ConfigsController : Controller
@@ -42,7 +43,7 @@ public class ConfigsController : Controller
         var config = await context.Config.FindAsync(Id);
 
         if (config == null)
-            return NotFound();
+            return NotFound("Object does not exists");
 
         return Ok(new WebConfigDto(config, context));
     }

@@ -20,12 +20,14 @@ public class JobsController : Controller
     }
 
     [HttpGet]
+    [Authorize]
     public IActionResult Get()
     {
         return Ok(context.Job.ToList().Select(x => new WebJobDto(x, context)).ToList()); 
     }
 
     [HttpGet("count/{command}")]
+    [Authorize]
     public int GetCount(string command)
     {
         int count = 0;
@@ -60,6 +62,7 @@ public class JobsController : Controller
     }
 
     [HttpGet("Id/Admin")]
+    [Authorize]
     public ActionResult<WebJobDto> GetJob(int Id)
     {
         Job job = context.Job.Find(Id);
