@@ -1,4 +1,5 @@
 ﻿using Microsoft.AspNetCore.Mvc;
+using Microsoft.EntityFrameworkCore;
 using Server.DatabaseTables;
 using Server.Dtos;
 using Server.Validator;
@@ -24,21 +25,21 @@ public class ConfigsController : Controller
     }
 
     [HttpGet("names")]
-    public ActionResult<List<WebNameDto>> GetNames()
+    public async Task<ActionResult<List<WebNameDto>>> GetNames()
     {
-        return Ok(context.Config.Select(x => new WebNameDto(x.Id, x.Name)).ToList());
+        return Ok(await context.Config.Select(x => new WebNameDto(x.Id, x.Name)).ToListAsync());
     }
 
     [HttpGet("count")]
-    public ActionResult<int> GetCount()
+    public async Task<ActionResult<int>> GetCount()
     {
-        return Ok(context.Config.Count());
+        return Ok(await context.Config.CountAsync());
     }
 
     [HttpGet("{Id}")]
-    public ActionResult<WebConfigDto> Get(int Id)
+    public async Task<ActionResult<WebConfigDto>> Get(int Id)
     {
-        Config config = context.Config.Find(Id);
+        var config = await context.Config.FindAsync(Id);
 
         if (config == null)
             return NotFound();
@@ -47,62 +48,40 @@ public class ConfigsController : Controller
     }
 
     [HttpPost]
-    public ActionResult Post([FromBody] Config config)
+    public async Task<ActionResult> Post([FromBody] WebConfigDto webConfig)
     {   
-        try
-        {
-            if (config.Interval_end != null)
-                validation.DateTimeValidator(config.Interval_end.ToString());
-        }
-        catch (Exception)
-        {
-            return BadRequest();
-        }
-
-        context.Config.Add(config);
-        context.Sources.AddRange(config.Sources);
-        context.Destination.AddRange(config.Destinations);
-        context.SaveChanges();
+        await webConfig.AddConfig(context);
+        await context.SaveChangesAsync();
         return Ok();
     }
 
-    [HttpPut("{Id}")]
-    public ActionResult Put(int Id, [FromBody] WebConfigDto config)
+    [HttpPut("{id}")]
+    public async Task<ActionResult> Put(int id, [FromBody] WebConfigDto config)
     {
-        config.Id = Id;
+        config.Id = id;
 
-        try
-        {
-            if (config.Interval_end != null)
-                validation.DateTimeValidator(config.Interval_end.ToString());
-        }
-        catch (Exception)
-        {
-            return BadRequest("Invalid DateTime");
-        }
-
-        Config result = context.Config.Find(Id);
+        var result = await context.Config.FindAsync(id);
 
         if (result == null)
             return NotFound("Object does not exists");
 
         // update configu a jobů k němu
-        result.GetData(config.GetConfig(context));
+        result = await config.GetConfig(context);
 
-        context.SaveChanges();
+        await context.SaveChangesAsync();
         return Ok();
     }
 
-    [HttpDelete("{Id}")]
-    public ActionResult Delete(int Id)
+    [HttpDelete("{id}")]
+    public async Task<ActionResult> Delete(int id)
     {
-        Config config = context.Config.Find(Id);
+        var config = await context.Config.FindAsync(id);
 
         if (config == null)
             return NotFound("Object does not exists");
 
         context.Config.Remove(config);
-        context.SaveChanges();
+        await context.SaveChangesAsync();
         return Ok();
     }
 }

@@ -1,4 +1,5 @@
-﻿using Server.DatabaseTables;
+﻿using Microsoft.EntityFrameworkCore;
+using Server.DatabaseTables;
 
 namespace Server.Dtos;
 
@@ -86,10 +87,35 @@ public class WebConfigDto
             .ToList();
     }
 
-    public Config GetConfig(MyContext context)
+    public async Task AddConfig(MyContext context)
     {
-        this.UpdatePaths(context);
-        this.UpdateJobs(context);
+        var config = new Config()
+        {
+            Name = this.Name,
+            Description = this.Description,
+            Type = this.ConvertType(this.Type),
+            Retention = this.Retention,
+            PackageSize = this.PackageSize,
+            Backup_interval = this.Interval,
+            IsCompressed = this.IsCompressed,
+            Interval_end = this.Interval_end
+        };
+
+        await context.AddAsync(config);
+
+        await context.SaveChangesAsync();
+
+        this.Id = config.Id;
+
+
+        await this.UpdatePaths(context);
+        await this.UpdateJobs(context);
+    }
+
+    public async Task<Config> GetConfig(MyContext context)
+    {
+        await this.UpdatePaths(context);
+        await this.UpdateJobs(context);
 
         return new Config()
         {
@@ -104,9 +130,8 @@ public class WebConfigDto
         };
     }
 
-    private void UpdatePaths(MyContext context)
+    private async Task UpdatePaths(MyContext context)
     {
-        // delete sourců a destinací
         context.Sources
             .Where(x => x.Id_Config == this.Id)
             .ToList()
@@ -117,20 +142,19 @@ public class WebConfigDto
             .ToList()
             .ForEach(x => context.Destination.Remove(x));
 
-        // přidání sourců a destinací
         Sources
             .Select(x => x.GetSources(this.Id))
             .ToList()
-            .ForEach(x => context.Sources.Add(x));
+            .ForEach(x => context.Sources.AddAsync(x));
 
         Destinations
             .Select(x => x.GetDestination(this.Id))
             .ToList()
-            .ForEach(x => context.Destination.Add(x));
+            .ForEach(x => context.Destination.AddAsync(x));
 
-        context.SaveChanges();
+        await context.SaveChangesAsync();
     }
-    private void UpdateJobs(MyContext context)
+    private async Task UpdateJobs(MyContext context)
     {
         IEnumerable<int> groupIds = Groups
             .Select(x => x.Id)
@@ -165,7 +189,7 @@ public class WebConfigDto
             .ToList();
 
         // odebrat ty co už tam nepatří, a zároveň nechat joby kde alespoň jeden zůstává
-        IEnumerable<Job> jobs = context.Job.Where(x => x.Id_Config == this.Id).ToList();
+        IEnumerable<Job> jobs = await context.Job.Where(x => x.Id_Config == this.Id).ToListAsync();
 
         foreach (Job job in jobs)
         {
@@ -208,10 +232,10 @@ public class WebConfigDto
             });
         }
 
-        context.SaveChanges();
+        await context.SaveChangesAsync();
     }
 
-    public string ConvertType(int type)
+    private string ConvertType(int type)
     {
         switch (type)
         {
@@ -229,7 +253,7 @@ public class WebConfigDto
         }
     }
 
-    public short ConvertType(string type)
+    private short ConvertType(string type)
     {
         switch (type.ToLower())
         {

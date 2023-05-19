@@ -22,26 +22,26 @@ public class MachinesController : Controller
     [HttpGet]
     public ActionResult<List<WebMachineDto>> Get()
     {
-        return Ok(context.Machine.ToList().Select(x => new WebMachineDto(x, context)).ToList());
+        return Ok(context.Machine.ToList().Select(x => new WebMachineDto(x, context)));
     }
 
     [HttpGet("names")]
-    public ActionResult<List<WebNameDto>> GetNames()
+    public async Task<ActionResult<List<WebMachineDto>>> GetNames()
     {
-        return Ok(context.Machine.Select(x => new WebNameDto(x.Id, x.Name)).ToList());
+        return Ok(await context.Machine.Select(x => new WebNameDto(x.Id, x.Name)).ToListAsync());
     }
 
     // GET: for stats
     [HttpGet("count")]
-    public ActionResult<int> GetCount(bool active = true)
+    public async Task<ActionResult<int>> GetCount(bool active = true)
     {
-        return Ok(context.Machine.Where(x => x.Is_Active == active).Count());
+        return Ok(await context.Machine.CountAsync(x => x.Is_Active == active));
     }
 
-    [HttpGet("{Id}")]
-    public ActionResult<WebMachineDto> Get(int Id)
+    [HttpGet("{id}")]
+    public async Task<ActionResult<WebMachineDto>> Get(int id)
     {
-        Machine machine = context.Machine.Find(Id);
+        var machine = await context.Machine.FindAsync(id);
 
         if (machine == null)
             return NotFound("Object does not exists");
@@ -49,8 +49,8 @@ public class MachinesController : Controller
         return Ok(new WebMachineDto(machine, context));
     }
 
-    [HttpPut("{Id}")]
-    public ActionResult Put(int Id, [FromBody] WebMachineDto machine)
+    [HttpPut("{id}")]
+    public async Task<ActionResult> Put(int id, [FromBody] WebMachineDto machine)
     {
         try
         {
@@ -61,20 +61,20 @@ public class MachinesController : Controller
             return BadRequest("Invalid");
         }
 
-        Machine ExistingMachine = context.Machine.Find(Id);
+        var ExistingMachine = await context.Machine.FindAsync(id);
 
         if (ExistingMachine == null)
             return NotFound("Object does not exists");
 
         ExistingMachine = machine.UpdateMachine(ExistingMachine, context);
 
-        context.SaveChanges();
+        await context.SaveChangesAsync();
 
         return Ok();
     }
 
     [HttpPost("register")]
-    public ActionResult<int> PostRegister([FromBody] MachineDto machine)
+    public async Task<ActionResult<int>> PostRegister([FromBody] MachineDto machine)
     {
         try
         {
@@ -90,16 +90,16 @@ public class MachinesController : Controller
 
         NewMachine.Mac_Address = NewMachine.Mac_Address.Replace("-", string.Empty);
 
-        context.Machine.Add(NewMachine);
-        context.SaveChanges();
+        await context.Machine.AddAsync(NewMachine);
+        await context.SaveChangesAsync();
 
         return Ok(NewMachine.Id);
     }
 
-    [HttpDelete("Id")]
-    public ActionResult Delete(int Id)
+    [HttpDelete("id")]
+    public async Task<ActionResult> Delete(int id)
     {
-        Machine machine = context.Machine.Find(Id);
+        var machine = await context.Machine.FindAsync(id);
 
         if (machine == null)
             return NotFound();
