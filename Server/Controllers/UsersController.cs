@@ -7,6 +7,7 @@ using Server.Validator;
 
 namespace Server.Controllers;
 
+[Authorize]
 [Route("api/[controller]")]
 [ApiController]
 public class UsersController : ControllerBase
@@ -20,21 +21,18 @@ public class UsersController : ControllerBase
     }
 
     [HttpGet]
-    [Decrypt]
     public ActionResult<List<WebUserNoPass>> GetUsers()
     {
         return Ok(context.User.Select(x => new WebUserNoPass(x)).ToList());
     }
 
     [HttpGet("count")]
-    [Decrypt]
     public ActionResult<int> GetCount()
     {
         return Ok(context.User.Count());
     }
 
     [HttpGet("{Id}")]
-    [Decrypt]
     public ActionResult<WebUserNoPass> Get(int Id)
     {
         User user = context.User.Find(Id);
@@ -46,7 +44,6 @@ public class UsersController : ControllerBase
     }
 
     [HttpPost]
-    [Encrypt]
     public ActionResult Post([FromBody] WebUserDto user)
     {
         try

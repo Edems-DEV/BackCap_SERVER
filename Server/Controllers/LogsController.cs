@@ -5,6 +5,7 @@ using Server.Validator;
 
 namespace Server.Controllers;
 
+[Authorize]
 [Route("api/[controller]")]
 [ApiController]
 public class LogsController : Controller

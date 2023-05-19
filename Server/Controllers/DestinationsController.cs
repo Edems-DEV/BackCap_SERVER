@@ -4,6 +4,7 @@ using Server.ParamClasses;
 
 namespace Server.Controllers;
 
+[Authorize]
 [Route("api/[controller]")]
 [ApiController]
 public class DestinationsController : Controller
