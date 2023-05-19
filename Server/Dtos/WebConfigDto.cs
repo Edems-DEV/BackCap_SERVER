@@ -112,22 +112,21 @@ public class WebConfigDto
         await this.UpdateJobs(context);
     }
 
-    public async Task<Config> GetConfig(MyContext context)
+    public async Task<Config> GetConfig(Config config, MyContext context)
     {
         await this.UpdatePaths(context);
         await this.UpdateJobs(context);
 
-        return new Config()
-        {
-            Name = this.Name,
-            Description = this.Description,
-            Type = this.ConvertType(this.Type),
-            Retention = this.Retention,
-            PackageSize = this.PackageSize,
-            Backup_interval = this.Interval,
-            IsCompressed = this.IsCompressed,
-            Interval_end = this.Interval_end
-        };
+        config.Name = this.Name;
+        config.Description = this.Description;
+        config.Type = this.ConvertType(this.Type);
+        config.Retention = this.Retention;
+        config.PackageSize = this.PackageSize;
+        config.Backup_interval = this.Interval;
+        config.IsCompressed = this.IsCompressed;
+        config.Interval_end = this.Interval_end;
+
+        return config;
     }
 
     private async Task UpdatePaths(MyContext context)

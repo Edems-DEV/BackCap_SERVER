@@ -65,16 +65,15 @@ public class WebGroupDto
         await this.AddMachines(context);
     }
 
-    public async Task<Groups> GetGroup(MyContext context)
+    public async Task<Groups> GetGroup(Groups group, MyContext context)
     {
         await this.AddJobs(context);
         await this.AddMachines(context);
 
-        return new Groups()
-        {
-            Name = this.Name,
-            Description = this.Description
-        };
+        group.Name = this.Name;
+        group.Description = this.Description;
+
+        return group;
     }
 
     private async Task AddJobs(MyContext context)

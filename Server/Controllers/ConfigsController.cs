@@ -6,7 +6,7 @@ using Server.Validator;
 
 namespace Server.Controllers;
 
-[Authorize]
+//[Authorize]
 [Route("api/[controller]")]
 [ApiController]
 public class ConfigsController : Controller
@@ -67,7 +67,7 @@ public class ConfigsController : Controller
             return NotFound("Object does not exists");
 
         // update configu a jobů k němu
-        result = await config.GetConfig(context);
+        result = await config.GetConfig(result, context);
 
         await context.SaveChangesAsync();
         return Ok();

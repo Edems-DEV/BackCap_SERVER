@@ -66,7 +66,7 @@ public class GroupsController : Controller
         if (group == null)
             return NotFound();
 
-        group = await groupDto.GetGroup(context);
+        group = await groupDto.GetGroup(group, context);
 
         await context.SaveChangesAsync();
 
