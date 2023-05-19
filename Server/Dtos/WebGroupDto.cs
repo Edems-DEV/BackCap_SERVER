@@ -1,4 +1,5 @@
-﻿using Server.DatabaseTables;
+﻿using Microsoft.EntityFrameworkCore;
+using Server.DatabaseTables;
 
 namespace Server.Dtos;
 
@@ -12,7 +13,7 @@ public class WebGroupDto
 
     public ICollection<WebNameDto> Configs { get; set; } = new List<WebNameDto>();
 
-    public ICollection<WebNameDto> Machines { get; set; } = new List<WebNameDto>();
+    public List<WebNameDto> Machines { get; set; } = new List<WebNameDto>();
 
     public WebGroupDto() { }
 
@@ -47,24 +48,52 @@ public class WebGroupDto
             .ToList();
     }
 
-    public Groups UpdateGroup(Groups group, MyContext context)
+    public async Task AddGroup(MyContext context)
     {
-        this.AddJobs(group.Id, context);
-        this.AddMachines(group.Id, context);
+        Groups group = new Groups()
+        {
+            Name = this.Name,
+            Description = this.Description
+        };
 
-        group.Name = this.Name;
-        group.Description = this.Description;
+        await context.Groups.AddAsync(group);
+        await context.SaveChangesAsync();
 
-        return group;
+        this.Id = group.Id;
+
+        await this.AddJobs(context);
+        await this.AddMachines(context);
     }
 
-    private void AddJobs(int Id, MyContext context)
+    public async Task<Groups> GetGroup(MyContext context)
     {
-        List<int> existingConfigs = context.Job.Where(x => x.Id_Group == Id).Select(x => x.Id_Config).ToList();
+        await this.AddJobs(context);
+        await this.AddMachines(context);
 
-        List<int> configsToAdd = Configs.Where(x => !existingConfigs.Contains(x.Id)).Select(x => x.Id).ToList();
+        return new Groups()
+        {
+            Name = this.Name,
+            Description = this.Description
+        };
+    }
 
-        List<int> configsToDel = existingConfigs.Select(x => x).ToList();
+    private async Task AddJobs(MyContext context)
+    {
+        List<int> existingConfigs = await context
+            .Job
+            .Where(x => x.Id_Group == this.Id)
+            .Select(x => x.Id_Config)
+            .ToListAsync();
+
+        List<int> configsToAdd = 
+            Configs
+            .Where(x => !existingConfigs.Contains(x.Id))
+            .Select(x => x.Id)
+            .ToList();
+
+        List<int> configsToDel = existingConfigs
+            .Select(x => x)
+            .ToList();
 
         List<int> temp = new();
         foreach (var item in configsToDel)
@@ -95,8 +124,8 @@ public class WebGroupDto
 
         if (configsToAdd.Count != 0)
         {
-            configsToAdd.ForEach(x => context.Job.Add(new Job() { Id_Config = x, Id_Group = Id, Status = 1, Time_schedule = DateTime.Now }));
-            context.SaveChanges();
+            configsToAdd.ForEach(x => context.Job.Add(new Job() { Id_Config = x, Id_Group = this.Id, Status = 1, Time_schedule = DateTime.Now }));
+            await context.SaveChangesAsync();
         }
 
         if (configsToDel.Count != 0)
@@ -104,26 +133,28 @@ public class WebGroupDto
             List<Job> jobsToRemove = new();
             foreach (var item in configsToDel)
             {
-                jobsToRemove.AddRange(context.Job.Where(y => y.Id_Group == Id && y.Id_Config == item).ToList());
+                jobsToRemove.AddRange(context.Job.Where(y => y.Id_Group == this.Id && y.Id_Config == item).ToList());
             }
 
-            List<Log> logsToRemove = new();
-            foreach (var item in jobsToRemove)
-            {
-                logsToRemove.AddRange(context.Log.Where(x => x.Id_Job == item.Id).ToList());
-            }
-
-            logsToRemove.ForEach(x => context.Log.Remove(x));
             jobsToRemove.ForEach(x => context.Job.Remove(x));
 
-            context.SaveChanges();
+            await context.SaveChangesAsync();
         }
     }
 
-    private void AddMachines(int Id, MyContext context)
+    private async Task AddMachines(MyContext context)
     {
-        List<MachineGroup> machineGroups = context.MachineGroup.Where(x => x.Id_Group == Id).ToList();
-        machineGroups.ForEach(x => context.MachineGroup.Remove(x));
-        Machines.Select(x => context.MachineGroup.Add(new MachineGroup() { Id_Machine = x.Id, Id_Group = Id}));
+        List<MachineGroup> machineGroups = await context
+            .MachineGroup
+            .Where(x => x.Id_Group == this.Id)
+            .ToListAsync();
+
+        machineGroups
+            .ForEach(x => context.MachineGroup.Remove(x));
+
+        Machines
+            .ForEach(x => context.Add(new MachineGroup() { Id_Machine = x.Id, Id_Group = this.Id }));
+
+        await context.SaveChangesAsync();
     }
 }

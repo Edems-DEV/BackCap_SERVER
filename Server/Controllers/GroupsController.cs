@@ -1,4 +1,5 @@
 ﻿using Microsoft.AspNetCore.Mvc;
+using Microsoft.EntityFrameworkCore;
 using Server.DatabaseTables;
 using Server.Dtos;
 using Server.Validator;
@@ -20,67 +21,67 @@ public class GroupsController : Controller
     [HttpGet]
     public ActionResult Get()
     {
-        //temp
         return Ok(context.Groups.ToList().Select(x => new WebGroupDto(x, context)).ToList());
     }
 
     [HttpGet("names")]
-    public ActionResult<List<WebNameDto>> GetNames()
+    public async Task<ActionResult<List<WebNameDto>>> GetNames()
     {
-        return Ok(context.Groups.Select(x => new WebNameDto(x.Id, x.Name)).ToList());
+        return Ok(await context.Groups.Select(x => new WebNameDto(x.Id, x.Name)).ToListAsync());
     }
 
     [HttpGet("count")]
-    public ActionResult<int> GetCount()
+    public async Task<ActionResult<int>> GetCount()
     {
-        return Ok(context.Groups.Count());
+        return Ok(await context.Groups.CountAsync());
     }
 
     [HttpGet("{Id}")]
-    public ActionResult<WebGroupDto> Get(int Id)
+    public async Task<ActionResult<WebGroupDto>> Get(int Id)
     {
-        Groups group = context.Groups.Find(Id);
+        var group = await context.Groups.FindAsync(Id);
 
         if (group == null)
-            return NotFound();
+            return NotFound("object does not exists");
 
         return Ok(new WebGroupDto(group, context));
     }
 
     [HttpPost]
-    public ActionResult Post([FromBody] Groups group)
+    public async Task<ActionResult> Post([FromBody] WebGroupDto group)
     {
-        context.Groups.Add(group);
-        context.SaveChanges();
+        await group.AddGroup(context);
+        await context.SaveChangesAsync();
 
         return Ok();
     }
 
     [HttpPut("{Id}")]
-    public ActionResult Put(int Id, [FromBody] WebGroupDto groupDto)
+    public async Task<ActionResult> Put(int Id, [FromBody] WebGroupDto groupDto)
     {
-        Groups group = context.Groups.Find(Id);
+        var group = await context.Groups.FindAsync(Id);
+        groupDto.Id = Id;
 
         if (group == null)
             return NotFound();
 
-        group = groupDto.UpdateGroup(group, context);
+        group = await groupDto.GetGroup(context);
 
-        context.SaveChanges();
+        await context.SaveChangesAsync();
 
         return Ok();
     }
 
     [HttpDelete("{Id}")]
-    public ActionResult Delete(int Id)
+    public async Task<ActionResult> Delete(int Id)
     {
-        Groups group = context.Groups.Find(Id);
+        var group = await context.Groups.FindAsync(Id);
 
         if (group == null)
             return NotFound();
 
         context.Groups.Remove(group);
-        context.SaveChanges();
+        await context.SaveChangesAsync();
         return Ok();
     }
 }

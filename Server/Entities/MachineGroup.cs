@@ -15,4 +15,15 @@ public class MachineGroup
 
     [ForeignKey("Id_Group")]
     public virtual Groups Groups { get; set; }
+
+    public MachineGroup()
+    {
+        
+    }
+
+    public MachineGroup(int id_Machine, int id_Group)
+    {
+        this.Id_Machine = id_Machine;
+        this.Id_Group = id_Group;
+    }
 }
