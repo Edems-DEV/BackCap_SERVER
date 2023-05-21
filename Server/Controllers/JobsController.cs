@@ -79,20 +79,20 @@ public class JobsController : Controller
 
     // GET: api/jobs/5   => specific job info
     [HttpGet("{Id}/Daemon")] // pro daemona neměnit
-    public ActionResult<List<Job>> Get(int Id)
+    public ActionResult<Job> Get(int Id)
     {
         Machine machine = context.Machine.Find(Id);
 
         if (machine.Is_Active == false)
             return BadRequest("UnAuthorized");
 
-        List<Job> jobs = context.Job.Where(x => x.Id_Machine == Id).ToList()!;
+        Job? job = context.Job.Where(x => x.Id_Machine == Id).FirstOrDefault();
 
-        if (jobs.Count == 0)
+        if (job == null)
             return NoContent();
 
         HelpMethods helpMethods = new HelpMethods(context);
-        return Ok(jobs.Select(x => helpMethods.AddToJob(x)).ToList());
+        return Ok(helpMethods.AddToJob(job));
     }
 
     [HttpPut("{Id}/StartTimeStatus")]
