@@ -46,10 +46,10 @@ public class LogsController : Controller
         return Ok(logDtos);
     }
 
-    [HttpPost]
-    public ActionResult Post(Log log)
+    [HttpPost("Add")]
+    public ActionResult Post([FromBody]WebLogDto log)
     {
-        context.Log.Add(log);
+        context.Log.Add(log.GetLog());
 
         context.SaveChanges();
         return Ok();
