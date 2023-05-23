@@ -47,21 +47,9 @@ public class LogsController : Controller
     }
 
     [HttpPost]
-    public ActionResult Post(List<Log> logs)
+    public ActionResult Post(Log log)
     {
-        foreach (Log log in logs)
-        {
-            try
-            {
-                validation.DateTimeValidator(log.Time.ToString());
-            }
-            catch (Exception)
-            {
-                return BadRequest();
-            }
-
-            context.Log.Add(log);
-        }
+        context.Log.Add(log);
 
         context.SaveChanges();
         return Ok();
