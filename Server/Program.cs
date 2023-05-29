@@ -1,3 +1,4 @@
+using Server.DatabaseTables;
 using Server.Validator;
 
 namespace Server;
@@ -28,6 +29,7 @@ public class Program
         });
 
         builder.Services.AddSingleton(new Validators());
+        builder.Services.AddSingleton(new MailManager(new MyContext()));
 
         var app = builder.Build();
 
