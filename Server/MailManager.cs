@@ -30,6 +30,14 @@ public class MailManager
 	{
 		CronConvertor cronConvertor = new CronConvertor();
 
+		if (users.Count == 0)
+			return;
+		
+		Users.Keys
+			.Where(x => !users.Contains(x))
+			.ToList()
+			.ForEach(x => StopTimer(x));
+
 		foreach (User user in users)
 		{
 			if (!Users.ContainsKey(user))
@@ -40,6 +48,14 @@ public class MailManager
 		
 	}
 
+	private void StopTimer(User user)
+	{
+        Users[user].Stop();
+        Users[user].Dispose();
+
+        Users.Remove(user);
+    }
+
 	private Timer SetTimer(long miliseconds)
 	{
 		Timer timer = new Timer()
@@ -49,6 +65,7 @@ public class MailManager
 		};
 
 		timer.Elapsed += SendMail;
+		timer.Start();
 
 		return timer;
 	}
@@ -59,5 +76,7 @@ public class MailManager
 
 		MailAddress from = new MailAddress("Test@test.test");
 		MailAddress to = new MailAddress("Test2@test.test");
+
+		// Todo - reset time
 	}
 }
