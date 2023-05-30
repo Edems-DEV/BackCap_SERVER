@@ -28,33 +28,33 @@ public class JobsController : Controller
 
     [HttpGet("count/{command}")]
     [Authorize]
-    public int GetCount(string command)
+    public async Task<int> GetCount(string command)
     {
         int count = 0;
         switch (command.ToLower())
         {
             case "all":
-                context.Job.ForEachAsync(x => { count++; });
+                await context.Job.ForEachAsync(x => { count++; });
                     break;
 
             case "running":
-                context.Job.Where(x => x.Status == 1).ForEachAsync(x => { count++; });
+                await context.Job.Where(x => x.Status == 1).ForEachAsync(x => { count++; });
                 break;
 
             case "waiting":
-                context.Job.Where(x => x.Status == 2).ForEachAsync(x => { count++; });
+                await context.Job.Where(x => x.Status == 2).ForEachAsync(x => { count++; });
                 break;
 
             case "succesfull":
-                context.Job.Where(x => x.Status == 3).ForEachAsync(x => { count++; });
+                await context.Job.Where(x => x.Status == 3).ForEachAsync(x => { count++; });
                 break;
 
             case "warning":
-                context.Job.Where(x => x.Status == 4).ForEachAsync(x => { count++; });
+                await context.Job.Where(x => x.Status == 4).ForEachAsync(x => { count++; });
                 break;
 
             case "failed":
-                context.Job.Where(x => x.Status == 5).ForEachAsync(x => { count++; });
+                await context.Job.Where(x => x.Status == 5).ForEachAsync(x => { count++; });
                 break;
 
         }
@@ -63,9 +63,9 @@ public class JobsController : Controller
 
     [HttpGet("Id/Admin")]
     [Authorize]
-    public ActionResult<WebJobDto> GetJob(int Id)
+    public async Task<ActionResult<WebJobDto>> GetJob(int Id)
     {
-        Job job = context.Job.Find(Id);
+        var job = await context.Job.FindAsync(Id);
 
         if (job == null)
             return NotFound("Object does not exists");
@@ -79,9 +79,9 @@ public class JobsController : Controller
 
     // GET: api/jobs/5   => specific job info
     [HttpGet("{Id}/Daemon")] // pro daemona neměnit
-    public ActionResult<Job> Get(int Id)
+    public async Task<ActionResult<Job>> Get(int Id)
     {
-        Machine machine = context.Machine.Find(Id);
+        var machine = await context.Machine.FindAsync(Id);
 
         if (machine.Is_Active == false)
             return BadRequest("UnAuthorized");
@@ -96,9 +96,9 @@ public class JobsController : Controller
     }
 
     [HttpPut("{Id}/StartTimeStatus")]
-    public ActionResult TimeStartUpdate(int id, [FromBody] DaemonTimeStartStatus job)
+    public async Task<ActionResult> TimeStartUpdate(int id, [FromBody] DaemonTimeStartStatus job)
     {
-        Job existingJob = context.Job.Find(id);
+        var existingJob = await context.Job.FindAsync(id);
 
         if (existingJob == null)
             return NotFound();
@@ -106,14 +106,14 @@ public class JobsController : Controller
         existingJob.Status = job.Status;
         existingJob.Time_start = job.Time_start;
 
-        context.SaveChanges();
+        await context.SaveChangesAsync();
         return Ok();
     }
 
     [HttpPut("{Id}/EndTimeStatus")]
-    public ActionResult TimeEndUpdate(int Id, [FromBody] DaemonTimeEndStatus job)
+    public async Task<ActionResult> TimeEndUpdate(int Id, [FromBody] DaemonTimeEndStatus job)
     {
-        Job existingJob = context.Job.Find(Id);
+        var existingJob = await context.Job.FindAsync(Id);
 
         if (existingJob == null)
             return NotFound();
@@ -124,7 +124,7 @@ public class JobsController : Controller
         if (job.Bytes != null)
             existingJob.Bytes = job.Bytes;
 
-        context.SaveChanges();
+        await context.SaveChangesAsync();
         return Ok();
     }
 }

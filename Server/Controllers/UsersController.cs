@@ -1,4 +1,5 @@
 ﻿using Microsoft.AspNetCore.Mvc;
+using Microsoft.EntityFrameworkCore;
 using Server.DatabaseTables;
 using Server.Dtos;
 using Server.ParamClasses;
@@ -27,15 +28,15 @@ public class UsersController : ControllerBase
     }
 
     [HttpGet("count")]
-    public ActionResult<int> GetCount()
+    public async Task<ActionResult<int>> GetCount()
     {
-        return Ok(context.User.Count());
+        return Ok(context.User.CountAsync());
     }
 
     [HttpGet("{Id}")]
-    public ActionResult<WebUserNoPass> Get(int Id)
+    public async Task<ActionResult<WebUserNoPass>> Get(int Id)
     {
-        User user = context.User.Find(Id);
+        var user = await context.User.FindAsync(Id);
 
         if (user == null)
             return NotFound();
@@ -44,7 +45,7 @@ public class UsersController : ControllerBase
     }
 
     [HttpPost]
-    public ActionResult Post([FromBody] WebUserDto user)
+    public async Task<ActionResult> Post([FromBody] WebUserDto user)
     {
         try
         {
@@ -57,16 +58,16 @@ public class UsersController : ControllerBase
 
         User NewUser = new User(user);
 
-        context.User.Add(NewUser);
-        context.SaveChanges();
+        await context.User.AddAsync(NewUser);
+        await context.SaveChangesAsync();
 
         return Ok();
     }
 
     [HttpPut("{Id}")]
-    public ActionResult Put(int Id, [FromBody] WebUserDto webUser)
+    public async Task<ActionResult> Put(int Id, [FromBody] WebUserDto webUser)
     {
-        User user = context.User.Find(Id);
+        var user = await context.User.FindAsync(Id);
 
         try
         {
@@ -82,15 +83,15 @@ public class UsersController : ControllerBase
 
         user.UpdateUser(webUser);
 
-        context.SaveChanges();
+        await context.SaveChangesAsync();
         
         return Ok();
     }
 
     [HttpDelete("{Id}")]
-    public ActionResult Delete(int Id)
+    public async Task<ActionResult> Delete(int Id)
     {
-        User user = context.User.Find(Id);
+        var user = await context.User.FindAsync(Id);
 
         if (user == null)
         {
@@ -98,7 +99,7 @@ public class UsersController : ControllerBase
         }
 
         context.User.Remove(user);
-        context.SaveChanges();
+        await context.SaveChangesAsync();
         return Ok();
     }
 }

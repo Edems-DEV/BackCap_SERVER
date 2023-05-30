@@ -106,7 +106,7 @@ public class MachinesController : Controller
             return NotFound();
 
         context.Machine.Remove(machine);
-        context.SaveChanges();
+        await context.SaveChangesAsync();
 
         return Ok();
     }

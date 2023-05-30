@@ -13,9 +13,9 @@ public class SourcesController : Controller
     private readonly MyContext context = new MyContext();
 
     [HttpGet("{Id}")]
-    public ActionResult<Sources> GetSource(int Id)
+    public async Task<ActionResult<Sources>> GetSource(int Id)
     {
-        Sources source = context.Sources.Find(Id);
+        var source = await context.Sources.FindAsync(Id);
 
         if (source == null)
             return NotFound("Object does not exists");
@@ -30,9 +30,9 @@ public class SourcesController : Controller
     }
 
     [HttpPost]
-    public ActionResult Post([FromBody] PathsDto path)
+    public  async Task<ActionResult> Post([FromBody] PathsDto path)
     {
-        if (context.Config.Find(path.Id_Config) == null)
+        if (await context.Config.FindAsync(path.Id_Config) == null)
         {
             return BadRequest("Object doesn't have existing id in Configs");
         }
@@ -43,16 +43,16 @@ public class SourcesController : Controller
             Path = path.Path
         };
 
-        context.Sources.Add(source);
-        context.SaveChanges();
+        await context.Sources.AddAsync(source);
+        await context.SaveChangesAsync();
 
         return Ok();
     }
 
     [HttpPut("{Id}")]
-    public ActionResult Put(int Id, [FromBody] PathsDto path)
+    public async Task<ActionResult> Put(int Id, [FromBody] PathsDto path)
     {
-        Sources source = context.Sources.Find(Id);
+        var source = await context.Sources.FindAsync(Id);
 
         if (source == null)
             return NotFound("Object does not exists");
@@ -60,21 +60,21 @@ public class SourcesController : Controller
         source.Id_Config = path.Id_Config;
         source.Path = path.Path;
 
-        context.SaveChanges();
+        await context.SaveChangesAsync();
 
         return Ok();
     }
 
     [HttpDelete("{Id}")]
-    public ActionResult Delete(int Id)
+    public async Task<ActionResult> Delete(int Id)
     {
-        Sources source = context.Sources.Find(Id);
+        Sources source = await context.Sources.FindAsync(Id);
 
         if (source == null)
             return NotFound();
 
         context.Sources.Remove(source);
-        context.SaveChanges();
+        await context.SaveChangesAsync();
 
         return Ok();
     }

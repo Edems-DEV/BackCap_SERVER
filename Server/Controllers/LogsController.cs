@@ -25,9 +25,9 @@ public class LogsController : Controller
     }
 
     [HttpGet("{Id}")]
-    public ActionResult<WebLogDto> Get(int Id)
+    public async Task<ActionResult<WebLogDto>> Get(int Id)
     {
-        Log log = context.Log.Find(Id);
+        var log = await context.Log.FindAsync(Id);
 
         if (log == null)
             return NotFound();
@@ -47,16 +47,16 @@ public class LogsController : Controller
     }
 
     [HttpPost("Add")]
-    public ActionResult Post([FromBody]WebLogDto log)
+    public async Task<ActionResult> Post([FromBody]WebLogDto log)
     {
-        context.Log.Add(log.GetLog());
+        await context.Log.AddAsync(log.GetLog());
 
-        context.SaveChanges();
+        await context.SaveChangesAsync();
         return Ok();
     }
 
     [HttpPut("{Id}")]
-    public ActionResult Put(int Id, WebLogDto log)
+    public async Task<ActionResult> Put(int Id, WebLogDto log)
     {
         try
         {
@@ -67,14 +67,14 @@ public class LogsController : Controller
             return BadRequest("Invalid");
         }
 
-        Log Exlog = context.Log.Find(Id);
+        var Exlog = await context.Log.FindAsync(Id);
 
         if (Exlog == null)
             return NotFound("Object does not exists");
 
         Exlog.UpdateData(log.GetLog());
 
-        context.SaveChanges();
+        await context.SaveChangesAsync();
         return Ok();
     }
 }
