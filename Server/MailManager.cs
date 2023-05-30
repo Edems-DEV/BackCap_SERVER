@@ -9,7 +9,9 @@ public class MailManager
 {
 	private Dictionary<User, Timer> Users = new Dictionary<User, Timer>();
 
-	private MyContext context;
+    private CronConvertor cronConvertor = new CronConvertor();
+
+    private MyContext context;
 
 	public MailManager(MyContext context)
 	{
@@ -28,7 +30,6 @@ public class MailManager
 
     private void AssingTimes(List<User> users)
 	{
-		CronConvertor cronConvertor = new CronConvertor();
 
 		if (users.Count == 0)
 			return;
@@ -42,7 +43,8 @@ public class MailManager
 		{
 			if (!Users.ContainsKey(user))
 			{
-				Users.Add(user, SetTimer(cronConvertor.CronToMiliseconds(user.Interval_Report)));
+				Users.Add(user, SetTimer(cronConvertor.CronToMiliseconds(user.Interval_Report), user));
+				Users[user].Start();
 			}
 		}
 		
@@ -56,7 +58,7 @@ public class MailManager
         Users.Remove(user);
     }
 
-	private Timer SetTimer(long miliseconds)
+	private Timer SetTimer(long miliseconds, User user)
 	{
 		Timer timer = new Timer()
 		{
@@ -64,13 +66,12 @@ public class MailManager
 			AutoReset = false
 		};
 
-		timer.Elapsed += SendMail;
-		timer.Start();
+		timer.Elapsed += async (sender, e) => await SendMail(user, null);
 
 		return timer;
 	}
 
-	private void SendMail(object? sender, EventArgs? e)
+	private async Task SendMail(object? sender, EventArgs? e)
 	{
 		SmtpClient smtp = new SmtpClient();
 
@@ -78,5 +79,19 @@ public class MailManager
 		MailAddress to = new MailAddress("Test2@test.test");
 
 		// Todo - reset time
+		MailMessage message = new MailMessage(from, to);
+
+		message.Body = "";
+
+
+		await smtp.SendMailAsync(message);
+
+
+		//timer reset
+		var user = sender as User;
+		Users[user!] = SetTimer(cronConvertor.CronToMiliseconds(user!.Interval_Report), user);
+
+
+
 	}
 }
