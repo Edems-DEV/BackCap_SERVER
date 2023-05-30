@@ -89,7 +89,7 @@ public class MailManager
 		message.SubjectEncoding = Encoding.UTF8;
 
 		message.Body = "Here are reports, that happened after last email" + Environment.NewLine;
-		logs.ForEach(x => message.Body += x + Environment.NewLine);
+		logs.ForEach(x => message.Body += x.Message + Environment.NewLine);
 		message.BodyEncoding = Encoding.UTF8;
 
 
