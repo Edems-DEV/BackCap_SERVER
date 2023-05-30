@@ -1,6 +1,7 @@
 ﻿using Microsoft.EntityFrameworkCore;
 using Server.DatabaseTables;
 using System.Net.Mail;
+using System.Text;
 using Timer = System.Timers.Timer;
 
 namespace Server;
@@ -71,25 +72,34 @@ public class MailManager
 		return timer;
 	}
 
-	private async Task SendMail(object? sender, EventArgs? e)
+	private async Task SendMail(object sender, EventArgs? e)
 	{
 		SmtpClient smtp = new SmtpClient();
+        var user = sender as User;
 
-		MailAddress from = new MailAddress("Test@test.test");
+        MailAddress from = new MailAddress("Test@test.test");
 		MailAddress to = new MailAddress("Test2@test.test");
 
-		// Todo - reset time
 		MailMessage message = new MailMessage(from, to);
 
-		message.Body = "";
+		DateTime timeBeforeSend = cronConvertor.GetLastOccurence(user!.Interval_Report);
+		List<Log> logs = await context.Log.Where(x => x.Time > timeBeforeSend).ToListAsync();
+
+		message.Subject = "Reports";
+		message.SubjectEncoding = Encoding.UTF8;
+
+		message.Body = "Here are reports, that happened after last email" + Environment.NewLine;
+		logs.ForEach(x => message.Body += x + Environment.NewLine);
+		message.BodyEncoding = Encoding.UTF8;
 
 
 		await smtp.SendMailAsync(message);
 
 
 		//timer reset
-		var user = sender as User;
 		Users[user!] = SetTimer(cronConvertor.CronToMiliseconds(user!.Interval_Report), user);
+
+		//TODO doplnit o refaktor timer reset metody, aby se nemuseli používat dvě (pokud to půjde)
 
 
 
