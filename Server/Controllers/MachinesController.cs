@@ -7,7 +7,6 @@ using Server.Validator;
 
 namespace Server.Controllers;
 
-//[Authorize]
 [Route("api/[controller]")]
 [ApiController]
 public class MachinesController : Controller
@@ -20,12 +19,14 @@ public class MachinesController : Controller
         this.validation = validation;
     }
 
+    [Authorize]
     [HttpGet]
     public ActionResult<List<WebMachineDto>> Get()
     {
         return Ok(context.Machine.ToList().Select(x => new WebMachineDto(x, context)));
     }
 
+    [Authorize]
     [HttpGet("names")]
     public async Task<ActionResult<List<WebMachineDto>>> GetNames()
     {
@@ -33,12 +34,14 @@ public class MachinesController : Controller
     }
 
     // GET: for stats
+    [Authorize]
     [HttpGet("count")]
     public async Task<ActionResult<int>> GetCount(bool active = true)
     {
         return Ok(await context.Machine.CountAsync(x => x.Is_Active == active));
     }
 
+    [Authorize]
     [HttpGet("{id}")]
     public async Task<ActionResult<WebMachineDto>> Get(int id)
     {
@@ -50,6 +53,7 @@ public class MachinesController : Controller
         return Ok(new WebMachineDto(machine, context));
     }
 
+    [Authorize]
     [HttpPut("{id}")]
     public async Task<ActionResult> Put(int id, [FromBody] WebMachineDto machine)
     {
@@ -97,6 +101,7 @@ public class MachinesController : Controller
         return Ok(NewMachine.Id);
     }
 
+    [Authorize]
     [HttpDelete("id")]
     public async Task<ActionResult> Delete(int id)
     {

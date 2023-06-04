@@ -5,7 +5,6 @@ using Server.Validator;
 
 namespace Server.Controllers;
 
-//[Authorize]
 [Route("api/[controller]")]
 [ApiController]
 public class LogsController : Controller
@@ -18,12 +17,14 @@ public class LogsController : Controller
         this.validation = validation;
     }
 
+    [Authorize]
     [HttpGet]
     public ActionResult<List<WebLogDto>> Get()
     {
         return Ok(context.Log.Select(x => new WebLogDto(x)).ToList());
     }
 
+    [Authorize]
     [HttpGet("{Id}")]
     public async Task<ActionResult<WebLogDto>> Get(int Id)
     {
@@ -35,6 +36,7 @@ public class LogsController : Controller
         return Ok(new WebLogDto(log));
     }
 
+    [Authorize]
     [HttpGet("Job/{IdJob}")]
     public ActionResult<List<WebLogDto>> GetLogs (int IdJob)
     {

@@ -50,6 +50,8 @@ public class JobsController : Controller
             case "failed":
                 return await context.Job.Where(x => x.Status == 5).CountAsync();
         }
+
+        return 0;
     }
 
     [HttpGet("Id/Admin")]
