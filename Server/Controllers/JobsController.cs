@@ -27,38 +27,29 @@ public class JobsController : Controller
     }
 
     [HttpGet("count/{command}")]
-    [Authorize]
+    ////[Authorize]
     public async Task<int> GetCount(string command)
     {
-        int count = 0;
         switch (command.ToLower())
         {
             case "all":
-                await context.Job.CountAsync();
-                    break;
+                return await context.Job.CountAsync();
 
             case "running":
-                await context.Job.Where(x => x.Status == 1).CountAsync();
-                break;
+                return await context.Job.Where(x => x.Status == 1).CountAsync();
 
             case "waiting":
-                await context.Job.Where(x => x.Status == 2).CountAsync();
-                break;
+                return await context.Job.Where(x => x.Status == 2).CountAsync();
 
             case "succesfull":
-                await context.Job.Where(x => x.Status == 3).CountAsync();
-                break;
+                return await context.Job.Where(x => x.Status == 3).CountAsync();
 
             case "warning":
-                await context.Job.Where(x => x.Status == 4).CountAsync();
-                break;
+                return await context.Job.Where(x => x.Status == 4).CountAsync();
 
             case "failed":
-                await context.Job.Where(x => x.Status == 5).CountAsync();
-                break;
-
+                return await context.Job.Where(x => x.Status == 5).CountAsync();
         }
-        return count;
     }
 
     [HttpGet("Id/Admin")]
