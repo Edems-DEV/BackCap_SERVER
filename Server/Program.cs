@@ -1,3 +1,4 @@
+using Microsoft.OpenApi.Models;
 using Server.DatabaseTables;
 using Server.Validator;
 
@@ -5,7 +6,7 @@ namespace Server;
 
 public class Program
 {
-    public static void Main(string[] args)
+    public static async Task Main(string[] args)
     {
         var builder = WebApplication.CreateBuilder(args);
 
@@ -16,20 +17,61 @@ public class Program
         builder.Services.AddEndpointsApiExplorer();
         builder.Services.AddSwaggerGen();
 
+        #region Swagger Bearer
+
+        builder.Services.AddSwaggerGen(s =>
+            s.AddSecurityDefinition("Bearer", new OpenApiSecurityScheme
+            {
+                In = ParameterLocation.Header,
+                Description = "Insert JWT Token",
+                Name = "Authorization",
+                Type = SecuritySchemeType.Http,
+                BearerFormat = "JWT",
+                Scheme = "bearer"
+            }));
+
+        builder.Services.AddSwaggerGen(w =>
+            w.AddSecurityRequirement(
+                new OpenApiSecurityRequirement
+                {
+                    {
+                        new OpenApiSecurityScheme
+                        {
+                            Reference = new OpenApiReference
+                            {
+                                Type = ReferenceType.SecurityScheme,
+                                Id = "Bearer"
+                            }
+                        },
+                        new string[]{}
+                    }
+                }
+            ));
+
+        #endregion
+
+        #region Cors Settings
+
         builder.Services.AddCors(options =>
         {
             options.AddDefaultPolicy(
                 builder =>
                 {
                     builder.AllowAnyOrigin()
-                           .AllowAnyHeader()
-                           .AllowAnyMethod();
+                        .AllowAnyHeader()
+                        .AllowAnyMethod();
                 }
             );
         });
 
+        #endregion
+
+        MailManager mail = new(new MyContext());
+
         builder.Services.AddSingleton(new Validators());
-        builder.Services.AddSingleton(new MailManager(new MyContext()));
+        builder.Services.AddSingleton(mail);
+
+        await mail.Run();
 
         var app = builder.Build();
 
@@ -40,9 +82,9 @@ public class Program
             app.UseSwaggerUI();
         }
 
-
-
         app.UseAuthorization();
+
+        app.UseAuthentication();
 
         app.UseCors();
 

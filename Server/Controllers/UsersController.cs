@@ -8,7 +8,7 @@ using Server.Validator;
 
 namespace Server.Controllers;
 
-[Authorize]
+//[Authorize]
 [Route("api/[controller]")]
 [ApiController]
 public class UsersController : ControllerBase
@@ -45,7 +45,7 @@ public class UsersController : ControllerBase
     }
 
     [HttpPost]
-    public async Task<ActionResult> Post([FromBody] WebUserDto user)
+    public async Task<ActionResult> Post([FromBody] WebUserDto user, [FromServices] MailManager mail)
     {
         try
         {
@@ -60,6 +60,8 @@ public class UsersController : ControllerBase
 
         await context.User.AddAsync(NewUser);
         await context.SaveChangesAsync();
+
+        mail.AddUser(NewUser);
 
         return Ok();
     }
@@ -89,7 +91,7 @@ public class UsersController : ControllerBase
     }
 
     [HttpDelete("{Id}")]
-    public async Task<ActionResult> Delete(int Id)
+    public async Task<ActionResult> Delete(int Id, [FromServices] MailManager mail)
     {
         var user = await context.User.FindAsync(Id);
 
@@ -99,7 +101,10 @@ public class UsersController : ControllerBase
         }
 
         context.User.Remove(user);
+        mail.RemoveUser(user);
         await context.SaveChangesAsync();
+
+
         return Ok();
     }
 }

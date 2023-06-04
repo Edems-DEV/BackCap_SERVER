@@ -8,10 +8,10 @@ namespace Server;
 
 public class MailManager
 {
-	private Dictionary<User, Timer> Users = new Dictionary<User, Timer>();
+    private List<UserTimer> Users = new List<UserTimer>();
 
     private CronConvertor cronConvertor = new CronConvertor();
-
+	
     private MyContext context;
 
 	public MailManager(MyContext context)
@@ -24,6 +24,16 @@ public class MailManager
 		AssingTimes(await GetUsers());
 	}
 
+    public void AddUser(User user)
+    {
+		//Users.Add(user, SetTimer(cronConvertor.CronToMiliseconds(user.Interval_Report), user));
+	}
+
+    public void RemoveUser(User user)
+    {
+        StopTimer(user);
+    }
+
     private async Task<List<User>> GetUsers()
     {
 		return await context.User.ToListAsync();
@@ -32,31 +42,48 @@ public class MailManager
     private void AssingTimes(List<User> users)
 	{
 
-		if (users.Count == 0)
-			return;
-		
-		Users.Keys
-			.Where(x => !users.Contains(x))
-			.ToList()
-			.ForEach(x => StopTimer(x));
+        foreach (User user in users)
+        {
+            Users.Add(new UserTimer() {User = user, Timer = new Timer()});
+        }
 
-		foreach (User user in users)
-		{
-			if (!Users.ContainsKey(user))
-			{
-				Users.Add(user, SetTimer(cronConvertor.CronToMiliseconds(user.Interval_Report), user));
-				Users[user].Start();
-			}
-		}
-		
+		//if (users.Count == 0)
+		//	return;
+
+		//Users.Keys
+		//	.Where(x => !users.Contains(x))
+		//	.ToList()
+		//	.ForEach(x => StopTimer(x));
+
+		//foreach (User user in users)
+		//{
+		//	if (!Users.ContainsKey(user))
+		//	{
+		//		Users.Add(user, SetTimer(cronConvertor.CronToMiliseconds(user.Interval_Report), user));
+		//		Users[user].Start();
+		//	}
+		//}
+
 	}
 
 	private void StopTimer(User user)
 	{
-        Users[user].Stop();
-        Users[user].Dispose();
+        //Users[Users.Keys.Where(x => x.Equals(user)).SingleOrDefault()].Stop();
 
-        Users.Remove(user);
+        foreach (var exuser in Users)
+        {
+            if (user.Equals(exuser.User))
+            {
+                Console.WriteLine();
+            }
+        }
+
+        Users.Where(x => x.User.Equals(user)).SingleOrDefault().Timer.Stop();
+        //Users[user].Dispose();
+
+        //Users.Remove(user);
+        Console.WriteLine();
+
     }
 
 	private Timer SetTimer(long miliseconds, User user)
@@ -97,7 +124,7 @@ public class MailManager
 
 
 		//timer reset
-		Users[user!] = SetTimer(cronConvertor.CronToMiliseconds(user!.Interval_Report), user);
+		//Users[user!] = SetTimer(cronConvertor.CronToMiliseconds(user!.Interval_Report), user);
 
 		//TODO doplnit o refaktor timer reset metody, aby se nemuseli používat dvě (pokud to půjde)
 
