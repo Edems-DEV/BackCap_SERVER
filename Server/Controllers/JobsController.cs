@@ -34,27 +34,27 @@ public class JobsController : Controller
         switch (command.ToLower())
         {
             case "all":
-                await context.Job.ForEachAsync(x => { count++; });
+                await context.Job.CountAsync();
                     break;
 
             case "running":
-                await context.Job.Where(x => x.Status == 1).ForEachAsync(x => { count++; });
+                await context.Job.Where(x => x.Status == 1).CountAsync();
                 break;
 
             case "waiting":
-                await context.Job.Where(x => x.Status == 2).ForEachAsync(x => { count++; });
+                await context.Job.Where(x => x.Status == 2).CountAsync();
                 break;
 
             case "succesfull":
-                await context.Job.Where(x => x.Status == 3).ForEachAsync(x => { count++; });
+                await context.Job.Where(x => x.Status == 3).CountAsync();
                 break;
 
             case "warning":
-                await context.Job.Where(x => x.Status == 4).ForEachAsync(x => { count++; });
+                await context.Job.Where(x => x.Status == 4).CountAsync();
                 break;
 
             case "failed":
-                await context.Job.Where(x => x.Status == 5).ForEachAsync(x => { count++; });
+                await context.Job.Where(x => x.Status == 5).CountAsync();
                 break;
 
         }
