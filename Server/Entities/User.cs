@@ -30,7 +30,6 @@ public class User
 
     public void UpdateUser(WebUserDto user)
     {
-        this.Id = user.Id;
         this.Name = user.Name;
 
         if (user.Password != "")

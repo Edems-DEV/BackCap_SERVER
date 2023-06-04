@@ -95,14 +95,17 @@ public class MailManager
         MyContext tempContext = new MyContext();
         List<Log> logs = await tempContext.Log.Where(x => x.Time > userTimer.LastSend).ToListAsync();
 
-        //if (logs.Count == 0)
-        //{
-        //    AssingTime(userTimer);
-        //    return;
-        //}
-
         message.Subject = "Reports";
         message.SubjectEncoding = Encoding.UTF8;
+
+        if (logs.Count == 0)
+        {
+            message.Body = "Nothing to Report";
+            message.BodyEncoding = Encoding.UTF8;
+            await smtp.SendMailAsync(message);
+            AssingTime(userTimer);
+            return;
+        }
 
         message.Body = "Here are reports, that happened after last email" + Environment.NewLine;
         logs.ForEach(x => message.Body += $"{x.Time.ToString()} {Environment.NewLine} {x.Message} {Environment.NewLine}");

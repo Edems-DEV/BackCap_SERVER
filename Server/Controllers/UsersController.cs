@@ -70,6 +70,7 @@ public class UsersController : ControllerBase
     public async Task<ActionResult> Put(int Id, [FromBody] WebUserDto webUser, [FromServices] MailManager mail)
     {
         var user = await context.User.FindAsync(Id);
+        string interval = user.Interval_Report;
 
         try
         {
@@ -84,15 +85,15 @@ public class UsersController : ControllerBase
         }
 
         user.UpdateUser(webUser);
-
-        if (webUser.Interval_Report != user.Interval_Report)
-        {
-            mail.RemoveUser(user);
-            mail.AddUser(user);
-        }
-
         await context.SaveChangesAsync();
-        
+
+        if (webUser.Interval_Report == interval)
+            return Ok();
+
+        mail.RemoveUser(user);
+        mail.AddUser(user);
+
+
         return Ok();
     }
 
