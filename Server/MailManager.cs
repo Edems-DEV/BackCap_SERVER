@@ -20,13 +20,16 @@ public class MailManager
 	}
 
 	public async Task Run()
-	{
-		AssingTimes(await GetUsers());
+    {
+        List<User> users = await GetUsers();
+        users.ForEach(x => AssingTime(new UserTimer() {User = x}));
+
+        Console.WriteLine();
 	}
 
     public void AddUser(User user)
     {
-		//Users.Add(user, SetTimer(cronConvertor.CronToMiliseconds(user.Interval_Report), user));
+		AssingTime(new UserTimer() {User = user});
 	}
 
     public void RemoveUser(User user)
@@ -39,54 +42,29 @@ public class MailManager
 		return await context.User.ToListAsync();
     }
 
-    private void AssingTimes(List<User> users)
+    private void AssingTime(UserTimer userTimer)
 	{
+        // delete neřešim protože každej remove userů rovnou odebere timery
+        userTimer.Timer = SetTimer(cronConvertor.CronToMiliseconds(userTimer.User.Interval_Report), userTimer);
+		userTimer.Timer.Start();
 
-        foreach (User user in users)
-        {
-            Users.Add(new UserTimer() {User = user, Timer = new Timer()});
-        }
+		var index = Users.FindIndex(x => x.User.Id == userTimer.User.Id);
 
-		//if (users.Count == 0)
-		//	return;
-
-		//Users.Keys
-		//	.Where(x => !users.Contains(x))
-		//	.ToList()
-		//	.ForEach(x => StopTimer(x));
-
-		//foreach (User user in users)
-		//{
-		//	if (!Users.ContainsKey(user))
-		//	{
-		//		Users.Add(user, SetTimer(cronConvertor.CronToMiliseconds(user.Interval_Report), user));
-		//		Users[user].Start();
-		//	}
-		//}
-
-	}
+        if (index == -1)
+            Users.Add(userTimer);
+        else
+            Users[index] = userTimer;
+    }
 
 	private void StopTimer(User user)
 	{
-        //Users[Users.Keys.Where(x => x.Equals(user)).SingleOrDefault()].Stop();
-
-        foreach (var exuser in Users)
-        {
-            if (user.Equals(exuser.User))
-            {
-                Console.WriteLine();
-            }
-        }
-
-        Users.Where(x => x.User.Equals(user)).SingleOrDefault().Timer.Stop();
-        //Users[user].Dispose();
-
-        //Users.Remove(user);
-        Console.WriteLine();
-
+        int index = Users.FindIndex(x => x.User.Id == user.Id);
+		Users[index].Timer.Stop();
+		Users[index].Timer.Dispose();
+		Users.RemoveAt(index);
     }
 
-	private Timer SetTimer(long miliseconds, User user)
+	private Timer SetTimer(long miliseconds, UserTimer userTimer)
 	{
 		Timer timer = new Timer()
 		{
@@ -94,7 +72,7 @@ public class MailManager
 			AutoReset = false
 		};
 
-		timer.Elapsed += async (sender, e) => await SendMail(user, null);
+		timer.Elapsed += async (sender, e) => await SendMail(userTimer, null);
 
 		return timer;
 	}
@@ -102,31 +80,40 @@ public class MailManager
 	private async Task SendMail(object sender, EventArgs? e)
 	{
 		SmtpClient smtp = new SmtpClient();
-        var user = sender as User;
+        var userTimer = sender as UserTimer;
 
         MailAddress from = new MailAddress("Test@test.test");
-		MailAddress to = new MailAddress("Test2@test.test");
+		MailAddress to = new MailAddress(userTimer!.User.Email);
 
 		MailMessage message = new MailMessage(from, to);
 
-		DateTime timeBeforeSend = cronConvertor.GetLastOccurence(user!.Interval_Report);
-		List<Log> logs = await context.Log.Where(x => x.Time > timeBeforeSend).ToListAsync();
+//		DateTime timeBeforeSend = cronConvertor.GetLastOccurence(user!.Interval_Report);
+		List<Log> logs = await context.Log.Where(x => x.Time > userTimer.LastSend).ToListAsync();
 
-		message.Subject = "Reports";
-		message.SubjectEncoding = Encoding.UTF8;
+        //if (logs.Count == 0)
+        //{
+        //    AssingTime(userTimer);
+        //    return;
+        //}
 
-		message.Body = "Here are reports, that happened after last email" + Environment.NewLine;
+        message.Subject = "Reports";
+        message.SubjectEncoding = Encoding.UTF8;
+
+        message.Body = "Here are reports, that happened after last email" + Environment.NewLine;
 		logs.ForEach(x => message.Body += x.Message + Environment.NewLine);
 		message.BodyEncoding = Encoding.UTF8;
 
+        try
+        {
+            await smtp.SendMailAsync(message);
+        }
+        catch (Exception exception)
+        {
+            Console.WriteLine($"Nepovedlo se poslat mail na {userTimer.User.Email}");
+        }
 
-		await smtp.SendMailAsync(message);
-
-
-		//timer reset
-		//Users[user!] = SetTimer(cronConvertor.CronToMiliseconds(user!.Interval_Report), user);
-
-		//TODO doplnit o refaktor timer reset metody, aby se nemuseli používat dvě (pokud to půjde)
+        userTimer.LastSend = DateTime.Now;
+		AssingTime(userTimer);
 
 
 

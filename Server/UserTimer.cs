@@ -9,5 +9,5 @@ public class UserTimer
 
     public Timer Timer { get; set; }
 
-    public DateTime? LastSend { get; set; }
+    public DateTime LastSend { get; set; } = DateTime.Now;
 }
