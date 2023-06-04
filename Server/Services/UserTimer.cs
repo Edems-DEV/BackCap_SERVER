@@ -1,7 +1,7 @@
 ﻿using Server.DatabaseTables;
 using Timer = System.Timers.Timer;
 
-namespace Server;
+namespace Server.Services;
 
 public class UserTimer
 {

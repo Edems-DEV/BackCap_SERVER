@@ -1,7 +1,7 @@
 ﻿using MySqlX.XDevAPI.Relational;
 using NCrontab;
 
-namespace Server;
+namespace Server.Services;
 
 public class CronConvertor
 {

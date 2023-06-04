@@ -6,7 +6,7 @@ using System.Text;
 using Microsoft.AspNetCore.Mvc;
 using Timer = System.Timers.Timer;
 
-namespace Server;
+namespace Server.Services;
 
 public class MailManager
 {
