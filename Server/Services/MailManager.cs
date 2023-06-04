@@ -93,22 +93,38 @@ public class MailManager
         message.To.Add(new MailAddress(userTimer.User.Email));
 
         MyContext tempContext = new MyContext();
-        List<Log> logs = await tempContext.Log.Where(x => x.Time > userTimer.LastSend).ToListAsync();
+        DateTime LastSendWithTolerance = userTimer.LastSend.AddSeconds(-5);
+        List<Log> logs = await tempContext.Log.Where(x => x.Time > LastSendWithTolerance).ToListAsync();
 
         message.Subject = "Reports";
         message.SubjectEncoding = Encoding.UTF8;
 
-        if (logs.Count == 0)
+        try
         {
-            message.Body = "Nothing to Report";
-            message.BodyEncoding = Encoding.UTF8;
-            await smtp.SendMailAsync(message);
-            AssingTime(userTimer);
-            return;
+            if (logs.Count == 0)
+            {
+                message.Body = "Nothing to Report";
+                message.BodyEncoding = Encoding.UTF8;
+                await smtp.SendMailAsync(message);
+                AssingTime(userTimer);
+                return;
+            }
+        }
+        catch (Exception exception)
+        {
+            Console.WriteLine($"nepovedlo se poslat mail na {userTimer.User.Email}");
         }
 
         message.Body = "Here are reports, that happened after last email" + Environment.NewLine;
-        logs.ForEach(x => message.Body += $"{x.Time.ToString()} {Environment.NewLine} {x.Message} {Environment.NewLine}");
+        foreach (var log in logs)
+        {
+            List<string> targets = GetMachines(log.Id_Job, tempContext);
+            message.Body += log.Time.ToString();
+            targets.ForEach(x => message.Body += $" {x.ToString()}");
+            message.Body += $"{Environment.NewLine} {log.Message} {Environment.NewLine}";
+        }
+
+        //logs.ForEach(x => message.Body += $"{x.Time.ToString()} {targets.ForEach(x => x.ToString())} {Environment.NewLine} {x.Message} {Environment.NewLine}");
         message.BodyEncoding = Encoding.UTF8;
 
         try
@@ -125,6 +141,40 @@ public class MailManager
 
 
 
+    }
+
+    public List<string> GetMachines(int id_log, MyContext context)
+    {
+        List<int> jobs = context.Job.Where(x => x.Id == id_log).ToList().Select(x => x.Id).ToList();
+
+        List<string> targers = new();
+
+        foreach (var id in jobs)
+        {
+            Job job = context.Job.Find(id);
+            var id_machine = job.Id_Machine;
+            var id_group = job.Id_Group;
+
+            if (id_machine != null && id_group != null)
+                continue;
+
+            if (id_machine != null)
+            {
+                targers.Add(context.Machine.Find(Convert.ToInt32(id_machine)).Name);
+                continue;
+            }
+
+            if (id_group != null)
+            {
+                targers.Add(context.Groups.Find(Convert.ToInt32(id_group)).Name);
+                continue;   
+            }
+
+            targers.Add(context.Machine.Find(Convert.ToInt32(id_machine)).Name);
+            targers.Add(context.Groups.Find(Convert.ToInt32(id_group)).Name);
+        }
+
+        return targers;
     }
 
 }
