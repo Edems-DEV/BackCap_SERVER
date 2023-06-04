@@ -67,7 +67,7 @@ public class UsersController : ControllerBase
     }
 
     [HttpPut("{Id}")]
-    public async Task<ActionResult> Put(int Id, [FromBody] WebUserDto webUser)
+    public async Task<ActionResult> Put(int Id, [FromBody] WebUserDto webUser, [FromServices] MailManager mail)
     {
         var user = await context.User.FindAsync(Id);
 
@@ -84,6 +84,12 @@ public class UsersController : ControllerBase
         }
 
         user.UpdateUser(webUser);
+
+        if (webUser.Interval_Report != user.Interval_Report)
+        {
+            mail.RemoveUser(user);
+            mail.AddUser(user);
+        }
 
         await context.SaveChangesAsync();
         
