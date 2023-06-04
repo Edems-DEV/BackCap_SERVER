@@ -68,6 +68,7 @@ public class Program
 
         MailManager mail = new(new MyContext());
 
+        builder.Services.AddDbContext<MyContext>();
         builder.Services.AddSingleton(new Validators());
         builder.Services.AddSingleton(mail);
 

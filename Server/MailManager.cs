@@ -1,7 +1,9 @@
-﻿using Microsoft.EntityFrameworkCore;
+﻿using System.Net;
+using Microsoft.EntityFrameworkCore;
 using Server.DatabaseTables;
 using System.Net.Mail;
 using System.Text;
+using Microsoft.AspNetCore.Mvc;
 using Timer = System.Timers.Timer;
 
 namespace Server;
@@ -11,26 +13,26 @@ public class MailManager
     private List<UserTimer> Users = new List<UserTimer>();
 
     private CronConvertor cronConvertor = new CronConvertor();
-	
+
     private MyContext context;
 
-	public MailManager(MyContext context)
-	{
-		this.context = context;
-	}
+    public MailManager(MyContext context)
+    {
+        this.context = context;
+    }
 
-	public async Task Run()
+    public async Task Run()
     {
         List<User> users = await GetUsers();
-        users.ForEach(x => AssingTime(new UserTimer() {User = x}));
+        users.ForEach(x => AssingTime(new UserTimer() { User = x }));
 
         Console.WriteLine();
-	}
+    }
 
     public void AddUser(User user)
     {
-		AssingTime(new UserTimer() {User = user});
-	}
+        AssingTime(new UserTimer() { User = user });
+    }
 
     public void RemoveUser(User user)
     {
@@ -39,16 +41,16 @@ public class MailManager
 
     private async Task<List<User>> GetUsers()
     {
-		return await context.User.ToListAsync();
+        return await context.User.ToListAsync();
     }
 
     private void AssingTime(UserTimer userTimer)
-	{
+    {
         // delete neřešim protože každej remove userů rovnou odebere timery
         userTimer.Timer = SetTimer(cronConvertor.CronToMiliseconds(userTimer.User.Interval_Report), userTimer);
-		userTimer.Timer.Start();
+        userTimer.Timer.Start();
 
-		var index = Users.FindIndex(x => x.User.Id == userTimer.User.Id);
+        var index = Users.FindIndex(x => x.User.Id == userTimer.User.Id);
 
         if (index == -1)
             Users.Add(userTimer);
@@ -56,39 +58,42 @@ public class MailManager
             Users[index] = userTimer;
     }
 
-	private void StopTimer(User user)
-	{
+    private void StopTimer(User user)
+    {
         int index = Users.FindIndex(x => x.User.Id == user.Id);
-		Users[index].Timer.Stop();
-		Users[index].Timer.Dispose();
-		Users.RemoveAt(index);
+        Users[index].Timer.Stop();
+        Users[index].Timer.Dispose();
+        Users.RemoveAt(index);
     }
 
-	private Timer SetTimer(long miliseconds, UserTimer userTimer)
-	{
-		Timer timer = new Timer()
-		{
-			Interval = miliseconds,
-			AutoReset = false
-		};
+    private Timer SetTimer(long miliseconds, UserTimer userTimer)
+    {
+        Timer timer = new Timer()
+        {
+            Interval = miliseconds,
+            AutoReset = false
+        };
 
-		timer.Elapsed += async (sender, e) => await SendMail(userTimer, null);
+        timer.Elapsed += async (sender, e) => await SendMail(userTimer, null);
 
-		return timer;
-	}
+        return timer;
+    }
 
-	private async Task SendMail(object sender, EventArgs? e)
-	{
-		SmtpClient smtp = new SmtpClient();
+    private async Task SendMail(object sender, EventArgs? e)
+    {
+        SmtpClient smtp = new SmtpClient()
+        {
+            Host = "localhost",
+            Port = 25
+        };
         var userTimer = sender as UserTimer;
 
-        MailAddress from = new MailAddress("Test@test.test");
-		MailAddress to = new MailAddress(userTimer!.User.Email);
+        MailMessage message = new MailMessage();
+        message.From = new MailAddress("Test@test.com");
+        message.To.Add(new MailAddress(userTimer.User.Email));
 
-		MailMessage message = new MailMessage(from, to);
-
-//		DateTime timeBeforeSend = cronConvertor.GetLastOccurence(user!.Interval_Report);
-		List<Log> logs = await context.Log.Where(x => x.Time > userTimer.LastSend).ToListAsync();
+        MyContext tempContext = new MyContext();
+        List<Log> logs = await tempContext.Log.Where(x => x.Time > userTimer.LastSend).ToListAsync();
 
         //if (logs.Count == 0)
         //{
@@ -100,8 +105,8 @@ public class MailManager
         message.SubjectEncoding = Encoding.UTF8;
 
         message.Body = "Here are reports, that happened after last email" + Environment.NewLine;
-		logs.ForEach(x => message.Body += x.Message + Environment.NewLine);
-		message.BodyEncoding = Encoding.UTF8;
+        logs.ForEach(x => message.Body += $"{x.Time.ToString()} {Environment.NewLine} {x.Message} {Environment.NewLine}");
+        message.BodyEncoding = Encoding.UTF8;
 
         try
         {
@@ -113,9 +118,14 @@ public class MailManager
         }
 
         userTimer.LastSend = DateTime.Now;
-		AssingTime(userTimer);
+        AssingTime(userTimer);
 
 
 
-	}
+    }
+
 }
+
+
+
+
