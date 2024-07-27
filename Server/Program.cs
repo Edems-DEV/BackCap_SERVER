@@ -1,3 +1,6 @@
+using Microsoft.AspNetCore.Builder;
+using Microsoft.Extensions.DependencyInjection;
+using Microsoft.Extensions.Hosting;
 using Microsoft.OpenApi.Models;
 using Server.DatabaseTables;
 using Server.Services;
@@ -11,10 +14,14 @@ public class Program
     {
         var builder = WebApplication.CreateBuilder(args);
 
-        // Add services to the container.
+        // Configure the application to listen on port 5056
+        builder.WebHost.ConfigureKestrel(options =>
+        {
+            options.ListenAnyIP(5056); // Listen on port 5056
+        });
 
+        // Add services to the container.
         builder.Services.AddControllers();
-        // Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
         builder.Services.AddEndpointsApiExplorer();
         builder.Services.AddSwaggerGen();
 
@@ -85,9 +92,7 @@ public class Program
         }
 
         app.UseAuthorization();
-
         app.UseAuthentication();
-
         app.UseCors();
 
         app.MapControllers();

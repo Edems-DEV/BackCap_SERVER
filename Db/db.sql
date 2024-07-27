@@ -129,6 +129,7 @@ USE `myDb`;
 -- Insert data into User table
 INSERT INTO `User` (`Name`, `Password`, `Email`, `Interval_Report`)
 VALUES
+('admin', 'admin', 'admin@admin.com', '0 0 * * *'),
 ('Alice Johnson', 'password123', 'alice.johnson@example.com', '0 0 * * *'),
 ('Bob Smith', 'securepass456', 'bob.smith@example.com', '0 12 * * 1'),
 ('Charlie Brown', 'mypassword789', 'charlie.brown@example.com', '0 18 * * 5');
