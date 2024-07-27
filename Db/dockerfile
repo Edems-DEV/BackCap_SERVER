@@ -1,0 +1,8 @@
+FROM mariadb:10.6
+
+ENV MARIADB_ROOT_PASSWORD=Escargot3-Ransack-Recess
+
+COPY ./db.sql /docker-entrypoint-initdb.d/
+# execute the sql file when the container is created
+
+#$ docker run --detach --name some-mariadb --env MARIADB_ROOT_PASSWORD=my-secret-pw  mariadb:latest

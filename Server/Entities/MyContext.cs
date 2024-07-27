@@ -24,6 +24,6 @@ public class MyContext : DbContext
 
     protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
     {
-        optionsBuilder.UseMySQL("server=mysqlstudenti.litv.sssvt.cz;database=3b2_oveckacyril_db2;user=oveckacyril;Password=123456;SslMode=none;convert zero datetime=True");
+        optionsBuilder.UseMySQL("server=database;database=myDb;user=root;Password=Escargot3-Ransack-Recess"); //;SslMode=none;convert zero datetime=True  
     }
 }
