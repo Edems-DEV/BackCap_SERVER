@@ -132,7 +132,22 @@ VALUES
 ('admin', 'admin', 'admin@admin.com', '0 0 * * *'),
 ('Alice Johnson', 'password123', 'alice.johnson@example.com', '0 0 * * *'),
 ('Bob Smith', 'securepass456', 'bob.smith@example.com', '0 12 * * 1'),
-('Charlie Brown', 'mypassword789', 'charlie.brown@example.com', '0 18 * * 5');
+('Charlie Brown', 'mypassword789', 'charlie.brown@example.com', '0 18 * * 5'),
+('Alan Turing', 'enigma123', 'alan.turing@example.com', '0 12 * * 2'),
+('Emma Wilson', 'emmaPass567', 'emma.wilson@example.com', '0 8 * * 2'),
+('Linus Torvalds', 'linuxRocks!', 'linus.torvalds@example.com', '0 3 * * *'),
+('Satoshi Nakamoto', 'bitcoin4life', 'satoshi.nakamoto@example.com', '0 4 * * *'),
+('Ross Ulbricht', 'silkroad420', 'ross.ulbricht@example.com', '0 11 * * 1'),
+('Jack Davis', 'jackDavis999', 'jack.davis@example.com', '0 16 * * 1'),
+('Edward Snowden', 'nsaWatcher', 'edward.snowden@example.com', '0 8 * * 2'),
+('John McAfee', 'runningFromTheIRS', 'john.mcafee@example.com', '0 21 * * 6'),
+('Henry Adams', 'henrySecure!', 'henry.adams@example.com', '0 22 * * 6'),
+('Mia Scott', 'MiaS!pass', 'mia.scott@example.com', '0 19 * * 5'),
+('Alice Devlin', 'alicePass123', 'alice.devlin@example.com', '0 6 * * *'),
+('Bob Reynolds', 'secureBob456', 'bob.reynolds@example.com', '0 12 * * 1'),
+('Charlie Evans', 'charlieCode789', 'charlie.evans@example.com', '0 18 * * 5'),
+('David Sinclair', 'davidSecure!', 'david.sinclair@example.com', '0 4 * * 0'),
+('Emma Brooks', 'emma@dev', 'emma.brooks@example.com', '0 9 * * 2');
 
 -- Insert data into Config table
 INSERT INTO `Config` (`Name`, `Description`, `Type`, `Retention`, `PackageSize`, `IsCompressed`, `Backup_interval`, `Interval_end`)
@@ -151,16 +166,21 @@ VALUES
 -- Insert data into Groups table
 INSERT INTO `Groups` (`Name`, `Description`)
 VALUES
-('Admins', 'Group of administrators'),
-('Users', 'Regular users group'),
-('Developers', 'Development team');
+('Servers', 'Servers with critical data'),
+('Storages', 'Servers with critical data'),
+('WS_Windows', 'Employee windows workstation'),
+('WS_Linux', 'Employee linux workstation'),
 
 -- Insert data into Machine table
 INSERT INTO `Machine` (`Name`, `Description`, `Os`, `Ip_Address`, `Mac_Address`, `Is_Active`)
 VALUES
 ('Server01', 'Main server', 'Linux', '192.168.1.10', '00:14:22:01:23:45', 1),
-('Workstation01', 'Employee workstation', 'Windows 10', '192.168.1.11', '00:14:22:01:23:46', 1),
-('Server02', 'Backup server', 'Linux', '192.168.1.12', '00:14:22:01:23:47', 0);
+('Server02', 'Backup server', 'Linux', '192.168.1.12', '00:14:22:01:23:47', 0),
+('WS_01_Windows', 'Employee workstation', 'Windows 10', '192.168.1.11', '00:14:22:01:23:46', 1),
+('WS_02_Windows', 'Employee workstation', 'Windows 11', '192.168.1.11', '00:14:22:01:23:46', 0),
+('WS_03_Windows', 'Employee workstation', 'Windows 11', '192.168.1.11', '00:14:22:01:23:46', 0),
+('WS_04_Linux', 'Employee workstation', 'Windows 10', '192.168.1.11', '00:14:22:01:23:46', 1),
+('WS_05_Linux', 'Employee workstation', 'Windows 10', '192.168.1.11', '00:14:22:01:23:46', 1),
 
 -- Insert data into MachineGroup table
 INSERT INTO `MachineGroup` (`Id_Machine`, `Id_Group`)
