@@ -152,62 +152,85 @@ VALUES
 -- Insert data into Config table
 INSERT INTO `Config` (`Name`, `Description`, `Type`, `Retention`, `PackageSize`, `IsCompressed`, `Backup_interval`, `Interval_end`)
 VALUES
-('Daily Backup', 'Daily backup configuration', 3, 30, 1024, 1, '0 2 * * *', '2024-12-31 23:59:59'),
-('Weekly Backup', 'Weekly backup configuration', 2, 90, 2048, 0, '0 3 * * 1', '2024-12-31 23:59:59'),
-('Monthly Backup', 'Monthly backup configuration', 1, 180, 4096, 1, '0 4 1 * *', '2024-12-31 23:59:59');
+('W_Docs_Daily', 'Backup documents folder on Windows daily', 2, 30, 1024, 1, '0 2 * * *', '2024-12-31 23:59:59'),
+('W_Apps_Weekly', 'Backup installed applications on Windows weekly', 2, 90, 2048, 1, '0 3 * * 1', '2024-12-31 23:59:59'),
+('W_Videos_Monthly', 'Backup videos folder on Windows monthly', 2, 180, 4096, 1, '0 4 1 * *', '2024-12-31 23:59:59'),
+('L_Config_Weekly', 'Backup system configurations on Linux weekly', 3, 30, 1024, 1, '0 2 * * 0', '2024-12-31 23:59:59'),
+('L_Home_Daily', 'Backup home directories on Linux daily', 3, 30, 1024, 1, '0 2 * * *', '2024-12-31 23:59:59'),
+('L_Logs_Monthly', 'Backup system logs on Linux monthly', 3, 180, 4096, 1, '0 4 1 * *', '2024-12-31 23:59:59'),
+('Server_Data_Daily', 'Backup critical server data daily', 1, 30, 2048, 1, '0 2 * * *', '2024-12-31 23:59:59'),
+('Server_DB_Weekly', 'Backup databases on the server weekly', 1, 90, 4096, 1, '0 3 * * 1', '2024-12-31 23:59:59');
 
--- Insert data into Destination table
+-- Insert corresponding Source paths for these configurations
+INSERT INTO `Sources` (`Id_Config`, `Path`)
+VALUES
+(1, 'C:\\Users\\Alice\\Documents'),
+(2, 'C:\\Program Files'),
+(3, 'C:\\Videos'),
+(4, '/etc/'),
+(5, '/home/'),
+(6, '/var/log/'),
+(7, '/mnt/server_data/'),
+(8, '/mnt/db_backups/');
+
+-- Insert corresponding Destination paths for these configurations
 INSERT INTO `Destination` (`Id_Config`, `DestPath`)
 VALUES
-(1, '/mnt/backup/daily'),
-(2, '/mnt/backup/weekly'),
-(3, '/mnt/backup/monthly');
-
--- Insert data into Groups table
-INSERT INTO `Groups` (`Name`, `Description`)
-VALUES
-('Servers', 'Servers with critical data'),
-('WS_Windows', 'Employee windows workstation'),
-('WS_Linux', 'Employee linux workstation');
+(1, '/mnt/backup/windows_docs'),
+(2, '/mnt/backup/windows_apps'),
+(3, '/mnt/backup/windows_videos'),
+(4, '/mnt/backup/linux_config'),
+(5, '/mnt/backup/linux_home'),
+(6, '/mnt/backup/linux_logs'),
+(7, '/mnt/backup/server_data'),
+(8, '/mnt/backup/db_backups');
 
 -- Insert data into Machine table
 INSERT INTO `Machine` (`Name`, `Description`, `Os`, `Ip_Address`, `Mac_Address`, `Is_Active`)
 VALUES
 ('Server01', 'Main server', 'Linux', '192.168.1.10', '00:14:22:01:23:45', 1),
-('Server02', 'Proxy server', 'Linux', '192.168.1.12', '00:14:22:01:23:47', 0),
-('Server03', 'Web server', 'Linux', '192.168.1.12', '00:14:22:01:23:47', 0),
-('WS_01_Windows', 'Employee workstation', 'Windows 10', '192.168.1.11', '00:14:22:01:23:46', 1),
-('WS_02_Windows', 'Employee workstation', 'Windows 11', '192.168.1.11', '00:14:22:01:23:46', 0),
-('WS_03_Windows', 'Employee workstation', 'Windows 10', '192.168.1.11', '00:14:22:01:23:46', 0),
-('WS_04_Linux', 'Employee workstation', 'Linux', '192.168.1.11', '00:14:22:01:23:46', 1),
-('WS_05_Linux', 'Employee workstation', 'Linux', '192.168.1.11', '00:14:22:01:23:46', 1);
-('WS_06_Linux', 'Employee workstation', 'Linux', '192.168.1.11', '00:14:22:01:23:46', 0);
+('Server02', 'Proxy server', 'Linux', '192.168.1.12', '00:14:22:01:23:47', 1),
+('Server03', 'Web server', 'Linux', '192.168.1.13', '00:14:22:01:23:48', 1),
+('WS_01_Windows', 'Employee workstation', 'Windows 10', '192.168.1.14', '00:14:22:01:23:49', 1),
+('WS_02_Windows', 'Employee workstation', 'Windows 11', '192.168.1.15', '00:14:22:01:23:50', 0),
+('WS_03_Windows', 'Employee workstation', 'Windows 10', '192.168.1.16', '00:14:22:01:23:51', 1),
+('WS_04_Linux', 'Employee workstation', 'Linux', '192.168.1.17', '00:14:22:01:23:52', 1),
+('WS_05_Linux', 'Employee workstation', 'Linux', '192.168.1.18', '00:14:22:01:23:53', 1),
+('WS_06_Linux', 'Employee workstation', 'Linux', '192.168.1.19', '00:14:22:01:23:54', 0);
 
--- Insert data into MachineGroup table
+-- Insert data into Groups table
+INSERT INTO `Groups` (`Name`, `Description`)
+VALUES
+('Servers', 'Servers with critical data'),
+('WS_Windows', 'Employee Windows workstation'),
+('WS_Linux', 'Employee Linux workstation');
+
+-- Insert data into MachineGroup table with correct associations
 INSERT INTO `MachineGroup` (`Id_Machine`, `Id_Group`)
 VALUES
 (1, 1),
-(2, 2),
-(3, 3);
+(2, 1),
+(3, 1),
+(4, 2),
+(5, 2),
+(6, 2),
+(7, 3),
+(8, 3),
+(9, 3);
 
--- Insert data into Sources table
-INSERT INTO `Sources` (`Id_Config`, `Path`)
-VALUES
-(1, '/data/project'),
-(2, '/data/important_files'),
-(3, '/data/archives');
-
--- Insert data into Job table
+-- Insert data into Job table (Success, Running, and Waiting statuses)
 INSERT INTO `Job` (`Id_Machine`, `Id_Group`, `Id_Config`, `Status`, `Time_schedule`, `Time_start`, `Time_end`, `Bytes`)
 VALUES
-(1, 1, 1, 0, '2024-07-27 02:00:00', '2024-07-27 02:05:00', '2024-07-27 02:10:00', 1048576),
-(2, 2, 2, 1, '2024-07-27 03:00:00', '2024-07-27 03:05:00', '2024-07-27 03:15:00', 2097152),
-(1, 3, 3, 0, '2024-07-27 04:00:00', '2024-07-27 04:05:00', '2024-07-27 04:20:00', 4194304);
+(1, 1, 1, 2, '2024-07-27 02:00:00', '2024-07-27 02:05:00', '2024-07-27 02:10:00', 1048576),
+(2, 2, 2, 1, '2024-07-27 03:00:00', '2024-07-27 03:05:00', NULL, 2097152),
+(1, 3, 3, 0, '2024-07-27 04:00:00', '2024-07-27 04:05:00', NULL, 4194304);
 
--- Insert data into Log table
+-- Insert Log messages for these jobs
 INSERT INTO `Log` (`Id_Job`, `Message`, `Time`)
 VALUES
 (1, 'Backup started', '2024-07-27 02:10:00'),
-(2, 'Backup finished successfully!', '2024-07-27 03:15:00'),
-(3, 'Backup started', '2024-07-27 04:20:00');
-(4, 'Backup encountered errors!', '2024-07-27 04:25:00');
+(1, 'Backup finished successfully!', '2024-07-27 03:15:00'),
+(1, 'Backup started', '2024-07-27 04:20:00'),
+(1, 'Backup finished successfully!', '2024-07-28 02:10:00'),
+(1, 'Backup encountered errors!', '2024-07-28 03:20:00'),
+(1, 'Backup started', '2024-07-28 04:25:00');
