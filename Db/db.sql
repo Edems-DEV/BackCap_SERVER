@@ -152,9 +152,9 @@ VALUES
 -- Insert data into Config table
 INSERT INTO `Config` (`Name`, `Description`, `Type`, `Retention`, `PackageSize`, `IsCompressed`, `Backup_interval`, `Interval_end`)
 VALUES
-('Daily Backup', 'Daily backup configuration', 1, 30, 1024, 1, '0 2 * * *', '2024-12-31 23:59:59'),
+('Daily Backup', 'Daily backup configuration', 3, 30, 1024, 1, '0 2 * * *', '2024-12-31 23:59:59'),
 ('Weekly Backup', 'Weekly backup configuration', 2, 90, 2048, 0, '0 3 * * 1', '2024-12-31 23:59:59'),
-('Monthly Backup', 'Monthly backup configuration', 3, 180, 4096, 1, '0 4 1 * *', '2024-12-31 23:59:59');
+('Monthly Backup', 'Monthly backup configuration', 1, 180, 4096, 1, '0 4 1 * *', '2024-12-31 23:59:59');
 
 -- Insert data into Destination table
 INSERT INTO `Destination` (`Id_Config`, `DestPath`)
@@ -167,20 +167,21 @@ VALUES
 INSERT INTO `Groups` (`Name`, `Description`)
 VALUES
 ('Servers', 'Servers with critical data'),
-('Storages', 'Servers with critical data'),
 ('WS_Windows', 'Employee windows workstation'),
-('WS_Linux', 'Employee linux workstation'),
+('WS_Linux', 'Employee linux workstation');
 
 -- Insert data into Machine table
 INSERT INTO `Machine` (`Name`, `Description`, `Os`, `Ip_Address`, `Mac_Address`, `Is_Active`)
 VALUES
 ('Server01', 'Main server', 'Linux', '192.168.1.10', '00:14:22:01:23:45', 1),
-('Server02', 'Backup server', 'Linux', '192.168.1.12', '00:14:22:01:23:47', 0),
+('Server02', 'Proxy server', 'Linux', '192.168.1.12', '00:14:22:01:23:47', 0),
+('Server03', 'Web server', 'Linux', '192.168.1.12', '00:14:22:01:23:47', 0),
 ('WS_01_Windows', 'Employee workstation', 'Windows 10', '192.168.1.11', '00:14:22:01:23:46', 1),
 ('WS_02_Windows', 'Employee workstation', 'Windows 11', '192.168.1.11', '00:14:22:01:23:46', 0),
-('WS_03_Windows', 'Employee workstation', 'Windows 11', '192.168.1.11', '00:14:22:01:23:46', 0),
-('WS_04_Linux', 'Employee workstation', 'Windows 10', '192.168.1.11', '00:14:22:01:23:46', 1),
-('WS_05_Linux', 'Employee workstation', 'Windows 10', '192.168.1.11', '00:14:22:01:23:46', 1),
+('WS_03_Windows', 'Employee workstation', 'Windows 10', '192.168.1.11', '00:14:22:01:23:46', 0),
+('WS_04_Linux', 'Employee workstation', 'Linux', '192.168.1.11', '00:14:22:01:23:46', 1),
+('WS_05_Linux', 'Employee workstation', 'Linux', '192.168.1.11', '00:14:22:01:23:46', 1);
+('WS_06_Linux', 'Employee workstation', 'Linux', '192.168.1.11', '00:14:22:01:23:46', 0);
 
 -- Insert data into MachineGroup table
 INSERT INTO `MachineGroup` (`Id_Machine`, `Id_Group`)
@@ -206,6 +207,7 @@ VALUES
 -- Insert data into Log table
 INSERT INTO `Log` (`Id_Job`, `Message`, `Time`)
 VALUES
-(1, 'Backup completed successfully.', '2024-07-27 02:10:00'),
-(2, 'Backup encountered errors.', '2024-07-27 03:15:00'),
-(3, 'Backup completed with warnings.', '2024-07-27 04:20:00');
+(1, 'Backup started', '2024-07-27 02:10:00'),
+(2, 'Backup finished successfully!', '2024-07-27 03:15:00'),
+(3, 'Backup started', '2024-07-27 04:20:00');
+(4, 'Backup encountered errors!', '2024-07-27 04:25:00');
